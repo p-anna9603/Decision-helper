@@ -61,7 +61,7 @@ namespace DecisionSupport
             // newProductMenu
             // 
             this.newProductMenu.Name = "newProductMenu";
-            this.newProductMenu.Size = new System.Drawing.Size(224, 26);
+            this.newProductMenu.Size = new System.Drawing.Size(178, 26);
             this.newProductMenu.Text = "New product";
             this.newProductMenu.Click += new System.EventHandler(this.newProductMenu_Click);
             // 
@@ -89,6 +89,7 @@ namespace DecisionSupport
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(969, 626);
             this.Controls.Add(this.menuStrip1);
+            this.DoubleBuffered = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "Decision helper";

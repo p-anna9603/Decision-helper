@@ -38,7 +38,7 @@ namespace DecisionSupport
             submitButton = new System.Windows.Forms.Button();
             // submitButton
             //
-            submitButton.Location = new System.Drawing.Point(SystemInformation.WorkingArea.Width-150, SystemInformation.WorkingArea.Height-100);
+            submitButton.Location = new System.Drawing.Point(SystemInformation.WorkingArea.Width - 150, SystemInformation.WorkingArea.Height - 100);
             submitButton.Name = "submit0";
             submitButton.Size = new System.Drawing.Size(84, 33);
             submitButton.TabIndex = 8;
@@ -47,6 +47,10 @@ namespace DecisionSupport
             submitButton.Click += new System.EventHandler(this.submit0_Click);
             //
             this.Controls.Add(submitButton);
+            this.StartPosition = FormStartPosition.Manual;
+            // To reduce flickering: 
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
         }
 
         private void newProductMenu_Click(object sender, EventArgs e)
@@ -63,7 +67,7 @@ namespace DecisionSupport
             }
             else
             {
-                Table table = new Table(counter++, 20,50);
+                Table table = new Table(counter++, 20, 50);
                 Controls.Add(table);
 
                 tables.Add(table);
@@ -80,20 +84,21 @@ namespace DecisionSupport
             }
 
             form.SuspendLayout();
-            for(int i = 0; i <tables.Count; ++i)
+            for (int i = 0; i < tables.Count; ++i)
             {
                 tables[i].SuspendLayout();
             }
 
             tables[0].Location = new System.Drawing.Point(20, 50); // első tábla törlése esetén 
+
             Console.WriteLine("0. tábla helye" + tables[0].Location + "\n");
-            int currentRowPos = 50 + tables[0].Height;
+            int maximumRowHeight = 50 + tables[0].Height;
 
             for (int i = 1; i < tables.Count; ++i)
             {
-                tables[i].SuspendLayout();
+                //tables[i].SuspendLayout();
                 System.Drawing.Point prevPos = tables[i - 1].Location;
-                Console.WriteLine(i-1 + ". tábla helye " + prevPos);
+                Console.WriteLine(i - 1 + ". tábla helye " + prevPos);
 
                 //System.Drawing.Point prevPos = form.PointToClient(
                 //       tables[i - 1].Parent.PointToScreen(tables[i - 1].Location));
@@ -102,18 +107,21 @@ namespace DecisionSupport
                 tables[i].Location = new System.Drawing.Point(prevPos.X + tables[i - 1].Width + 20, prevPos.Y);
 
                 /* sor magasság növelés*/
-                if (prevPos.Y + tables[i].Height > currentRowPos)
+                if (prevPos.Y + tables[i - 1].Height > maximumRowHeight)
                 {
                     Console.WriteLine("2. magasság");
-                    currentRowPos = prevPos.Y + tables[i].Height;
+                    if (!(tables[i].Location.X + tables[i].Width > form.Width))
+                    {
+                        maximumRowHeight = prevPos.Y + tables[i - 1].Height;
+                    }
                 }
 
                 /* ha kilógna a képből új sorban jelenjen meg */
                 if (tables[i].Location.X + tables[i].Width > form.Width)
                 {
                     Console.WriteLine("3. új sor");
-                    tables[i].Location = new System.Drawing.Point(20, currentRowPos + 20);
-                    currentRowPos = 0;
+                    tables[i].Location = new System.Drawing.Point(20, maximumRowHeight + 20);
+                    maximumRowHeight = 0;
                 }
                 Console.WriteLine(i + ". tábla új helye " + tables[i].Location);
                 tables[i].ResumeLayout(false);
@@ -121,7 +129,7 @@ namespace DecisionSupport
             }
 
             /* ha a submit gombot eléri a tábla csúsztassuk lejjebb */
-            if((tables[tables.Count-1].Location.Y + tables[tables.Count-1].Height) >= submitButton.Location.Y - 20)
+            if ((tables[tables.Count - 1].Location.Y + tables[tables.Count - 1].Height) >= submitButton.Location.Y - 20)
             {
                 submitButton.SuspendLayout();
                 Console.WriteLine("4. submitba lóg");
@@ -155,7 +163,7 @@ namespace DecisionSupport
         public void submit0_Click(object sender, EventArgs e)
         {
             using (StreamWriter writeText = new StreamWriter("output.csv"))
-            { 
+            {
                 for (int i = 0; i < tables.Count; ++i)
                 {
                     writeText.WriteLine("product " + i.ToString());
