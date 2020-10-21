@@ -29,18 +29,21 @@ namespace DecisionSupport
     {
         double robotCost;
         double workerCost;
+        double productValue;
 
         List<List<TableData>> values;
-        public CostData(double robotCost, double workerCost)
+        public CostData(double robotCost, double workerCost, double productValue)
         {
             this.RobotCost = robotCost;
             this.WorkerCost = workerCost;
+            this.ProductValue = productValue;
             
             values = new List<List<TableData>>();
         }
 
         public double WorkerCost { get => workerCost; set => workerCost = value; }
         public double RobotCost { get => robotCost; set => robotCost = value; }
+        public double ProductValue { get => productValue; set => productValue = value; }
 
         public void addToRow(int row, int numOfRobot, int numOfWorker, int value)
         {

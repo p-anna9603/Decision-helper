@@ -35,31 +35,22 @@ namespace DecisionSupport
         {
             InitializeComponent();
             FormHelper.SetSizeToScreen(this.FindForm());
-            submitButton = new System.Windows.Forms.Button();
-            // submitButton
-            //
-            submitButton.Location = new System.Drawing.Point(SystemInformation.WorkingArea.Width - 150, SystemInformation.WorkingArea.Height - 100);
-            submitButton.Name = "submit0";
-            submitButton.Size = new System.Drawing.Size(84, 33);
-            submitButton.TabIndex = 8;
-            submitButton.Text = "Submit";
-            submitButton.UseVisualStyleBackColor = true;
-            submitButton.Click += new System.EventHandler(this.submit0_Click);
-            //
-            this.Controls.Add(submitButton);
+           
             this.StartPosition = FormStartPosition.Manual;
             // To reduce flickering: 
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            this.HorizontalScroll.Enabled = false;
         }
 
         private void newProductMenu_Click(object sender, EventArgs e)
         {
             if (tables.Count != 0)
             {
-                System.Drawing.Point prevPos = this.FindForm().PointToClient(
-                        tables[tables.Count - 1].Parent.PointToScreen(tables[tables.Count - 1].Location));
+                //System.Drawing.Point prevPos = this.FindForm().PointToClient(
+                //tables[tables.Count - 1].Parent.PointToScreen(tables[tables.Count - 1].Location));
 
+                System.Drawing.Point prevPos = tables[tables.Count - 1].Location;
                 Table table = new Table(counter++, prevPos.X + tables[tables.Count - 1].Width + 20, prevPos.Y);
                 Controls.Add(table);
 
@@ -67,7 +58,7 @@ namespace DecisionSupport
             }
             else
             {
-                Table table = new Table(counter++, 20, 50);
+                Table table = new Table(counter++, 20, 0);
                 Controls.Add(table);
 
                 tables.Add(table);
@@ -89,14 +80,16 @@ namespace DecisionSupport
                 tables[i].SuspendLayout();
             }
 
-            tables[0].Location = new System.Drawing.Point(20, 50); // első tábla törlése esetén 
+            
+            tables[0].Location = new System.Drawing.Point(form.AutoScrollPosition.X + 20, 
+                                                form.AutoScrollPosition.Y+50); // első tábla törlése esetén 
 
             Console.WriteLine("0. tábla helye" + tables[0].Location + "\n");
-            int maximumRowHeight = 50 + tables[0].Height;
+            //int maximumRowHeight = 50 + tables[0].Height;
+            int maximumRowHeight = 0;
 
             for (int i = 1; i < tables.Count; ++i)
             {
-                //tables[i].SuspendLayout();
                 System.Drawing.Point prevPos = tables[i - 1].Location;
                 Console.WriteLine(i - 1 + ". tábla helye " + prevPos);
 
@@ -107,43 +100,49 @@ namespace DecisionSupport
                 tables[i].Location = new System.Drawing.Point(prevPos.X + tables[i - 1].Width + 20, prevPos.Y);
 
                 /* sor magasság növelés*/
-                if (prevPos.Y + tables[i - 1].Height > maximumRowHeight)
+                if ((prevPos.Y + tables[i - 1].Height > tables[maximumRowHeight].Location.Y + tables[maximumRowHeight].Height))
                 {
                     Console.WriteLine("2. magasság");
-                    if (!(tables[i].Location.X + tables[i].Width > form.Width))
-                    {
-                        maximumRowHeight = prevPos.Y + tables[i - 1].Height;
-                    }
+                    //if (!(tables[i].Location.X + tables[i].Width > form.Width))
+                    //{
+                    //maximumRowHeight = prevPos.Y + tables[i - 1].Height;
+                    maximumRowHeight = i - 1;
+                        Console.WriteLine("prevPos.Y : " + prevPos.Y);
+                        Console.WriteLine("tables[i - 1].Height: " + tables[i - 1].Height);
+                    //}
                 }
 
                 /* ha kilógna a képből új sorban jelenjen meg */
-                if (tables[i].Location.X + tables[i].Width > form.Width)
+                if ((tables[i].Location.X + tables[i].Width >= form.Width - 70))
                 {
                     Console.WriteLine("3. új sor");
-                    tables[i].Location = new System.Drawing.Point(20, maximumRowHeight + 20);
-                    maximumRowHeight = 0;
+                    tables[i].Location = new System.Drawing.Point(20, tables[maximumRowHeight].Location.Y + tables[maximumRowHeight].Height + 20);
+                    Console.WriteLine("maxrowheight: " + maximumRowHeight);
+                    maximumRowHeight = i;
                 }
                 Console.WriteLine(i + ". tábla új helye " + tables[i].Location);
-                tables[i].ResumeLayout(false);
-                tables[i].PerformLayout();
             }
 
             /* ha a submit gombot eléri a tábla csúsztassuk lejjebb */
-            if ((tables[tables.Count - 1].Location.Y + tables[tables.Count - 1].Height) >= submitButton.Location.Y - 20)
-            {
-                submitButton.SuspendLayout();
-                Console.WriteLine("4. submitba lóg");
-                submitButton.Location = new System.Drawing.Point(SystemInformation.WorkingArea.Width - 150, tables[tables.Count - 1].Location.Y + tables[tables.Count - 1].Height + 10);
-            }
+            //if ((tables[tables.Count - 1].Location.Y + tables[tables.Count - 1].Height) >= submitButton.Location.Y - 20)
+            //{
+            //}
+
+                //submitButton.Location = new System.Drawing.Point(SystemInformation.WorkingArea.Width - 150, SystemInformation.WorkingArea.Height - 100);
+            Console.WriteLine("\nWorking area width " + SystemInformation.WorkingArea.Width);
+            Console.WriteLine("Working area height " + SystemInformation.WorkingArea.Height + "\n");
+
             for (int i = 0; i < tables.Count; ++i)
             {
                 tables[i].ResumeLayout(false);
                 tables[i].PerformLayout();
             }
-            submitButton.ResumeLayout(false);
-            submitButton.PerformLayout();
             form.ResumeLayout(false);
             form.PerformLayout();
+
+            Console.WriteLine("\nAutoscroll offset: " + form.AutoScrollOffset);
+            Console.WriteLine("\nAutoscroll poz offset: " + form.AutoScrollPosition);
+            Console.WriteLine("\nform.VerticalScroll.Value : " + form.VerticalScroll.Value);
         }
 
         public static void deleteTable(Form form, int idx)
@@ -160,7 +159,7 @@ namespace DecisionSupport
             adjustPositions(form);
         }
 
-        public void submit0_Click(object sender, EventArgs e)
+        public void submitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (StreamWriter writeText = new StreamWriter("output.csv"))
             {
@@ -179,6 +178,7 @@ namespace DecisionSupport
 
                     writeText.WriteLine("*");
                     writeText.WriteLine(data.RobotCost + ";" + data.WorkerCost);
+                    writeText.WriteLine(data.ProductValue);
                     writeText.WriteLine();
                 }
             }
