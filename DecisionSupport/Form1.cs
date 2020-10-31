@@ -35,7 +35,7 @@ namespace DecisionSupport
         {
             InitializeComponent();
             FormHelper.SetSizeToScreen(this.FindForm());
-           
+            this.MinimumSize = new System.Drawing.Size(600, 600);
             this.StartPosition = FormStartPosition.Manual;
             // To reduce flickering: 
             this.DoubleBuffered = true;
@@ -63,6 +63,7 @@ namespace DecisionSupport
 
                 tables.Add(table);
             }
+            tables[tables.Count - 1].addPlus(false,false);
 
             adjustPositions(this.FindForm());
         }
@@ -84,14 +85,14 @@ namespace DecisionSupport
             tables[0].Location = new System.Drawing.Point(form.AutoScrollPosition.X + 20, 
                                                 form.AutoScrollPosition.Y+50); // első tábla törlése esetén 
 
-            Console.WriteLine("0. tábla helye" + tables[0].Location + "\n");
+            ////Console.WriteLine("0. tábla helye" + tables[0].Location + "\n");
             //int maximumRowHeight = 50 + tables[0].Height;
             int maximumRowHeight = 0;
 
             for (int i = 1; i < tables.Count; ++i)
             {
                 System.Drawing.Point prevPos = tables[i - 1].Location;
-                Console.WriteLine(i - 1 + ". tábla helye " + prevPos);
+                ////Console.WriteLine(i - 1 + ". tábla helye " + prevPos);
 
                 //System.Drawing.Point prevPos = form.PointToClient(
                 //       tables[i - 1].Parent.PointToScreen(tables[i - 1].Location));
@@ -102,25 +103,25 @@ namespace DecisionSupport
                 /* sor magasság növelés*/
                 if ((prevPos.Y + tables[i - 1].Height > tables[maximumRowHeight].Location.Y + tables[maximumRowHeight].Height))
                 {
-                    Console.WriteLine("2. magasság");
+                    //Console.WriteLine("2. magasság");
                     //if (!(tables[i].Location.X + tables[i].Width > form.Width))
                     //{
                     //maximumRowHeight = prevPos.Y + tables[i - 1].Height;
                     maximumRowHeight = i - 1;
-                        Console.WriteLine("prevPos.Y : " + prevPos.Y);
-                        Console.WriteLine("tables[i - 1].Height: " + tables[i - 1].Height);
+                        ////Console.WriteLine("prevPos.Y : " + prevPos.Y);
+                        ////Console.WriteLine("tables[i - 1].Height: " + tables[i - 1].Height);
                     //}
                 }
 
                 /* ha kilógna a képből új sorban jelenjen meg */
                 if ((tables[i].Location.X + tables[i].Width >= form.Width - 70))
                 {
-                    Console.WriteLine("3. új sor");
+                    ////Console.WriteLine("3. új sor");
                     tables[i].Location = new System.Drawing.Point(20, tables[maximumRowHeight].Location.Y + tables[maximumRowHeight].Height + 20);
-                    Console.WriteLine("maxrowheight: " + maximumRowHeight);
+                    ////Console.WriteLine("maxrowheight: " + maximumRowHeight);
                     maximumRowHeight = i;
                 }
-                Console.WriteLine(i + ". tábla új helye " + tables[i].Location);
+                ////Console.WriteLine(i + ". tábla új helye " + tables[i].Location);
             }
 
             /* ha a submit gombot eléri a tábla csúsztassuk lejjebb */
@@ -129,8 +130,8 @@ namespace DecisionSupport
             //}
 
                 //submitButton.Location = new System.Drawing.Point(SystemInformation.WorkingArea.Width - 150, SystemInformation.WorkingArea.Height - 100);
-            Console.WriteLine("\nWorking area width " + SystemInformation.WorkingArea.Width);
-            Console.WriteLine("Working area height " + SystemInformation.WorkingArea.Height + "\n");
+            ////Console.WriteLine("\nWorking area width " + SystemInformation.WorkingArea.Width);
+            ////Console.WriteLine("Working area height " + SystemInformation.WorkingArea.Height + "\n");
 
             for (int i = 0; i < tables.Count; ++i)
             {
@@ -140,9 +141,9 @@ namespace DecisionSupport
             form.ResumeLayout(false);
             form.PerformLayout();
 
-            Console.WriteLine("\nAutoscroll offset: " + form.AutoScrollOffset);
-            Console.WriteLine("\nAutoscroll poz offset: " + form.AutoScrollPosition);
-            Console.WriteLine("\nform.VerticalScroll.Value : " + form.VerticalScroll.Value);
+            ////Console.WriteLine("\nAutoscroll offset: " + form.AutoScrollOffset);
+            ////Console.WriteLine("\nAutoscroll poz offset: " + form.AutoScrollPosition);
+            ////Console.WriteLine("\nform.VerticalScroll.Value : " + form.VerticalScroll.Value);
         }
 
         public static void deleteTable(Form form, int idx)
@@ -165,23 +166,104 @@ namespace DecisionSupport
             {
                 for (int i = 0; i < tables.Count; ++i)
                 {
-                    writeText.WriteLine("product " + i.ToString());
+                    //writeText.WriteLine("product " + i.ToString());
 
-                    CostData data = tables[i].getTableData();
-                    for (int row = 0; row < data.getRowCount(); ++row)
+                    TableLayoutPanel table = tables[i].getTable();
+
+                    for (int row = 0; row < table.RowCount-1; ++row)
                     {
-                        for (int col = 0; col < data.getColumnCount(); ++col)
+                        for (int col = 0; col < table.ColumnCount-1; ++col)
                         {
-                            writeText.WriteLine(data.getNumOfRobot(row, col) + ";" + data.getNumOfWorker(row, col) + ";" + data.getValue(row, col));
+                            if (row == 0 && col == 0)
+                            {
+                                writeText.Write(";");
+                                continue;
+                            }
+                            writeText.Write(table.GetControlFromPosition(col, row).Text);
+                            if (col != table.ColumnCount - 2)
+                            {
+                                writeText.Write(";");
+                            }                                                
                         }
+                        writeText.Write("\n");
                     }
 
-                    writeText.WriteLine("*");
-                    writeText.WriteLine(data.RobotCost + ";" + data.WorkerCost);
-                    writeText.WriteLine(data.ProductValue);
+                    writeText.WriteLine("*");             
+                    writeText.WriteLine(tables[i].getCostWorkerValue() + ";" + tables[i].getCostRobotValue() + ";" + tables[i].getCostProductValue());
                     writeText.WriteLine();
                 }
             }
         }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StreamReader reader = new StreamReader("output.csv");
+            int rowCount = 0;
+
+            TableData tableData = new TableData();
+            while (!reader.EndOfStream)
+            {
+                String strLine = reader.ReadLine();
+                if (strLine == "")
+                {
+                    continue;
+                }
+                String[] strArray = strLine.Split(';');
+                if (strLine == "*")
+                {
+                    strArray = reader.ReadLine().Split(';');
+                    //ables[i].getCostWorkerValue() + ";" + tables[i].getCostRobotValue() + ";" + tables[i].getCostProductValue())
+                    Double costWorker, costRobot, costProductValue;
+                    costWorker = Double.Parse(strArray[0]);
+                    costRobot = Double.Parse(strArray[1]);
+                    costProductValue = Double.Parse(strArray[2]);
+
+                    tableData.WorkerCost = costWorker;
+                    tableData.RobotCost = costRobot;
+                    tableData.ProductValue = costProductValue;
+
+                    Table table = Table.createFromTableData(tableData, counter++, 0, 0);
+                    Controls.Add(table);
+                    tables.Add(table);      
+                    rowCount = 0;
+                    tableData = new TableData();
+                    continue;
+                }
+                
+                for (int i = 0; i < strArray.Length; ++i)
+                {
+                    //table.addCell(rowCount, i, strArray[i]);
+                    tableData.addToRow(rowCount, strArray[i]);
+                }
+                rowCount++;
+            }
+            adjustPositions(this.FindForm());
+            reader.Close();
+        }
+
+        //public void submitToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    using (StreamWriter writeText = new StreamWriter("output.csv"))
+        //    {
+        //        for (int i = 0; i < tables.Count; ++i)
+        //        {
+        //            writeText.WriteLine("product " + i.ToString());
+
+        //            TableData data = tables[i].getTableData();
+        //            for (int row = 0; row < data.getRowCount(); ++row)
+        //            {
+        //                for (int col = 0; col < data.getColumnCount(); ++col)
+        //                {
+        //                    writeText.WriteLine(data.getNumOfRobot(row, col) + ";" + data.getNumOfWorker(row, col) + ";" + data.getValue(row, col));
+        //                }
+        //            }
+
+        //            writeText.WriteLine("*");
+        //            writeText.WriteLine(data.RobotCost + ";" + data.WorkerCost);
+        //            writeText.WriteLine(data.ProductValue);
+        //            writeText.WriteLine();
+        //        }
+        //    }
+        //}
     }
 }

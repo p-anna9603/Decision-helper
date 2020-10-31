@@ -38,6 +38,7 @@ namespace DecisionSupport
             this.newProductMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.submitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,7 +56,8 @@ namespace DecisionSupport
             // 
             this.commonToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newProductMenu,
-            this.submitToolStripMenuItem});
+            this.submitToolStripMenuItem,
+            this.openToolStripMenuItem});
             this.commonToolStripMenuItem.Name = "commonToolStripMenuItem";
             this.commonToolStripMenuItem.Size = new System.Drawing.Size(84, 24);
             this.commonToolStripMenuItem.Text = "Common";
@@ -63,15 +65,16 @@ namespace DecisionSupport
             // newProductMenu
             // 
             this.newProductMenu.Name = "newProductMenu";
-            this.newProductMenu.Size = new System.Drawing.Size(178, 26);
+            this.newProductMenu.Size = new System.Drawing.Size(224, 26);
+            //this.newProductMenu.Size = new System.Drawing.Size(178, 26);
             this.newProductMenu.Text = "New product";
             this.newProductMenu.Click += new System.EventHandler(this.newProductMenu_Click);
             // 
             // submitToolStripMenuItem
             // 
             this.submitToolStripMenuItem.Name = "submitToolStripMenuItem";
-            this.submitToolStripMenuItem.Size = new System.Drawing.Size(178, 26);
-            this.submitToolStripMenuItem.Text = "Submit";
+            this.submitToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.submitToolStripMenuItem.Text = "Save";
             this.submitToolStripMenuItem.Click += new System.EventHandler(this.submitToolStripMenuItem_Click);
             // 
             // menuStrip1
@@ -87,6 +90,13 @@ namespace DecisionSupport
             this.menuStrip1.Size = new System.Drawing.Size(969, 28);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // openToolStripMenuItem
+            // 
+            this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.openToolStripMenuItem.Text = "Open";
+            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -123,6 +133,7 @@ namespace DecisionSupport
         private ToolStripMenuItem newProductMenu;
         private MenuStrip menuStrip1;
         private ToolStripMenuItem submitToolStripMenuItem;
+        private ToolStripMenuItem openToolStripMenuItem;
     }
 }
 

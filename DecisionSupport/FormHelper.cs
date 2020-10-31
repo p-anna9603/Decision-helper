@@ -19,8 +19,8 @@ namespace DecisionSupport
             //form.Location = new System.Drawing.Point(left, top);
             //form.Size = new System.Drawing.Size(width, height);
             form.WindowState = FormWindowState.Maximized;
-            //Console.WriteLine("point left:" + left + " top: " + top);
-            //Console.WriteLine("width " + width + " height " + height);
+            ////Console.WriteLine("point left:" + left + " top: " + top);
+            ////Console.WriteLine("width " + width + " height " + height);
 
         }
 
@@ -32,8 +32,8 @@ namespace DecisionSupport
         //    int height = SystemInformation.WorkingArea.Height;
         //    form.Location = new System.Drawing.Point(left, top);
         //    form.Size = new System.Drawing.Size(width, height);
-        //    Console.WriteLine("point left:" + left + " top: " + top);
-        //    Console.WriteLine("width " + width + " height " + height);
+        //    //Console.WriteLine("point left:" + left + " top: " + top);
+        //    //Console.WriteLine("width " + width + " height " + height);
         //}
     }
 }
