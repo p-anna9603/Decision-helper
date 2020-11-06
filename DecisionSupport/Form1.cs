@@ -148,15 +148,35 @@ namespace DecisionSupport
 
         public static void deleteTable(Form form, int idx)
         {
+            int toDelete = 0;
+            int toDeleteIdx = 0;
             for (int i = 0; i < tables.Count; ++i)
             {
                 if (tables[i].idx == idx)
                 {
+                    toDelete = i;
+                    toDeleteIdx = idx;
                     form.Controls.Remove(tables[i]);
                     tables.RemoveAt(i);
+                    //Console.WriteLine("todelte: " + toDelete);
+                    //Console.WriteLine("toDeleteIdx: " + toDeleteIdx);
                 }
             }
-
+            for(int j = toDelete; j < tables.Count; j++)
+            {
+                if(j == toDelete)
+                {
+                    tables[j].idx = toDeleteIdx;
+                }
+                else
+                {
+                    tables[j].idx = tables[j - 1].idx+1;
+                }
+                int uj = (tables[j].idx) + 1;
+                tables[j].ProductCountLabel.Text = uj + ". product";
+                //Console.WriteLine(j + ". tábla, új felirat " + tables[j].ProductCountLabel.Text);
+            }
+            counter--;
             adjustPositions(form);
         }
 

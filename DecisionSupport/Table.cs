@@ -21,6 +21,7 @@ namespace DecisionSupport
         Label label5;
         Label productValueLabel;
         Label workerLabel;
+        Label productCountLabel;
         TextBox CostWorker;
         TextBox CostRobot;
         TextBox productValue;
@@ -32,11 +33,13 @@ namespace DecisionSupport
         FlowLayoutPanel costRobotContainer;
         FlowLayoutPanel productValueContainer;
         FlowLayoutPanel robotTableLabelLayout;
+        FlowLayoutPanel productLabelLayout;
         Splitter robotSplitter;
         Splitter splitter2;
         Splitter workerSplitter;
         Splitter robotLabelsplitter;
         public int idx;
+        public int prodCnt;
         List<NumericUpDown> numMens = new List<NumericUpDown>();
         List<NumericUpDown> numRobots = new List<NumericUpDown>();
 
@@ -62,6 +65,9 @@ namespace DecisionSupport
                 return parms;
             }
         }
+
+        public Label ProductCountLabel { get => productCountLabel; set => productCountLabel = value; }
+
         public void addPlus(bool extendRow = true, bool extendColumn = true)
         {
             if (extendRow)
@@ -90,7 +96,8 @@ namespace DecisionSupport
             result.productValue.Text = (tableData.ProductValue).ToString();
 
             Console.WriteLine("count: " + tableData.getColumnCount());
-            result.addPlus(tableData.getRowCount() > 1, tableData.getColumnCount() > 1 && tableData.get(tableData.getRowCount()-1, tableData.getColumnCount()-1) != -1);
+            result.addPlus(tableData.getRowCount() > 1, tableData.getColumnCount() > 1 && 
+                tableData.get(tableData.getRowCount()-1, tableData.getColumnCount()-1) != -1);
 
             return result;
         }
@@ -98,12 +105,14 @@ namespace DecisionSupport
         public Table(int idx, int x, int y)
         {
             this.idx = idx;
+            this.prodCnt = idx + 1;
             this.product01 = new System.Windows.Forms.TableLayoutPanel();
             this.addMan = new System.Windows.Forms.Button();
             this.addRobot = new System.Windows.Forms.Button();
             this.robotLabel = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.productCountLabel = new System.Windows.Forms.Label();
             this.workerLabel = new System.Windows.Forms.Label();
             this.productValueLabel = new System.Windows.Forms.Label();
             this.CostWorker = new System.Windows.Forms.TextBox();
@@ -117,6 +126,7 @@ namespace DecisionSupport
             this.costRobotContainer = new System.Windows.Forms.FlowLayoutPanel();
             this.productValueContainer = new System.Windows.Forms.FlowLayoutPanel();
             this.robotTableLabelLayout = new System.Windows.Forms.FlowLayoutPanel();
+            this.productLabelLayout = new System.Windows.Forms.FlowLayoutPanel();
             this.robotSplitter = new System.Windows.Forms.Splitter();
             this.workerSplitter = new System.Windows.Forms.Splitter();
             this.robotLabelsplitter = new System.Windows.Forms.Splitter();
@@ -126,6 +136,7 @@ namespace DecisionSupport
             this.bottomContainer.SuspendLayout();
             this.costWorkerContainer.SuspendLayout();
             this.costRobotContainer.SuspendLayout();
+            
             // 
             // product01
             // 
@@ -162,7 +173,7 @@ namespace DecisionSupport
             // 
             this.splitter2.Location = new System.Drawing.Point(0, 1);
             this.splitter2.Name = "splitter2";
-            this.splitter2.Size = new System.Drawing.Size(90, 5);
+            this.splitter2.Size = new System.Drawing.Size(80, 5);
             this.splitter2.TabIndex = 5;
             this.splitter2.TabStop = false;
             //this.splitter2.BackColor = Color.Red;
@@ -184,6 +195,14 @@ namespace DecisionSupport
             this.manPowerLabelContainer.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.manPowerLabelContainer.Location = new System.Drawing.Point(0, 5);
             this.manPowerLabelContainer.Size = new System.Drawing.Size(280, 20);
+            //
+            // productCountLabel
+            //
+            this.ProductCountLabel.Text = this.prodCnt.ToString() + ". product";
+            this.productCountLabel.Font = new Font("Microsoft Sans Serif", 12.0f);
+            //this.productCountLabel.Text = this.prodCnt.ToString() + ". product";
+            //this.productCountLabel.Size = new System.Drawing.Size(100, 20);
+            this.ProductCountLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             //
             // addMan
             // 
@@ -239,7 +258,6 @@ namespace DecisionSupport
             this.robotLabelContainer.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.robotLabelContainer.Location = new System.Drawing.Point(0, 30);
             this.robotLabelContainer.Size = new System.Drawing.Size(40, 70); // (WIDTH, HEIGHT) height to change!
-
             // 
             // workerCost label4
             // 
@@ -318,20 +336,38 @@ namespace DecisionSupport
             this.robotTableLabelLayout.Controls.Add(this.product01);
             this.robotTableLabelLayout.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
             this.robotTableLabelLayout.Location = new System.Drawing.Point(3, 25);
+            //
+            // productLabelLayout - flowLayoutPanel1 + label of product
+            //
+            //this.productLabel.Controls.Add(flowLayoutPanel1)
+            this.productLabelLayout.AutoSize = true;
+            this.productLabelLayout.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.productLabelLayout.Controls.Add(this.productCountLabel);
+            this.productLabelLayout.Controls.Add(this.manPowerLabelContainer);
+            //this.Controls.Add(this.workerLabel);
+            this.productLabelLayout.Controls.Add(this.robotTableLabelLayout);
+            this.productLabelLayout.Controls.Add(this.bottomContainer);
+            this.productLabelLayout.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            //this.Location = new System.Drawing.Point(28, 150);
+            this.productLabelLayout.Name = "flowLayoutPanel1";
+            this.productLabelLayout.Size = new System.Drawing.Size(300, 230);
+            //this.BackColor = Color.AntiqueWhite;
+            this.productLabelLayout.BackColor = Color.White;
+            this.productLabelLayout.TabIndex = 6;
 
             //
             // flowLayoutPanel1 - minden tába + sorok + delete
             // 
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Controls.Add(this.manPowerLabelContainer);
-            //this.Controls.Add(this.workerLabel);
-            this.Controls.Add(this.robotTableLabelLayout);
-            this.Controls.Add(this.bottomContainer);
+            this.Controls.Add(this.productCountLabel);
+            this.Controls.Add(this.productLabelLayout);
             this.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             //this.Location = new System.Drawing.Point(28, 150);
             this.Name = "flowLayoutPanel1";
             this.Size = new System.Drawing.Size(300, 230);
+            //this.BackColor = Color.AntiqueWhite;
+            this.BackColor = Color.Transparent;
             this.TabIndex = 6;
             // 
             // bottomContainer - két sor + gomb
@@ -344,6 +380,7 @@ namespace DecisionSupport
             this.bottomContainer.Location = new System.Drawing.Point(3, 72);
             this.bottomContainer.Name = "flowLayoutPanel2";
             this.bottomContainer.Size = new System.Drawing.Size(280, 155);
+            //this.bottomContainer.BackColor = Color.Transparent;
             this.bottomContainer.TabIndex = 7;
             // 
             // costWorkerContainer - munkás bér
@@ -385,7 +422,7 @@ namespace DecisionSupport
             this.robotSplitter.Size = new System.Drawing.Size(13, 24);
             this.robotSplitter.TabIndex = 5;
             this.robotSplitter.TabStop = false;
-            //this.robotSplitter.BackColor = Color.Red;
+            this.robotSplitter.BackColor = Color.White;
             // 
             // 
             // workerSplitter
@@ -394,7 +431,7 @@ namespace DecisionSupport
             this.workerSplitter.Size = new System.Drawing.Size(4, 24);
             this.workerSplitter.TabIndex = 5;
             this.workerSplitter.TabStop = false;
-            //this.workerSplitter.BackColor = Color.Red;
+            this.workerSplitter.BackColor = Color.White;
             // 
             //// 
             //// 
