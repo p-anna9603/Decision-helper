@@ -67,6 +67,9 @@ namespace DecisionSupport
         }
 
         public Label ProductCountLabel { get => productCountLabel; set => productCountLabel = value; }
+        public TableLayoutPanel Product01 { get => product01; set => product01 = value; }
+        public TextBox CostRobot1 { get => CostRobot; set => CostRobot = value; }
+        public TextBox ProductValue { get => productValue; set => productValue = value; }
 
         public void addPlus(bool extendRow = true, bool extendColumn = true)
         {
