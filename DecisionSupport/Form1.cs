@@ -12,6 +12,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace DecisionSupport
 {
@@ -20,15 +23,32 @@ namespace DecisionSupport
         static List<Table> tables = new List<Table>();
         static int counter = 0;
         static System.Windows.Forms.Button submitButton;
-        Dictionary<int, Dictionary<int, Dictionary<int, OptimumValue>>> cache = new Dictionary<int, Dictionary<int, Dictionary<int, OptimumValue>>>();
-        int l = 10, k = 4;
+        Dictionary<string, Dictionary<List<Index>, double>> cache = new Dictionary<string, Dictionary<List<Index>, double>>();
+
+        Dictionary<int, Index> optProducts = new Dictionary<int, Index>();
+        List<Index> optProdIdx = new List<Index>();
+       // product,robot,worker index,  indexlista optimumra   érték(optimum)
+       
+        public Form1()
+        {
+            InitializeComponent();
+            FormHelper.SetSizeToScreen(this.FindForm());
+            this.MinimumSize = new System.Drawing.Size(600, 600);
+            this.StartPosition = FormStartPosition.Manual;
+            // To reduce flickering: 
+            this.DoubleBuffered = true;
+            this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            this.HorizontalScroll.Enabled = false;
+
+            this.FormClosing += new FormClosingEventHandler(savingData);
+        }
 
         //Up,up,vp
         public double getU(int p, int up, int vp) {
-            if (p - 1 < 0 || p - 1 > tables.Count) {
+            if (p  < 0 || p  > tables.Count) {
                 return 0;
             }
-            Table t = tables[p - 1];
+            Table t = tables[p];
 
             int row = 0;
             int col = 0;
@@ -58,185 +78,105 @@ namespace DecisionSupport
             return result; 
         }
 
-        public OptimumValue getMPLK(int p, int currentIndex1, int currentIndex2, int limit1, int limit2) {
-            Console.WriteLine("\t!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            Console.WriteLine("\t" +  p + " " + currentIndex1 + " " + currentIndex2 + ", l2:" +  limit1 + ", lim2: " + limit2);
-            if (p < 0 || currentIndex1 < 0 || currentIndex2 < 0) {
-                Console.WriteLine("---------------------");
-                return new OptimumValue();
+        int count = 0;
+        int readCache = 0;
+        public double getPrevOptVal(int product, int robotLimit, int workerLimit, ref List<Index> indexes)
+        {
+            indexes = new List<Index>();
+            List<int> idList = new List<int>();
+            idList.Add(product);
+            idList.Add(robotLimit);
+            idList.Add(workerLimit);
+            string[] keys = new string[3] { product.ToString(), robotLimit.ToString(), workerLimit.ToString() };
+            string k = product.ToString() + "," +  robotLimit.ToString() + "," + workerLimit.ToString();
+
+            Console.WriteLine("kombinációk: " + keys[0] + ". termék: " + keys[1] + " " + keys[2]);
+            if(product < 0)
+            {
+                return 0;
             }
 
-            OptimumValue prevOpt = new OptimumValue();
-            
-            Dictionary<int, Dictionary<int, OptimumValue>> out1;
-            if (cache.TryGetValue(p, out out1)) {
-                Dictionary<int, OptimumValue> out2;
-                if (out1.TryGetValue(currentIndex1, out out2)) {
-                    OptimumValue out3;
-                    if (out2.TryGetValue(currentIndex2, out out3)) {
-                        Console.WriteLine("3. ifben-----------");
-                        if(out3.MplkIndexes.Count == 0)
-                        {
-                            if (currentIndex1 > limit1)
-                            {
-                                prevOpt = getMPLK(p, currentIndex1 - 1, currentIndex2, limit1, limit2);
-                            }
-                            else if (currentIndex2 > limit2)
-                            {
-                                prevOpt = getMPLK(p, currentIndex1, currentIndex2 - 1, limit1, limit2);
-                            }
-                            else
-                            {
-                                prevOpt = out3; // előző product optimum érték
-                                Console.WriteLine("prev elseben: " + prevOpt.Val);
-                            }
-                        }
-                        else if(out3.MplkIndexes[0] + currentIndex1 > limit1)
-                        {
-                            prevOpt = getMPLK(p, currentIndex1 - 1, currentIndex2,  limit1, limit2);
-                        }
-                        else if(out3.MplkIndexes[1] + currentIndex2 > limit2)
-                        {
-                            prevOpt = getMPLK(p, currentIndex1, currentIndex2 - 1, limit1, limit2);
-                        }
-                        else
-                        {
-                            prevOpt = out3; // előző product optimum érték
-                            //Console.WriteLine("prev elseben: " + prevOpt.Val);
-                        }
-                    } else {
-                        //Console.WriteLine("a" + p + currentIndex1 + currentIndex2, limit1, limit2);
-                        prevOpt = getMPLK(p, currentIndex1, currentIndex2 - 1, limit1, limit2);
-                    }
-                } else { // nincs olyan sorhoz tartozó érték
-                    //Console.WriteLine("b" + p + (l -1).ToString() + k);
-                    prevOpt = getMPLK(p, currentIndex1 - 1, currentIndex2, limit1, limit2);
+           if(cache.Keys.Contains(k))
+            {
+                this.readCache++;
+                Console.WriteLine(" cacheből olvasva");
+                indexes = cache[k].First().Key;
+                return cache[k].First().Value;
+            }
+
+            count++;
+            Table table = tables[product];
+            List<Index> maxIndexes = new List<Index>();
+            string maxindexes = "";
+
+            int row = 0;
+            int col;
+            double max = -1;
+
+            //Console.WriteLine(product + ". tábla");
+            while (row < table.Product01.RowCount - 1)
+            {
+                int u = row == 0 ? 0 : Int32.Parse(table.Product01.GetControlFromPosition(0, row).Text); // sorfő érték
+                if (u > robotLimit)
+                {
+                    break;
                 }
-            }
-            Console.WriteLine(" \t prevopt: " + prevOpt.Val);
-            return prevOpt;
-        }
-
-        // adott cella érték
-        public OptimumValue calcOpt(int p, int u, int v) {
-            OptimumValue prevOpt = getMPLK(p - 1, l - u, k - v, l - u, k - v);
-            Console.WriteLine("prevopt: val " + prevOpt.Val);
-            //if(prevOpt.MplkIndexes.Count != 0)
-            //{
-            //    Console.WriteLine("prevopt: MplkIndexes " + prevOpt.MplkIndexes[0] + " " + prevOpt.MplkIndexes[1]);
-            //}
-            //if (prevOpt.CurrentPMaxIndexes.Count != 0)
-            //{
-            //    Console.WriteLine("prevopt: CurrentPMaxIndexes " + prevOpt.CurrentPMaxIndexes[0] + " " + prevOpt.MplkIndexes[1]);
-            //}
-            OptimumValue result = new OptimumValue();
-            result.Val = prevOpt.Val + getU(p, u, v);
-            result.MplkIndexes = prevOpt.CurrentPMaxIndexes;
-            Console.WriteLine("size: " + prevOpt.CurrentPMaxIndexes.Count);
-            result.ValList.Add(result.Val);
-
-            return result;
-        }
-
-        public OptimumValue getOptValues() {
-            int p = 1; 
-            OptimumValue maxOptimum = new OptimumValue();
-
-            while (p <= tables.Count) {
-                OptimumValue opt = calcOptForTable(p);
-                if (opt.Val > maxOptimum.Val) {
-                    maxOptimum = opt;
-                }
-                ++p;
-            }
-
-            Console.WriteLine("OPTIMUM: " + maxOptimum.Val);
-
-            double ossz = 0;
-            OptimumValue currentOpt = maxOptimum;
-            --p;
-            while (p > 1) {
-                Console.WriteLine(p + ". product");
-                Console.WriteLine(currentOpt.CurrentPMaxIndexes[0] + " " + currentOpt.CurrentPMaxIndexes[1]);
-                ossz += currentOpt.Val;
-                --p;
-                Console.WriteLine("MPLK---------" + currentOpt.MplkIndexes[0]);
-                currentOpt = cache[p][currentOpt.MplkIndexes[0]][currentOpt.MplkIndexes[1]];
-            }
-            
-            Console.WriteLine(p + ". product");
-            Console.WriteLine(currentOpt.CurrentPMaxIndexes[0] + " " + currentOpt.CurrentPMaxIndexes[1]);
-            ossz += currentOpt.Val;
-            Console.WriteLine("Össz termelés: " + ossz);
-            foreach (var x in cache) {
-                Console.WriteLine(x.Key + ". product");
-
-                foreach(var y in x.Value) {
-                    Console.WriteLine("\t" + y.Key + ". row");
-
-                    foreach(var z in y.Value) {
-                        Console.WriteLine("\t\t" + z.Key + ". Column: " + z.Value.Val);
+                col = 0;
+                while (col < table.Product01.ColumnCount - 1)
+                {
+                    int v = col == 0 ? 0 : Int32.Parse(table.Product01.GetControlFromPosition(col, 0).Text); // oszlopfő érték
+                    if(v > workerLimit)
+                    {
+                        break;
                     }
-                }
-            }
+                    double curr;
+                    curr = getU(product, u, v);
+                    List<Index> prevIndexes = new List<Index>();
+                    double prevVal;
 
-            return maxOptimum;
-        }
-
-        public OptimumValue calcOptForTable(int p) {
-            Table table = tables[p - 1];
-
-            int row = 1;
-            int col = 1;
-
-            OptimumValue maxOptimum = new OptimumValue();
-            while (row < table.Product01.RowCount - 1) {
-                col = 1;
-                while (col < table.Product01.ColumnCount - 1) {
-                    int u = Int32.Parse(table.Product01.GetControlFromPosition(0, row).Text); // sorfő érték
-                    int v = Int32.Parse(table.Product01.GetControlFromPosition(col, 0).Text); // oszlopfő érték
-
-                    OptimumValue optimum = calcOpt(p, u, v);
-                    Console.WriteLine("-- val: " + optimum.Val);
-                    if (optimum.Val > maxOptimum.Val) {
-                        maxOptimum = optimum;
-                        maxOptimum.CurrentPMaxIndexes.Clear();
-                        maxOptimum.CurrentPMaxIndexes.Add(u); 
-                        maxOptimum.CurrentPMaxIndexes.Add(v); 
+                    if(product != 0)
+                    {
+                        prevVal = getPrevOptVal(product - 1, robotLimit - u, workerLimit - v, ref prevIndexes);
+                        curr += prevVal;
+                        //opt.Value += prevVal;
                     }
-
-//Dictionary<int, Dictionary<int, Dictionary<int, OptimumValue>>> cache = new Dictionary<int, Dictionary<int, Dictionary<int, OptimumValue>>>();
-                    if (!cache.ContainsKey(p)) {
-                        cache.Add(p, new Dictionary<int, Dictionary<int, OptimumValue>>());
+                    if (max < curr)
+                    {
+                        Index id = new Index(product, u ,v);
+                        maxIndexes = prevIndexes;
+                        maxIndexes.Add(id);
                     }
-
-                    if (!cache[p].ContainsKey(u)) {
-                        cache[p].Add(u, new Dictionary<int, OptimumValue>());
-                    }
-
-                    // Console.WriteLine("CACHE #####");
-                    // Console.WriteLine(p + " " + u + " " + v);
-
-                    cache[p][u].Add(v, maxOptimum);
+                    max = max > curr ? max : curr;
                     ++col;
                 }
                 ++row;
             }
-
-            return maxOptimum;
-        }
-        public void checkLimit()
-        {
-            OptimumValue optVal = new OptimumValue();
-            OptimumValue currentOpt = new OptimumValue();
-            optVal.ValList.Sort();
-            optVal.ValList.Reverse();
-            for(int i = 0 ; i < tables.Count; ++i)
+            List<Index> idx = new List<Index>();
+            foreach(Index i in maxIndexes)
             {
-                Console.WriteLine(1 + ". product");
-                Console.WriteLine(currentOpt.CurrentPMaxIndexes[0] + " " + currentOpt.CurrentPMaxIndexes[1]);
+                idx.Add(i);
             }
+            Dictionary<List<Index>, double> optimum = new Dictionary<List<Index>, double>();
+            optimum.Add(idx, max);
+            Cache.Add(k, optimum);            
+
+            indexes = maxIndexes;
+            return max;
         }
+        
+        public void getOptimum()
+        {
+            if(tables.Count == 0)
+            {
+                MessageBox.Show("There is nothing to evaluate.\nPlease add a new product.", "No data");
+                return;
+            }
+            Console.WriteLine(" getOptimumban");
+
+            ShowSolution showSol = new ShowSolution(ref tables);
+            showSol.ShowDialog();
+        }
+        
         protected override CreateParams CreateParams
         {
             get
@@ -247,18 +187,37 @@ namespace DecisionSupport
             }
         }
 
-        public Form1()
-        {
-            InitializeComponent();
-            FormHelper.SetSizeToScreen(this.FindForm());
-            this.MinimumSize = new System.Drawing.Size(600, 600);
-            this.StartPosition = FormStartPosition.Manual;
-            // To reduce flickering: 
-            this.DoubleBuffered = true;
-            this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            this.HorizontalScroll.Enabled = false;
-        }
+        public int ReadCache { get => readCache; set => readCache = value; }
+        public Dictionary<string, Dictionary<List<Index>, double>> Cache { get => cache; set => cache = value; }
 
+        int saveRes = 0;
+        private void savingData(Object sender, FormClosingEventArgs e)
+        {
+            if (tables.Count != 0)
+            {
+                const string message = "Do you want to save the data before exit?";
+                const string caption = "Exit application";
+                var result = MessageBox.Show(message, caption,
+                                            MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    savingMenuItemClicked(sender, e);
+                }
+                else if (result == DialogResult.No)
+                {
+                    e.Cancel = false;
+                }
+                if (saveRes == 0 && result == DialogResult.Yes)
+                {
+                    MessageBox.Show("Saving failed", "Please try again!");
+                    e.Cancel = true;
+                }
+                else if (saveRes == 1 && result == DialogResult.Yes)
+                {
+                    MessageBox.Show("Success", "Saving was successful!");
+                }
+            }
+        }
         private void newProductMenu_Click(object sender, EventArgs e)
         {
             if (tables.Count != 0)
@@ -396,50 +355,140 @@ namespace DecisionSupport
             adjustPositions(form);
         }
 
-        public void submitToolStripMenuItem_Click(object sender, EventArgs e)
+        public void savingMenuItemClicked(object sender, EventArgs e)
         {
-            getOptValues();
-            //using (StreamWriter writeText = new StreamWriter("output.csv"))
-            //{
-            //    for (int i = 0; i < tables.Count; ++i)
-            //    {
-            //        //writeText.WriteLine("product " + i.ToString());
+            if(tables.Count == 0)
+            {
+                MessageBox.Show("There is nothing to save.\nStart you work now!", "Saving?");
+                return;
+            }
+            //getOptimum();
+            string filename;
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Csv files|*.csv";
+            DialogResult res = sfd.ShowDialog();
+            filename = sfd.FileName;
+            var regExp = @"^(?:[\w]\:|\\)(\\[a-zA-Z_\-\s0-9]+)+\.(csv)$";
+            Regex regex = new Regex(regExp);
+            if (res == DialogResult.OK && filename.EndsWith(".csv") && regex.IsMatch(filename))
+            {
+                filename = sfd.FileName;
+            }
+            else
+            {
+                saveRes = 0;
+                return;
+            }
+            using (StreamWriter writeText = new StreamWriter(filename))
+            {
+                for (int i = 0; i < tables.Count; ++i)
+                {
+                    //writeText.WriteLine("product " + i.ToString());
 
-            //        TableLayoutPanel table = tables[i].getTable();
+                    TableLayoutPanel table = tables[i].getTable();
 
-            //        for (int row = 0; row < table.RowCount - 1; ++row)
-            //        {
-            //            for (int col = 0; col < table.ColumnCount - 1; ++col)
-            //            {
-            //                if (row == 0 && col == 0)
-            //                {
-            //                    writeText.Write(";");
-            //                    continue;
-            //                }
-            //                writeText.Write(table.GetControlFromPosition(col, row).Text);
-            //                if (col != table.ColumnCount - 2)
-            //                {
-            //                    writeText.Write(";");
-            //                }
-            //            }
-            //            writeText.Write("\n");
-            //        }
+                    for (int row = 0; row < table.RowCount - 1; ++row)
+                    {
+                        for (int col = 0; col < table.ColumnCount - 1; ++col)
+                        {
+                            if (row == 0 && col == 0)
+                            {
+                                writeText.Write(";");
+                                continue;
+                            }
+                            writeText.Write(table.GetControlFromPosition(col, row).Text);
+                            if (col != table.ColumnCount - 2)
+                            {
+                                writeText.Write(";");
+                            }
+                        }
+                        writeText.Write("\n");
+                    }
 
-            //        writeText.WriteLine("*");
-            //        writeText.WriteLine(tables[i].getCostWorkerValue() + ";" + tables[i].getCostRobotValue() + ";" + tables[i].getCostProductValue());
-            //        writeText.WriteLine();
-            //    }
-            //}
+                    writeText.WriteLine("*");
+                    writeText.WriteLine(tables[i].getCostWorkerValue() + ";" + tables[i].getCostRobotValue() + ";" + tables[i].getCostProductValue());
+                    writeText.WriteLine();
+                }
+                writeText.WriteLine("***");
+                Console.WriteLine("save cahce előtt " + Cache.Count);
+               foreach (KeyValuePair<string, Dictionary<List<Index>, double>> entry in this.cache)
+                {
+                    Console.WriteLine("saveben " + cache.Count);
+                    string idx = "";
+                    foreach (char i in entry.Key) // 2,10,4
+                    {
+                        if (i == ',')
+                        {
+                            writeText.Write(idx + ",");
+                            idx = "";
+                        }
+                        else
+                        {
+                            idx += i;
+                        }
+                    }
+                    writeText.Write(entry.Key.Last());
+                    writeText.Write(";");
+                    List<Index> k = entry.Value.First().Key;                  
+                    foreach (Index j in k)
+                    {
+                        writeText.Write(j.Product + ",");
+                        writeText.Write(j.Robot + ",");
+                        writeText.Write(j.Worker + ",");
+                    }
+                    writeText.Write(";" + entry.Value.First().Value + "\n");
+                }
+                saveRes = 1;
+            }
+        }
+
+        private void evaluateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            getOptimum();
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StreamReader reader = new StreamReader("output.csv");
+            StreamReader reader;
+            try
+            {
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.Filter = "Csv files|*.csv";
+                DialogResult res = ofd.ShowDialog();
+                if(res == DialogResult.OK && ofd.FileName.Contains(".csv"))
+                {
+                    reader = new StreamReader(ofd.FileName);
+                }
+                else if(res != DialogResult.OK || !ofd.FileName.Contains(".csv"))
+                {
+                    const string message = "The file can not be opened.\n Please try again!";
+                    const string caption = "Opening failed";
+                    MessageBox.Show(message, caption);
+                    return;
+                }
+                else
+                {
+                    const string message = "The file can not be opened.\n Please try again!";
+                    const string caption = "Opening failed";
+                    MessageBox.Show(message, caption);
+                    return;
+                }
+            }
+            catch(Exception ex)
+            {
+                const string message = "The file is propably open.\n Please close the file first!";
+                const string caption = "Opening failed";
+                MessageBox.Show(message, caption);
+                Console.WriteLine("Openening failed: " + ex.Message);
+                return;
+            }
+
             int rowCount = 0;
 
             TableData tableData = new TableData();
             while (!reader.EndOfStream)
             {
+                Console.WriteLine("not end");
                 String strLine = reader.ReadLine();
                 if (strLine == "")
                 {
@@ -473,24 +522,40 @@ namespace DecisionSupport
                     tableData.addToRow(rowCount, strArray[i]);
                 }
                 rowCount++;
+
+                if (strLine == "***")
+                {
+                    while (!reader.EndOfStream)
+                    {
+                        strArray = reader.ReadLine().Split(';');
+                        //List<int> idlist = new List<int>();
+                        string k = "";
+                        List<Index> indexlist = new List<Index>(); // optimumhoz robot és worker szám productonként
+                        foreach (string str in strArray[0].Split(','))
+                        {
+                            if (str.Length == 0)
+                            {
+                                continue;
+                            }
+                            //idlist.Add(Int32.Parse(str));
+                            k += str + ",";
+                        }
+                        string[] id = strArray[1].Split(',');
+                        for(int i = 0; i < id.Length-1; i+=3)
+                        {
+                            Index index = new Index(Int32.Parse(id[i]), Int32.Parse(id[i + 1]), Int32.Parse(id[i + 2]));
+                            indexlist.Add(index);
+                        }                        
+                        Dictionary<List<Index>, double> optimum = new Dictionary<List<Index>, double>();
+                        optimum.Add(indexlist, Double.Parse(strArray[2]));
+                        cache.Add(k, optimum);
+                    }
+                }
             }
+            Console.WriteLine("open");
             adjustPositions(this.FindForm());
             reader.Close();
         }
 
-
     }
-
-    
-    public class OptimumValue {
-        double val = 0;
-        List<int> mplkIndexes = new List<int>(); // robot and operator number of optimum production for one product
-        List<int> currentPMaxIndexes = new List<int>(); // adott termék addigi maximumhoz tartozó indexek
-        List<double> valList = new List<double>();
-        public double Val { get => val; set => val = value; }
-        public List<int> MplkIndexes { get => mplkIndexes; set => mplkIndexes = value; }
-        public List<int> CurrentPMaxIndexes { get => currentPMaxIndexes; set => currentPMaxIndexes = value; }
-        public List<double> ValList { get => valList; set => valList = value; }
-    }
-
 }

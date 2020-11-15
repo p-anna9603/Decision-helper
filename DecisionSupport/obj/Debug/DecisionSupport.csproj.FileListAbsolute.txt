@@ -27,10 +27,16 @@ C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\Xamarin.Forms.C
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\Xamarin.Forms.Xaml.pdb
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\Xamarin.Forms.Xaml.xml
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.csprojAssemblyReference.cache
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.Form1.resources
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.Properties.Resources.resources
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.csproj.GenerateResource.cache
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.csproj.CoreCompileInputs.cache
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.csproj.CopyComplete
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.exe
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.pdb
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.Form1.resources
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.ShowSolution.resources
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\EPPlus.dll
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\GemBox.Spreadsheet.dll
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\System.ComponentModel.Annotations.dll
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\EPPlus.xml
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\GemBox.Spreadsheet.xml
