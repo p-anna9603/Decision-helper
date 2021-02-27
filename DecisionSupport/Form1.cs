@@ -15,13 +15,15 @@ using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace DecisionSupport
 {
     public partial class Form1 : Form
     {
-        static List<Table> tables = new List<Table>();
+        static List<Table> tables = new List<Table>(); // contains all the Table type (with all controls)
         static int counter = 0;
+        int totalCount = 0;
         static System.Windows.Forms.Button submitButton;
         Dictionary<string, Dictionary<List<Index>, double>> cache = new Dictionary<string, Dictionary<List<Index>, double>>();
 
@@ -41,6 +43,13 @@ namespace DecisionSupport
             this.HorizontalScroll.Enabled = false;
 
             this.FormClosing += new FormClosingEventHandler(savingData);
+
+            //this.FormBorderStyle = FormBorderStyle.None;
+            //this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            //this.WindowState = FormWindowState.Maximized;
+            //this.ControlBox = true;
+            //this.TopMost = true;
+            //this.Bounds = Screen.PrimaryScreen.Bounds;
         }
 
         //Up,up,vp
@@ -82,29 +91,34 @@ namespace DecisionSupport
         int readCache = 0;
         public double getPrevOptVal(int product, int robotLimit, int workerLimit, ref List<Index> indexes)
         {
+            totalCount++;
+            Console.WriteLine(totalCount + ". fv hívás");
             indexes = new List<Index>();
             List<int> idList = new List<int>();
             idList.Add(product);
             idList.Add(robotLimit);
             idList.Add(workerLimit);
             string[] keys = new string[3] { product.ToString(), robotLimit.ToString(), workerLimit.ToString() };
-            string k = product.ToString() + "," +  robotLimit.ToString() + "," + workerLimit.ToString();
+            string k = product.ToString() + "," +  robotLimit.ToString() + "," + workerLimit.ToString() + ",";
 
-            Console.WriteLine("kombinációk: " + keys[0] + ". termék: " + keys[1] + " " + keys[2]);
-            if(product < 0)
+            //Console.WriteLine("kombinációk: " + keys[0] + " " + keys[1] + " " + keys[2]);
+
+            if (product < 0)
             {
                 return 0;
             }
-
-           if(cache.Keys.Contains(k))
+            Console.WriteLine("\tújra: " + k);
+            if (cache.Keys.Contains(k))
             {
                 this.readCache++;
-                Console.WriteLine(" cacheből olvasva");
                 indexes = cache[k].First().Key;
                 return cache[k].First().Value;
             }
+            else
+            {
+                count++;
+            }
 
-            count++;
             Table table = tables[product];
             List<Index> maxIndexes = new List<Index>();
             string maxindexes = "";
@@ -116,24 +130,26 @@ namespace DecisionSupport
             //Console.WriteLine(product + ". tábla");
             while (row < table.Product01.RowCount - 1)
             {
-                int u = row == 0 ? 0 : Int32.Parse(table.Product01.GetControlFromPosition(0, row).Text); // sorfő érték
+                int u = row == 0 ? 0 : Int32.Parse(table.Product01.GetControlFromPosition(0, row).Text); // sorfő érték (robot)
+                //Console.WriteLine("\t\tu: " + u);
                 if (u > robotLimit)
                 {
                     break;
                 }
                 col = 0;
-                while (col < table.Product01.ColumnCount - 1)
+                while (col < table.Product01.ColumnCount - 1) 
                 {
-                    int v = col == 0 ? 0 : Int32.Parse(table.Product01.GetControlFromPosition(col, 0).Text); // oszlopfő érték
-                    if(v > workerLimit)
+                    int v = col == 0 ? 0 : Int32.Parse(table.Product01.GetControlFromPosition(col, 0).Text); // oszlopfő érték (munkás)
+                    //Console.WriteLine("\tv: " + v);
+                    if (v > workerLimit)
                     {
                         break;
                     }
                     double curr;
                     curr = getU(product, u, v);
                     List<Index> prevIndexes = new List<Index>();
-                    double prevVal;
 
+                    double prevVal;
                     if(product != 0)
                     {
                         prevVal = getPrevOptVal(product - 1, robotLimit - u, workerLimit - v, ref prevIndexes);
@@ -143,22 +159,35 @@ namespace DecisionSupport
                     if (max < curr)
                     {
                         Index id = new Index(product, u ,v);
-                        maxIndexes = prevIndexes;
-                        maxIndexes.Add(id);
+                        //       maxIndexes = prevIndexes;
+                        maxIndexes.Clear();
+                        foreach (Index i in prevIndexes)
+                        {
+                            Console.WriteLine("prod: " + i.Product + ", robot: " + i.Robot + ", operator: " + i.Worker);
+                            maxIndexes.Add(i);
+                        }
+                        maxIndexes.Add(id);                       
                     }
                     max = max > curr ? max : curr;
                     ++col;
+
+
+
+                    //Console.WriteLine("\tcurr: " + curr);
                 }
                 ++row;
             }
+
+            //Console.WriteLine("\topt: " + max);
             List<Index> idx = new List<Index>();
-            foreach(Index i in maxIndexes)
+            foreach (Index i in maxIndexes)
             {
                 idx.Add(i);
+                Console.WriteLine("prod: " + i.Product + ", robot: " + i.Robot + ", operator: " + i.Worker);
             }
             Dictionary<List<Index>, double> optimum = new Dictionary<List<Index>, double>();
             optimum.Add(idx, max);
-            Cache.Add(k, optimum);            
+            Cache.Add(k, optimum);
 
             indexes = maxIndexes;
             return max;
@@ -173,10 +202,10 @@ namespace DecisionSupport
             }
             Console.WriteLine(" getOptimumban");
 
-            ShowSolution showSol = new ShowSolution(ref tables);
+            ShowSolution showSol = new ShowSolution(ref tables, this);
             showSol.ShowDialog();
         }
-        
+
         protected override CreateParams CreateParams
         {
             get
@@ -189,6 +218,8 @@ namespace DecisionSupport
 
         public int ReadCache { get => readCache; set => readCache = value; }
         public Dictionary<string, Dictionary<List<Index>, double>> Cache { get => cache; set => cache = value; }
+        public int Count { get => count; set => count = value; }
+        public int TotalCount { get => totalCount; set => totalCount = value; }
 
         int saveRes = 0;
         private void savingData(Object sender, FormClosingEventArgs e)
@@ -413,10 +444,15 @@ namespace DecisionSupport
                 Console.WriteLine("save cahce előtt " + Cache.Count);
                foreach (KeyValuePair<string, Dictionary<List<Index>, double>> entry in this.cache)
                 {
-                    Console.WriteLine("saveben " + cache.Count);
-                    string idx = "";
-                    foreach (char i in entry.Key) // 2,10,4
+                    string idx = ""; 
+                    if(entry.Key.Equals("0,20,10"))
                     {
+                        Console.WriteLine("mentésben " + entry.Key[0] + entry.Key[1] + entry.Key[2] + entry.Key[3] + entry.Key[4] + entry.Key[5] + entry.Key[6]);
+                        Console.WriteLine("mentés méret:  " + entry.Key.Length);
+                    }
+                    foreach (char i in entry.Key) // 0,20,10
+                    {
+                        
                         if (i == ',')
                         {
                             writeText.Write(idx + ",");
@@ -424,10 +460,10 @@ namespace DecisionSupport
                         }
                         else
                         {
-                            idx += i;
+                            idx += i; 
                         }
                     }
-                    writeText.Write(entry.Key.Last());
+                    writeText.Write(idx);
                     writeText.Write(";");
                     List<Index> k = entry.Value.First().Key;                  
                     foreach (Index j in k)
@@ -548,8 +584,18 @@ namespace DecisionSupport
                         }                        
                         Dictionary<List<Index>, double> optimum = new Dictionary<List<Index>, double>();
                         optimum.Add(indexlist, Double.Parse(strArray[2]));
-                        cache.Add(k, optimum);
+                        Console.WriteLine("kulcs: " + k);
+                        Cache.Add(k, optimum);
                     }
+                }
+                Console.WriteLine("###############beolvasva: ");
+                foreach(var i in cache.Keys)
+                {
+                    for(int j = 0; j < i.Length; ++j)
+                    {
+                        Console.Write(i[j]);
+                    }
+                    Console.Write("\n");
                 }
             }
             Console.WriteLine("open");

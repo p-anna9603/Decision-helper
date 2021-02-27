@@ -47,7 +47,7 @@ namespace DecisionSupport
         private void addMan_Click(object sender, EventArgs e)
         {
             
-                handleClick(true);
+            handleClick(true);
             
         }
 

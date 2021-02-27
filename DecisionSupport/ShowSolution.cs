@@ -14,23 +14,26 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using LicenseContext = System.ComponentModel.LicenseContext;
-
+using System.Diagnostics;
 
 namespace DecisionSupport
 {
     public partial class ShowSolution : Form
     {
         List<Index> indexes = new List<Index>();
+        Form1 form;
         double optimum;
         private List<Table> tables;
         int allRobot = 0;
         int allWorker = 0;
         int prodCount = 1;
         int calculate = 0;
-        public ShowSolution(ref List<Table> tables)
+        Stopwatch stopwatch = new Stopwatch();
+        public ShowSolution(ref List<Table> tables, Form1 f)
         {
 
             this.tables = tables;
+            form = f;
             InitializeComponent();
             this.Size = new System.Drawing.Size(770, 600);
             Console.WriteLine("w. " + this.Width + " h: " + this.Height);
@@ -45,12 +48,12 @@ namespace DecisionSupport
             int keyIndex = 0;
             int allRobot = 0;
             int allWorker = 0;
-            Form1 f = new Form1();
+
             foreach (var i in indexes) // 3,1,6,2,1,1, = i
             {
                     Console.WriteLine("forban");
                     Table table = tables[i.Product];
-                    double profit = f.getU(i.Product, i.Robot, i.Worker);
+                    double profit = form.getU(i.Product, i.Robot, i.Worker);
                     Console.WriteLine("pr: " + profit);
                     dataTable.Rows[rowIndex].Cells[cellIdx].Value = i.Product+1;
                     dataTable.Rows[rowIndex].Cells[++cellIdx].Value = i.Robot;
@@ -114,13 +117,12 @@ namespace DecisionSupport
             int cellIdx = 0;
             int rowIndex = dataTable.Rows.Add();
             int keyIndex = 0;
-            Form1 f = new Form1();
             string filename;
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Xlsx files|*.xlsx|Xls files|*.xls";
             DialogResult res = sfd.ShowDialog();
             filename = sfd.FileName;
-            var regExp = @"^(?:[\w]\:|\\)(\\[a-zA-Z_\-\s0-9]+)+\.(xlsx)$";
+            var regExp = @"^(?:[\w]\:|\\)(\\[a-zA-Z_\-\.\s0-9]+)+\.((xlsx)|(xls))$";
             Regex regex = new Regex(regExp);
             if (res == DialogResult.OK && regex.IsMatch(filename))
             {
@@ -184,7 +186,7 @@ namespace DecisionSupport
                 {
                     Console.WriteLine("forban");
                         Table table = tables[i.Product];
-                        double profit = f.getU(i.Product, i.Robot, i.Worker);
+                        double profit = form.getU(i.Product, i.Robot, i.Worker);
                         Console.WriteLine("pr: " + profit);
                         excelWorkSheet.Cells["A" + rowCnt].Value = i.Product+1 + ".";
                         excelWorkSheet.Cells["B" + rowCnt].Value = i.Robot;
@@ -212,7 +214,9 @@ namespace DecisionSupport
         {
             int robotLimit = Int32.Parse(maxRobot.Text);
             int operatorLimit = Int32.Parse(maxOperator.Text);
-            Form1 form = new Form1();
+            form.TotalCount = 0;
+            form.ReadCache = 0;
+            Console.WriteLine(" nullázás " + form.ReadCache);
             if (calculate != 0)
             {
                 dataTable.Rows.Clear();
@@ -223,13 +227,34 @@ namespace DecisionSupport
             }
             else
             {
+                stopwatch.Start();
                 optimum = form.getPrevOptVal(tables.Count - 1, robotLimit, operatorLimit, ref indexes);
+                stopwatch.Stop();
+                int toDelete = -1;
+                //for (int i = 1; i < indexes.Count(); ++i)
+                //{
+                //    if (indexes[i].Product == indexes[i - 1].Product)
+                //    {
+                //        toDelete = i - 1;
+                //        Console.WriteLine(" Ugyanaz: " + indexes[i].Product + " index : " + toDelete);
+                //    }
+                //}
+                //if (toDelete != -1)
+                //{
+                //    indexes.RemoveAt(toDelete);
+                //    Console.WriteLine("todeleteben: " + toDelete);
+                //}
                 fillTable();
                 calculate = 1;
             }
+
             Console.WriteLine("OPT: " + optimum);
             Console.WriteLine("cachből: " + form.ReadCache);
-            Console.WriteLine("cache " + form.Cache.Count);
+            Console.WriteLine("nem cachből: " + form.Count);
+            Console.WriteLine("ÖSSZ keresés: " + form.TotalCount);
+            Console.WriteLine("cache összméret " + form.Cache.Count);
+            Console.WriteLine("ellapsed milliseconds: " + stopwatch.ElapsedMilliseconds);
+
         }
     }
 }
