@@ -25,7 +25,8 @@ namespace DecisionSupport
         static int counter = 0;
         int totalCount = 0;
         static System.Windows.Forms.Button submitButton;
-        Dictionary<string, Dictionary<List<Index>, double>> cache = new Dictionary<string, Dictionary<List<Index>, double>>();
+        int docOpenings = 0;
+        static Dictionary<string, Dictionary<List<Index>, double>> cache = new Dictionary<string, Dictionary<List<Index>, double>>();
 
         Dictionary<int, Index> optProducts = new Dictionary<int, Index>();
         List<Index> optProdIdx = new List<Index>();
@@ -202,8 +203,11 @@ namespace DecisionSupport
             }
             Console.WriteLine(" getOptimumban");
 
-            ShowSolution showSol = new ShowSolution(ref tables, this);
-            showSol.ShowDialog();
+            //ShowSolution showSol = new ShowSolution(ref tables, this);
+            //showSol.ShowDialog();
+
+            ShowOpts showOpt = new ShowOpts(ref tables, this);
+            showOpt.ShowDialog();
         }
 
         protected override CreateParams CreateParams
@@ -384,8 +388,12 @@ namespace DecisionSupport
             }
             counter--;
             adjustPositions(form);
+            clearCache();            
         }
-
+        public static void clearCache()
+        {
+            cache.Clear();
+        }
         public void savingMenuItemClicked(object sender, EventArgs e)
         {
             if(tables.Count == 0)
@@ -442,7 +450,7 @@ namespace DecisionSupport
                 }
                 writeText.WriteLine("***");
                 Console.WriteLine("save cahce előtt " + Cache.Count);
-               foreach (KeyValuePair<string, Dictionary<List<Index>, double>> entry in this.cache)
+               foreach (KeyValuePair<string, Dictionary<List<Index>, double>> entry in cache)
                 {
                     string idx = ""; 
                     if(entry.Key.Equals("0,20,10"))
@@ -589,6 +597,7 @@ namespace DecisionSupport
                     }
                 }
                 Console.WriteLine("###############beolvasva: ");
+                docOpenings++;
                 foreach(var i in cache.Keys)
                 {
                     for(int j = 0; j < i.Length; ++j)
@@ -600,7 +609,12 @@ namespace DecisionSupport
             }
             Console.WriteLine("open");
             adjustPositions(this.FindForm());
-            reader.Close();
+            reader.Close();  
+            
+            if(docOpenings > 1)
+            {
+                cache.Clear();
+            }
         }
 
     }

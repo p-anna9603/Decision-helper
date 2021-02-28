@@ -538,6 +538,8 @@ namespace DecisionSupport
             numRobot.Width = 50;
             numMen02.Maximum = 10000;
             numRobot.Maximum = 10000;
+            numMen02.KeyPress += numVal_KeyPress;
+            numRobot.KeyPress += numVal_KeyPress;
             //addMan.AutoSize = true;
             //addRobot.AutoSize = true;
 
@@ -572,6 +574,7 @@ namespace DecisionSupport
                 Man02.Anchor = (AnchorStyles.Right | AnchorStyles.Left);
                 Man02.Maximum = 10000;
                 Man02.ValueChanged += numVal_ValueChaned;
+                Man02.KeyPress += numVal_KeyPress;
 
                 //Man02.AutoSize = true;
                 Man02.Width = 50;
@@ -602,6 +605,7 @@ namespace DecisionSupport
                 C.ResumeLayout(false);
             }
             Form1.adjustPositions(this.FindForm());
+            Form1.clearCache();
         }
 
         // Called when adding a new robot or worker to the table. listID == 1 (numMens); listID == 2 (numRobots)
@@ -688,10 +692,12 @@ namespace DecisionSupport
 
             t.SelectionStart = a;
             t.SelectionLength = b;
+            Form1.clearCache();
         }
 
         private void addWorkerNum_ValueChanged(object sender, EventArgs e)
         {
+            Console.WriteLine("\nkezdeees################");
             NumericUpDown t = sender as NumericUpDown;
             if(t.Value > t.Maximum)
             {
@@ -700,27 +706,41 @@ namespace DecisionSupport
             }
             int idx = numMens.IndexOf(t);
             int count = 1;
-            //Console.WriteLine("index  " + idx + " value: " + numMens[idx].Value);
+            Console.WriteLine("darabszam össz : " + numMens.Count);
+            Console.WriteLine("index  " + idx + " value: " + numMens[idx].Value);
+            if(numMens[idx].Value == t.Maximum && idx != numMens.Count-1)
+            {
+                numMens[idx].Value = numMens[idx].Value - (numMens.Count-1) - idx;
+                Console.WriteLine("jelenlegi modosított: " + numMens[idx].Value);
+            }
             if (idx != 0)
             {
                 decimal prevVal = numMens[idx - 1].Value;
 
                 // Don't let current value smaller then the previous value --> add 1 to the current
+                if(prevVal == t.Maximum)
+                {
+                    numMens[idx - 1].Value = numMens[idx - 1].Value - numMens.Count - (idx - 1);
+                }
                 if (prevVal >= numMens[idx].Value)
                 {
                     //Console.WriteLine("Yes");
                     numMens[idx].Value = prevVal + 1;
                 }
             }
+            Console.WriteLine("for elott");
             for (int i = idx + 1; i < numMens.Count; i++)
             {
                 // Upcoming values can not be lower then current one --> set them to the current + 1
+                Console.WriteLine("forban if elott");
                 if (numMens[idx].Value >= numMens[i].Value)
                 {
                     numMens[i].Value = numMens[idx].Value + count;
+                    Console.WriteLine("utána a " + i + ".-ik: " + numMens[i].Value);
                     count++;
                 }
             }
+            Form1.clearCache();
         }
         private void numVal_ValueChaned(object sender, EventArgs e)
         {
@@ -728,6 +748,22 @@ namespace DecisionSupport
             if (t.Value > t.Maximum)
             {
                 numsMaximum(t);
+            }
+            Form1.clearCache();
+        }
+        private void numVal_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
+              e.KeyChar != '.' && e.KeyChar != ',')
+            {
+                e.Handled = true;
+            }
+            NumericUpDown t = sender as NumericUpDown;
+
+            //Delete the placeholder 0
+            if (t.Text == "0" && char.IsDigit(e.KeyChar))
+            {
+                t.Text = "";
             }
         }
         public void numsMaximum(NumericUpDown num)
@@ -740,10 +776,18 @@ namespace DecisionSupport
             int idx = numRobots.IndexOf(t);
             int count = 1;
             //Console.WriteLine("index  " + idx + " value: " + numRobots[idx].Value);
+            if (numRobots[idx].Value == t.Maximum && idx != numRobots.Count - 1)
+            {
+                numRobots[idx].Value = numRobots[idx].Value - (numRobots.Count - 1) - idx;
+                Console.WriteLine("jelenlegi modosított: " + numRobots[idx].Value);
+            }
             if (idx != 0)
             {
                 decimal prevVal = numRobots[idx - 1].Value;
-
+                if (prevVal == t.Maximum)
+                {
+                    numRobots[idx - 1].Value = numRobots[idx - 1].Value - numRobots.Count - (idx - 1);
+                }
                 if (prevVal >= numRobots[idx].Value)
                 {
                     //Console.WriteLine("Yes");
@@ -758,6 +802,7 @@ namespace DecisionSupport
                     count++;
                 }
             }
+            Form1.clearCache();
         }
       
         private void rotateLabel_Paint(object sender, PaintEventArgs e)
@@ -871,7 +916,7 @@ namespace DecisionSupport
                 numMen02.ValueChanged += addRobotNum_ValueChanged;
                 numRobots.Add(numMen02);
             }
-
+            numMen02.KeyPress += numVal_KeyPress;
             product01.Controls.Add(numMen02, col, row);
             numMen02.MouseWheel += new MouseEventHandler(this.ScrollHandlerFunction);
             numMen02.Value = val;
