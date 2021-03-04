@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
@@ -35,6 +36,11 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Title title2 = new System.Windows.Forms.DataVisualization.Charting.Title();
             this.label1 = new System.Windows.Forms.Label();
             this.dataTable = new System.Windows.Forms.DataGridView();
             this.Product = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -48,13 +54,18 @@
             this.robNum = new System.Windows.Forms.Label();
             this.opNum = new System.Windows.Forms.Label();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.robMax = new System.Windows.Forms.Label();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
+            this.opMax = new System.Windows.Forms.Label();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dataTable)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.flowLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -222,19 +233,43 @@
             // 
             this.flowLayoutPanel1.Controls.Add(this.label3);
             this.flowLayoutPanel1.Controls.Add(this.robNum);
+            this.flowLayoutPanel1.Controls.Add(this.robMax);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(222, 26);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(237, 26);
             this.flowLayoutPanel1.TabIndex = 12;
+            // 
+            // robMax
+            // 
+            this.robMax.AutoSize = true;
+            this.robMax.BackColor = System.Drawing.Color.Transparent;
+            this.robMax.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.robMax.Location = new System.Drawing.Point(175, 0);
+            this.robMax.Name = "robMax";
+            this.robMax.Size = new System.Drawing.Size(37, 20);
+            this.robMax.TabIndex = 10;
+            this.robMax.Text = "/  3";
             // 
             // flowLayoutPanel2
             // 
             this.flowLayoutPanel2.Controls.Add(this.label2);
             this.flowLayoutPanel2.Controls.Add(this.opNum);
+            this.flowLayoutPanel2.Controls.Add(this.opMax);
             this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 35);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
-            this.flowLayoutPanel2.Size = new System.Drawing.Size(222, 32);
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(237, 32);
             this.flowLayoutPanel2.TabIndex = 13;
+            // 
+            // opMax
+            // 
+            this.opMax.AutoSize = true;
+            this.opMax.BackColor = System.Drawing.Color.Transparent;
+            this.opMax.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.opMax.Location = new System.Drawing.Point(175, 0);
+            this.opMax.Name = "opMax";
+            this.opMax.Size = new System.Drawing.Size(37, 20);
+            this.opMax.TabIndex = 11;
+            this.opMax.Text = "/  3";
             // 
             // flowLayoutPanel3
             // 
@@ -244,8 +279,46 @@
             this.flowLayoutPanel3.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel3.Location = new System.Drawing.Point(487, 38);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(240, 87);
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(253, 87);
             this.flowLayoutPanel3.TabIndex = 14;
+            // 
+            // chart1
+            // 
+            chartArea2.AxisY2.LineColor = System.Drawing.Color.White;
+            chartArea2.AxisY2.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            chartArea2.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.LeftRight;
+            chartArea2.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chart1.Legends.Add(legend2);
+            this.chart1.Location = new System.Drawing.Point(750, 193);
+            this.chart1.Name = "chart1";
+            this.chart1.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StackedColumn;
+            series3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            series3.Legend = "Legend1";
+            series3.Name = "Used";
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.StackedColumn;
+            series4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            series4.Legend = "Legend1";
+            series4.Name = "Surplus";
+            this.chart1.Series.Add(series3);
+            this.chart1.Series.Add(series4);
+            this.chart1.Size = new System.Drawing.Size(300, 326);
+            this.chart1.TabIndex = 15;
+            this.chart1.Text = "chart1";
+            title2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            title2.Name = "Resource utilization";
+            title2.Text = "Resource utilization";
+            this.chart1.Titles.Add(title2);
+            this.chart1.Click += new System.EventHandler(this.chart1_Click);
+            this.chart1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.chart1_MouseClick);
+            // 
+            // toolTip1
+            // 
+            this.toolTip1.IsBalloon = true;
             // 
             // ShowSolution
             // 
@@ -256,7 +329,8 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackgroundImage = global::DecisionSupport.Properties.Resources.bckg11;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(785, 633);
+            this.ClientSize = new System.Drawing.Size(1077, 609);
+            this.Controls.Add(this.chart1);
             this.Controls.Add(this.flowLayoutPanel3);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.saveButton);
@@ -277,6 +351,7 @@
             this.flowLayoutPanel2.ResumeLayout(false);
             this.flowLayoutPanel2.PerformLayout();
             this.flowLayoutPanel3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -299,5 +374,9 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
+        private System.Windows.Forms.Label robMax;
+        private System.Windows.Forms.Label opMax;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

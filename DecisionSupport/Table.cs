@@ -56,16 +56,24 @@ namespace DecisionSupport
             handleClick(false);
         }
 
+        //protected override CreateParams CreateParams
+        //{
+        //    get
+        //    {
+        //        var parms = base.CreateParams;
+        //        parms.Style &= ~0x02000000;  // Turn off WS_CLIPCHILDREN
+        //        return parms;
+        //    }
+        //}
         protected override CreateParams CreateParams
         {
             get
             {
-                var parms = base.CreateParams;
-                parms.Style &= ~0x02000000;  // Turn off WS_CLIPCHILDREN
-                return parms;
+                CreateParams handleParam = base.CreateParams;
+                handleParam.ExStyle |= 0x02000000;   // WS_EX_COMPOSITED       
+                return handleParam;
             }
         }
-
         public Label ProductCountLabel { get => productCountLabel; set => productCountLabel = value; }
         public TableLayoutPanel Product01 { get => product01; set => product01 = value; }
         public TextBox CostRobot1 { get => CostRobot; set => CostRobot = value; }
@@ -605,7 +613,9 @@ namespace DecisionSupport
                 C.ResumeLayout(false);
             }
             Form1.adjustPositions(this.FindForm());
+
             Form1.clearCache();
+            Form1.setSaving(0);
         }
 
         // Called when adding a new robot or worker to the table. listID == 1 (numMens); listID == 2 (numRobots)
@@ -651,6 +661,8 @@ namespace DecisionSupport
             //Console.WriteLine("table row " + product01.RowCount + ", table columnCount: " + product01.ColumnCount);
             //Console.WriteLine("list count (robots): " + numRobots.Count + ", list (numMens): " + numMens.Count);
             Form1.adjustPositions(this.FindForm());
+            Form1.setSaving(0);
+            Form1.clearCache();
             return 1; // to avoid continuing in handleClick function (that would add more numericUpDowns to table which must not happen)
         }
         private void Cost_FocusLost(object sender, EventArgs e)
@@ -693,6 +705,7 @@ namespace DecisionSupport
             t.SelectionStart = a;
             t.SelectionLength = b;
             Form1.clearCache();
+            Form1.setSaving(0);
         }
 
         private void addWorkerNum_ValueChanged(object sender, EventArgs e)
@@ -741,6 +754,7 @@ namespace DecisionSupport
                 }
             }
             Form1.clearCache();
+            Form1.setSaving(0);
         }
         private void numVal_ValueChaned(object sender, EventArgs e)
         {
@@ -750,6 +764,7 @@ namespace DecisionSupport
                 numsMaximum(t);
             }
             Form1.clearCache();
+            Form1.setSaving(0);
         }
         private void numVal_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -765,6 +780,12 @@ namespace DecisionSupport
             {
                 t.Text = "";
             }
+            if (e.KeyChar == '.' || e.KeyChar == ',')
+            {
+                e.Handled = true;
+            }
+            Form1.clearCache();
+            Form1.setSaving(0);
         }
         public void numsMaximum(NumericUpDown num)
         {
@@ -803,6 +824,7 @@ namespace DecisionSupport
                 }
             }
             Form1.clearCache();
+            Form1.setSaving(0);
         }
       
         private void rotateLabel_Paint(object sender, PaintEventArgs e)

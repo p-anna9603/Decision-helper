@@ -16,6 +16,8 @@ using Xamarin.Forms.Internals;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace DecisionSupport
 {
@@ -30,8 +32,18 @@ namespace DecisionSupport
 
         Dictionary<int, Index> optProducts = new Dictionary<int, Index>();
         List<Index> optProdIdx = new List<Index>();
-       // product,robot,worker index,  indexlista optimumra   érték(optimum)
-       
+        // product,robot,worker index,  indexlista optimumra   érték(optimum)
+
+        public static int saving = 0; // 0 - need to be saved, 1 - already saved
+        public static MenuStrip menu;
+        static int saveRes = 0; // 0 - save was not successful, 1 - save was succesful
+        static int newWork = 1; // 1 - if its a new work from blank sheet, 0 - file was opened 
+        static string openedFileName = "";
+        static int saveAs = 0; // 1 - if Save As option was selected
+        static int savedAs = 0; // 1 - if Save As option was selected and saved
+        static string secondFileName = ""; // saving after the save as 
+        static string formTitle = "";
+        static Form1 form1;
         public Form1()
         {
             InitializeComponent();
@@ -42,17 +54,35 @@ namespace DecisionSupport
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             this.HorizontalScroll.Enabled = false;
-
+            menu = this.menuStrip1;
             this.FormClosing += new FormClosingEventHandler(savingData);
-
+            initialize();
+            formTitle = this.Text;
+            form1 = this;
+            menu.BackColor = System.Drawing.Color.FromArgb(120, System.Drawing.Color.White);
             //this.FormBorderStyle = FormBorderStyle.None;
             //this.FormBorderStyle = FormBorderStyle.FixedSingle;
             //this.WindowState = FormWindowState.Maximized;
             //this.ControlBox = true;
             //this.TopMost = true;
-            //this.Bounds = Screen.PrimaryScreen.Bounds;
+            //this.Bounds = Screen.PrimaryScreen.Bounds; 
+
+            //Remove form title bar
+            this.Text = string.Empty;
+            this.ControlBox = false;
+            this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
+            //this.FormBorderStyle = FormBorderStyle.None;
         }
 
+        Bitmap Background, BackgroundTemp;
+        private void initialize()
+        {
+            SetStyle(ControlStyles.UserPaint, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            BackgroundTemp = new Bitmap(Properties.Resources.bckg11);
+            Background = new Bitmap(BackgroundTemp, BackgroundTemp.Width, BackgroundTemp.Height);
+        }
         //Up,up,vp
         public double getU(int p, int up, int vp) {
             if (p  < 0 || p  > tables.Count) {
@@ -225,15 +255,14 @@ namespace DecisionSupport
         public int Count { get => count; set => count = value; }
         public int TotalCount { get => totalCount; set => totalCount = value; }
 
-        int saveRes = 0;
         private void savingData(Object sender, FormClosingEventArgs e)
         {
-            if (tables.Count != 0)
+            if (tables.Count != 0 && getSaving() == 0)
             {
                 const string message = "Do you want to save the data before exit?";
                 const string caption = "Exit application";
                 var result = MessageBox.Show(message, caption,
-                                            MessageBoxButtons.YesNo);
+                                            MessageBoxButtons.YesNoCancel);
                 if (result == DialogResult.Yes)
                 {
                     savingMenuItemClicked(sender, e);
@@ -265,6 +294,9 @@ namespace DecisionSupport
                 Controls.Add(table);
 
                 tables.Add(table);
+                typeof(Panel).InvokeMember("DoubleBuffered",
+                  BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
+                 null, table, new object[] { true });
             }
             else
             {
@@ -276,6 +308,8 @@ namespace DecisionSupport
             tables[tables.Count - 1].addPlus(false,false);
 
             adjustPositions(this.FindForm());
+            setSaving(0);
+            clearCache();
         }
 
         public static void adjustPositions(Form form)
@@ -388,36 +422,111 @@ namespace DecisionSupport
             }
             counter--;
             adjustPositions(form);
-            clearCache();            
+            clearCache();
+            setSaving(0);            
         }
         public static void clearCache()
         {
             cache.Clear();
         }
-        public void savingMenuItemClicked(object sender, EventArgs e)
+        static int savingCount = 0;
+        public static void setSaving(int s)
+        {           
+            saving = s;
+            if(saving == 0 && savingCount == 0)
+            {
+                int toolId;
+                ToolStripItemCollection tools;
+                toolId = menu.Items.IndexOfKey("saveToolStripMenuItem");
+                menu.Items.RemoveAt(toolId);
+
+                ToolStripMenuItem saveBlue = new ToolStripMenuItem("");
+                saveBlue.Name = "saveToolStripMenuItem";
+                saveBlue.ToolTipText = "Save";
+                saveBlue.Click +=  new EventHandler(savingMenuItemClicked);
+                saveBlue.Image = Properties.Resources.saveBlue;
+          //      menu.Items.Add(saveBlue);
+                menu.Items.Insert(0, saveBlue);
+                savingCount++;
+            }
+            else if(saving == 1)
+            {
+                int toolId;
+                ToolStripItemCollection tools;
+                toolId = menu.Items.IndexOfKey("saveToolStripMenuItem");
+                menu.Items.RemoveAt(toolId);
+
+                ToolStripMenuItem saveGray = new ToolStripMenuItem("");
+                saveGray.Name = "saveToolStripMenuItem";
+                saveGray.Click += new EventHandler(savingMenuItemClicked);
+                saveGray.ToolTipText = "Save";
+                saveGray.Image = Properties.Resources.saveGray;
+               // menu.Items.Add(saveGray);
+                menu.Items.Insert(0, saveGray);
+                savingCount = 0;
+            }
+        }
+
+        public static int getCacheCount()
         {
-            if(tables.Count == 0)
+            return cache.Count;
+        }
+        public static int getSaving()
+        {
+            return saving;
+        }
+        public static void savingMenuItemClicked(object sender, EventArgs e)
+        {
+            saveMenuClicked();
+        }
+        public static void saveMenuClicked()
+        {
+            if (tables.Count == 0)
             {
                 MessageBox.Show("There is nothing to save.\nStart you work now!", "Saving?");
                 return;
             }
             //getOptimum();
-            string filename;
+            string filename = "";
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Csv files|*.csv";
-            DialogResult res = sfd.ShowDialog();
-            filename = sfd.FileName;
-            var regExp = @"^(?:[\w]\:|\\)(\\[a-zA-Z_\-\s0-9]+)+\.(csv)$";
-            Regex regex = new Regex(regExp);
-            if (res == DialogResult.OK && filename.EndsWith(".csv") && regex.IsMatch(filename))
+            if (newWork == 1 || saveAs == 1)
             {
+                DialogResult res = sfd.ShowDialog();
                 filename = sfd.FileName;
+                var regExp = @"^(?:[\w]\:|\\)(\\[a-zA-Z_\-\s0-9]+)+\.(csv)$";
+                Regex regex = new Regex(regExp);
+                if (res == DialogResult.OK && filename.EndsWith(".csv") && regex.IsMatch(filename))
+                {
+                    filename = sfd.FileName;
+                }
+                else
+                {
+                    saveRes = 0;
+                    return;
+                }
+                if(saveAs == 1)
+                {
+                    savedAs = 1;
+                    saveAs = 0;
+                    secondFileName = filename;
+                }
+            }
+            else if(savedAs == 1)
+            {
+                // DO nothing
+                filename = secondFileName;
             }
             else
             {
-                saveRes = 0;
-                return;
+                filename = openedFileName;
             }
+            string onlyFileName = "";
+            onlyFileName = Path.GetFileName(filename);
+
+            //form1.Text = "Decision Support - " + onlyFileName;
+            try 
+            { 
             using (StreamWriter writeText = new StreamWriter(filename))
             {
                 for (int i = 0; i < tables.Count; ++i)
@@ -449,18 +558,18 @@ namespace DecisionSupport
                     writeText.WriteLine();
                 }
                 writeText.WriteLine("***");
-                Console.WriteLine("save cahce előtt " + Cache.Count);
-               foreach (KeyValuePair<string, Dictionary<List<Index>, double>> entry in cache)
+                Console.WriteLine("save cahce előtt " + getCacheCount());
+                foreach (KeyValuePair<string, Dictionary<List<Index>, double>> entry in cache)
                 {
-                    string idx = ""; 
-                    if(entry.Key.Equals("0,20,10"))
+                    string idx = "";
+                    if (entry.Key.Equals("0,20,10"))
                     {
                         Console.WriteLine("mentésben " + entry.Key[0] + entry.Key[1] + entry.Key[2] + entry.Key[3] + entry.Key[4] + entry.Key[5] + entry.Key[6]);
                         Console.WriteLine("mentés méret:  " + entry.Key.Length);
                     }
                     foreach (char i in entry.Key) // 0,20,10
                     {
-                        
+
                         if (i == ',')
                         {
                             writeText.Write(idx + ",");
@@ -468,12 +577,12 @@ namespace DecisionSupport
                         }
                         else
                         {
-                            idx += i; 
+                            idx += i;
                         }
                     }
                     writeText.Write(idx);
                     writeText.Write(";");
-                    List<Index> k = entry.Value.First().Key;                  
+                    List<Index> k = entry.Value.First().Key;
                     foreach (Index j in k)
                     {
                         writeText.Write(j.Product + ",");
@@ -485,10 +594,56 @@ namespace DecisionSupport
                 saveRes = 1;
             }
         }
-
+        catch(Exception ex)
+        {
+            const string message = "The file is propably open.\n Please close the file first!";
+            const string caption = "Opening failed";
+            MessageBox.Show(message, caption);
+            Console.WriteLine("Openening failed: " + ex.Message);
+            return;
+        }
+         setSaving(1);
+        }
         private void evaluateToolStripMenuItem_Click(object sender, EventArgs e)
         {
             getOptimum();
+        }
+
+        private void saveToolStripMenuItem_MouseHover(object sender, EventArgs e)
+        {
+            toolTip1.SetToolTip(menuStrip1,"Save");
+        }
+
+        private void SaveAsStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            saveAs = 1;
+            saveMenuClicked();
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            Console.WriteLine("resiiize");
+            adjustPositions(this.FindForm());
+            this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
+            //this.WindowState = FormWindowState.Maximized;
+        }
+
+        //Drag Form
+        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
+        private extern static void ReleaseCapture();
+
+        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
+        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
+        private void menuStrip1_MouseDown(object sender, MouseEventArgs e)
+        {
+            ReleaseCapture();
+            SendMessage(this.Handle, 0x112, 0xf012, 0);
+        }
+
+        private void menuStrip1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.WindowState = FormWindowState.Maximized;
+            Console.WriteLine("double cliiiick");
         }
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
@@ -502,6 +657,13 @@ namespace DecisionSupport
                 if(res == DialogResult.OK && ofd.FileName.Contains(".csv"))
                 {
                     reader = new StreamReader(ofd.FileName);
+                    openedFileName = ofd.FileName;
+                    newWork = 0;
+                    Console.WriteLine("fájl név: " + openedFileName);
+                    string onlyFileName = "";
+                    onlyFileName = Path.GetFileName(openedFileName);
+
+                    //form1.Text = "Decision Support - " + onlyFileName;
                 }
                 else if(res != DialogResult.OK || !ofd.FileName.Contains(".csv"))
                 {
@@ -597,7 +759,6 @@ namespace DecisionSupport
                     }
                 }
                 Console.WriteLine("###############beolvasva: ");
-                docOpenings++;
                 foreach(var i in cache.Keys)
                 {
                     for(int j = 0; j < i.Length; ++j)
@@ -607,13 +768,21 @@ namespace DecisionSupport
                     Console.Write("\n");
                 }
             }
+            docOpenings++;
             Console.WriteLine("open");
             adjustPositions(this.FindForm());
-            reader.Close();  
-            
-            if(docOpenings > 1)
+            reader.Close();
+            Console.WriteLine("reader close utan");
+            if (docOpenings > 1)
             {
                 cache.Clear();
+                setSaving(0);
+                Console.WriteLine("nem az elso doksi nyitás");
+            }
+            if(docOpenings == 1)
+            {
+                setSaving(1);
+                Console.WriteLine("elso doksi nyitás");
             }
         }
 
