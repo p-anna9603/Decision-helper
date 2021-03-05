@@ -42,3 +42,4 @@ C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\EPPlus.xml
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\GemBox.Spreadsheet.xml
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.ShowOpts.resources
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\FontAwesome.Sharp.dll
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.firstForm.resources
