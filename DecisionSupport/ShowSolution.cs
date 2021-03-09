@@ -259,7 +259,7 @@ namespace DecisionSupport
                         else if(result.Series.Name == "Surplus")
                         {
                             Console.WriteLine("Not neccessary worker");
-                            toolTip1.SetToolTip(chart1, "Surplus: " + operatorLimit);
+                            toolTip1.SetToolTip(chart1, "Surplus: " + (Int32.Parse(operatorLimit) - allWorker));
                         }
                     }
                     else if(result.Series.Points[result.PointIndex].AxisLabel == "Robot")
@@ -272,7 +272,7 @@ namespace DecisionSupport
                         else if (result.Series.Name == "Surplus")
                         {
                             Console.WriteLine("Not neccessary rob");
-                            toolTip1.SetToolTip(chart1, "Surplus: " + robotLimit);
+                            toolTip1.SetToolTip(chart1, "Surplus: " + (Int32.Parse(robotLimit) - allRobot));
                         }
                     }
                 }

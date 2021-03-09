@@ -24,11 +24,11 @@ namespace DecisionSupport
 {
     public partial class Form1 : Form
     {
-        static List<Table> tables = new List<Table>(); // contains all the Table type (with all controls)
+        private static List<Table> tables = new List<Table>(); // contains all the Table type (with all controls)
         static int counter = 0;
         int totalCount = 0;
         static System.Windows.Forms.Button submitButton;
-        int docOpenings = 0;
+        static int docOpenings = 0;
         static Dictionary<string, Dictionary<List<Index>, double>> cache = new Dictionary<string, Dictionary<List<Index>, double>>();
 
         Dictionary<int, Index> optProducts = new Dictionary<int, Index>();
@@ -36,6 +36,7 @@ namespace DecisionSupport
         // product,robot,worker index,  indexlista optimumra   érték(optimum)
 
         public static int saving = 0; // 0 - need to be saved, 1 - already saved
+        public static int modification = 0; // 1 - no change, 0 - any change happened
         public static MenuStrip menu;
         static int saveRes = 0; // 0 - save was not successful, 1 - save was succesful
         static int newWork = 1; // 1 - if its a new work from blank sheet, 0 - file was opened 
@@ -59,7 +60,9 @@ namespace DecisionSupport
             // To reduce flickering: 
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            this.HorizontalScroll.Enabled = false;
+            this.HorizontalScroll.Enabled = true;
+            this.VerticalScroll.Enabled = true;
+            this.AutoScroll = true;
             menu = this.menuStrip1;
             this.FormClosing += new FormClosingEventHandler(savingData);
             initialize();
@@ -72,117 +75,8 @@ namespace DecisionSupport
             //this.ControlBox = true;
             //this.TopMost = true;
             //this.Bounds = Screen.PrimaryScreen.Bounds; 
-
-            //Remove form title bar
-            this.Text = string.Empty;
-            this.ControlBox = false;
-         //   this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
-            this.MaximizedBounds = Screen.GetWorkingArea(this);
-            Console.WriteLine("Max: " + MaximizedBounds.Width + ", " + MaximizedBounds.Height);
-            this.SetStyle(ControlStyles.ResizeRedraw, true);
-            //this.FormBorderStyle = FormBorderStyle.None;
-
-            //New form
-            leftBorderBtn = new Panel();
-            leftBorderBtn.Size = new System.Drawing.Size(7, 60);
-            panelMenu.Controls.Add(leftBorderBtn);
-            projectSubMenu.Visible = false;
-            menuStrip1.Visible = false;
-            restoreButton.Visible = true;
         }
 
-        private void OpenChildFOrm(Form childForm)
-        {
-            if(currentChildForm != null)
-            {
-                // open only form
-                currentChildForm.Close();
-            }
-            currentChildForm = childForm;
-            childForm.TopLevel = false;
-            childForm.FormBorderStyle = FormBorderStyle.None;
-            childForm.Dock = DockStyle.Fill;
-            panelDesktop.Controls.Add(childForm);
-            panelDesktop.Tag = childForm;
-            childForm.BringToFront();
-            childForm.Show();
-            lblTitleChildForm.Text = childForm.Text;
-        }
-        private struct RGBColors
-        {
-            public static Color color1 = Color.FromArgb(172, 126, 241);
-            public static Color color2 = Color.FromArgb(249, 118, 176);
-            public static Color color3 = Color.FromArgb(253, 138, 114);
-            public static Color color4 = Color.FromArgb(95, 77, 221);
-            public static Color color5 = Color.FromArgb(249, 88, 155);
-            public static Color color6 = Color.FromArgb(24, 161, 251);
-        }
-        // Methods
-        private void ActivateButton(object senderBtn, System.Drawing.Color color)
-        {
-            if (senderBtn != null)
-            {
-                DisableButton();
-                //Button
-                currentBtn = (IconButton)senderBtn;
-                currentBtn.BackColor = System.Drawing.Color.FromArgb(191, 64, 64);
-                currentBtn.ForeColor = color;
-                currentBtn.TextAlign = ContentAlignment.MiddleCenter;
-                currentBtn.IconColor = color;
-                currentBtn.TextImageRelation = TextImageRelation.TextBeforeImage;
-                currentBtn.ImageAlign = ContentAlignment.MiddleRight;
-                //Left border button
-                leftBorderBtn.BackColor = color;
-                Console.WriteLine("button y: " + currentBtn.Location.Y);
-                if(currentBtn.Name.Equals(iconButton1.Name))
-                {
-                    if(projectSubMenu.Visible)
-                    {
-                        projectSubMenu.Visible = false;
-                    }
-                    else
-                    {
-                        projectSubMenu.Visible = true;
-                    }                    
-                }
-                else if(!(currentBtn.Parent.Name.Equals("projectSubMenu")))
-                {
-                    projectSubMenu.Visible = false;
-                }
-
-                if(currentBtn.Parent.Name.Equals("projectSubMenu"))
-                {
-                    leftBorderBtn.Size = new System.Drawing.Size(7, 40);
-                    leftBorderBtn.Location = new System.Drawing.Point(0, currentBtn.Parent.Location.Y + currentBtn.Location.Y);
-                }
-                else
-                {
-                    leftBorderBtn.Size = new System.Drawing.Size(7, 60);
-                    leftBorderBtn.Location = new System.Drawing.Point(0, currentBtn.Location.Y);
-                }
-                leftBorderBtn.Visible = true;
-                leftBorderBtn.BringToFront();
-
-                //Icon Current child form
-                iconCurrentChildForm.IconChar = currentBtn.IconChar;
-                iconCurrentChildForm.IconColor = color;
-                lblTitleChildForm.Text = currentBtn.Text;
-            }
-        }
-
-        private void DisableButton()
-        {
-            if(currentBtn != null)
-            {
-                //currentBtn.BackColor = System.Drawing.Color.FromArgb(134, 45, 45); // dark red
-                currentBtn.BackColor = System.Drawing.Color.DarkRed; // dark red
-                currentBtn.ForeColor = System.Drawing.Color.Gainsboro;
-                currentBtn.TextAlign = ContentAlignment.MiddleLeft;
-                currentBtn.IconColor = System.Drawing.Color.Gainsboro;
-                currentBtn.TextImageRelation = TextImageRelation.ImageBeforeText;
-                currentBtn.ImageAlign = ContentAlignment.MiddleLeft;
-            }
-        }
 
         Bitmap Background, BackgroundTemp;
         private void initialize()
@@ -334,20 +228,25 @@ namespace DecisionSupport
             return max;
         }
         
-        public void getOptimum()
+        public int getOptimum()
         {
             if(tables.Count == 0)
             {
                 MessageBox.Show("There is nothing to evaluate.\nPlease add a new product.", "No data");
-                return;
+                return 0;
+            }
+            else
+            {
+                return 1;
             }
             Console.WriteLine(" getOptimumban");
 
             //ShowSolution showSol = new ShowSolution(ref tables, this);
             //showSol.ShowDialog();
 
-            ShowOpts showOpt = new ShowOpts(ref tables, this);
-            showOpt.ShowDialog();
+            //ShowOpts showOpt = new ShowOpts(ref tables, this);
+            //ShowOpts showOpt = new ShowOpts(this);
+            //showOpt.ShowDialog();
         }
 
         protected override CreateParams CreateParams
@@ -364,11 +263,13 @@ namespace DecisionSupport
         public Dictionary<string, Dictionary<List<Index>, double>> Cache { get => cache; set => cache = value; }
         public int Count { get => count; set => count = value; }
         public int TotalCount { get => totalCount; set => totalCount = value; }
+        public  List<Table> Tables { get => tables; set => tables = value; }
 
         private void savingData(Object sender, FormClosingEventArgs e)
         {
             if (tables.Count != 0 && getSaving() == 0)
             {
+                Console.WriteLine("kérdés form1 savingData");
                 const string message = "Do you want to save the data before exit?";
                 const string caption = "Exit application";
                 var result = MessageBox.Show(message, caption,
@@ -424,6 +325,7 @@ namespace DecisionSupport
 
         public static void adjustPositions(Form form)
         {
+            form.HorizontalScroll.Enabled = false;
             if (tables.Count == 0)
             {
                 return;
@@ -433,13 +335,15 @@ namespace DecisionSupport
             for (int i = 0; i < tables.Count; ++i)
             {
                 tables[i].SuspendLayout();
+                tables[i].Hide();
             }
 
-            
-            tables[0].Location = new System.Drawing.Point(form.AutoScrollPosition.X + 20, 
-                                                form.AutoScrollPosition.Y+50); // első tábla törlése esetén 
 
-            ////// Console.WriteLine("0. tábla helye" + tables[0].Location + "\n");
+            tables[0].Location = new System.Drawing.Point(20,
+                                                form.AutoScrollPosition.Y + 50); // első tábla törlése esetén 
+
+            Console.WriteLine("0. tábla helye" + tables[0].Location);
+            Console.WriteLine("autoscroll: " + form.AutoScrollPosition);
             //int maximumRowHeight = 50 + tables[0].Height;
             int maximumRowHeight = 0;
 
@@ -448,34 +352,23 @@ namespace DecisionSupport
                 System.Drawing.Point prevPos = tables[i - 1].Location;
                 ////// Console.WriteLine(i - 1 + ". tábla helye " + prevPos);
 
-                //System.Drawing.Point prevPos = form.PointToClient(
-                //       tables[i - 1].Parent.PointToScreen(tables[i - 1].Location));
-
                 /* oszlop hozzáadásnál */
                 tables[i].Location = new System.Drawing.Point(prevPos.X + tables[i - 1].Width + 20, prevPos.Y);
 
                 /* sor magasság növelés*/
                 if ((prevPos.Y + tables[i - 1].Height > tables[maximumRowHeight].Location.Y + tables[maximumRowHeight].Height))
                 {
-                    //// Console.WriteLine("2. magasság");
-                    //if (!(tables[i].Location.X + tables[i].Width > form.Width))
-                    //{
-                    //maximumRowHeight = prevPos.Y + tables[i - 1].Height;
                     maximumRowHeight = i - 1;
-                        ////// Console.WriteLine("prevPos.Y : " + prevPos.Y);
-                        ////// Console.WriteLine("tables[i - 1].Height: " + tables[i - 1].Height);
-                    //}
                 }
 
                 /* ha kilógna a képből új sorban jelenjen meg */
                 if ((tables[i].Location.X + tables[i].Width >= form.Width - 70))
                 {
-                    ////// Console.WriteLine("3. új sor");
                     tables[i].Location = new System.Drawing.Point(20, tables[maximumRowHeight].Location.Y + tables[maximumRowHeight].Height + 20);
                     ////// Console.WriteLine("maxrowheight: " + maximumRowHeight);
                     maximumRowHeight = i;
                 }
-                ////// Console.WriteLine(i + ". tábla új helye " + tables[i].Location);
+                 Console.WriteLine(i + ". tábla új helye " + tables[i].Location);
             }
 
             /* ha a submit gombot eléri a tábla csúsztassuk lejjebb */
@@ -486,18 +379,39 @@ namespace DecisionSupport
                 //submitButton.Location = new System.Drawing.Point(SystemInformation.WorkingArea.Width - 150, SystemInformation.WorkingArea.Height - 100);
             ////// Console.WriteLine("\nWorking area width " + SystemInformation.WorkingArea.Width);
             ////// Console.WriteLine("Working area height " + SystemInformation.WorkingArea.Height + "\n");
-
+            
             for (int i = 0; i < tables.Count; ++i)
             {
                 tables[i].ResumeLayout(false);
                 tables[i].PerformLayout();
+                tables[i].Show();
+                if(i == tables.Count-1)
+                {
+                    //tables[i].Anchor = AnchorStyles.Bottom;
+                    //tables[i].Anchor = AnchorStyles.Left;
+                    //tables[i].Anchor = AnchorStyles.Right;
+                    tables[i].Anchor = AnchorStyles.Top;
+                }
+                //foreach(Control c in tables[i].Controls)
+                //{
+                //    c.PerformLayout();
+                //    c.ResumeLayout(false);
+                //}
             }
+            
             form.ResumeLayout(false);
             form.PerformLayout();
 
             ////// Console.WriteLine("\nAutoscroll offset: " + form.AutoScrollOffset);
             ////// Console.WriteLine("\nAutoscroll poz offset: " + form.AutoScrollPosition);
             ////// Console.WriteLine("\nform.VerticalScroll.Value : " + form.VerticalScroll.Value);
+            //foreach (Control i in form.Controls)
+            //{
+            //    //i.Anchor = AnchorStyles.Bottom;
+            //    i.Anchor = AnchorStyles.Left;
+            //    //i.Anchor = AnchorStyles.Right;
+            //    i.Anchor = AnchorStyles.Top;
+            //}
         }
 
         public static void deleteTable(Form form, int idx)
@@ -543,6 +457,7 @@ namespace DecisionSupport
         public static void setSaving(int s)
         {           
             saving = s;
+            modification = s;
             if(saving == 0 && savingCount == 0)
             {
                 int toolId;
@@ -553,7 +468,7 @@ namespace DecisionSupport
                 ToolStripMenuItem saveBlue = new ToolStripMenuItem("");
                 saveBlue.Name = "saveToolStripMenuItem";
                 saveBlue.ToolTipText = "Save";
-                saveBlue.Click +=  new EventHandler(savingMenuItemClicked);
+                saveBlue.Click +=  new EventHandler(form1.savingMenuItemClicked);
                 saveBlue.Image = Properties.Resources.saveBlue;
           //      menu.Items.Add(saveBlue);
                 menu.Items.Insert(0, saveBlue);
@@ -568,7 +483,7 @@ namespace DecisionSupport
 
                 ToolStripMenuItem saveGray = new ToolStripMenuItem("");
                 saveGray.Name = "saveToolStripMenuItem";
-                saveGray.Click += new EventHandler(savingMenuItemClicked);
+                saveGray.Click += new EventHandler(form1.savingMenuItemClicked);
                 saveGray.ToolTipText = "Save";
                 saveGray.Image = Properties.Resources.saveGray;
                // menu.Items.Add(saveGray);
@@ -576,20 +491,44 @@ namespace DecisionSupport
                 savingCount = 0;
             }
         }
-
+        public int getTablesCount()
+        {
+            return tables.Count;
+        }
+        public static int getDocOpenings()
+        {
+            return docOpenings;
+        }
         public static int getCacheCount()
         {
             return cache.Count;
         }
-        public static int getSaving()
+        public int getSaving()
         {
             return saving;
         }
-        public static void savingMenuItemClicked(object sender, EventArgs e)
+        public int getModification()
+        {
+            return modification;
+        }
+        public void setModification(int m)
+        {
+            modification = m;
+        }
+        public void savingMenuItemClicked(object sender, EventArgs e)
         {
             saveMenuClicked();
         }
-        public static void saveMenuClicked()
+        public string savedFileName;
+        public string getSavedFileName()
+        {
+            return savedFileName;
+        }
+        public void setNewWork(int s) // starting "New Project" set this to 1
+        {
+            newWork = s;
+        }
+        public void saveMenuClicked()
         {
             if (tables.Count == 0)
             {
@@ -609,6 +548,8 @@ namespace DecisionSupport
                 if (res == DialogResult.OK && filename.EndsWith(".csv") && regex.IsMatch(filename))
                 {
                     filename = sfd.FileName;
+                    openedFileName = filename;
+                    newWork = 0;
                 }
                 else
                 {
@@ -631,11 +572,11 @@ namespace DecisionSupport
             {
                 filename = openedFileName;
             }
-            string onlyFileName = "";
-            onlyFileName = Path.GetFileName(filename);
 
-            //form1.Text = "Decision Support - " + onlyFileName;
-            try 
+            savedFileName = Path.GetFileName(filename);
+
+            //form1.Text = "Decision Support - " + savedFileName;
+            try
             { 
             using (StreamWriter writeText = new StreamWriter(filename))
             {
@@ -732,23 +673,27 @@ namespace DecisionSupport
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-            Console.WriteLine("resiiize");
+            Console.WriteLine("form 1 resiiize");
             adjustPositions(this.FindForm());
-      //      this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
+            Console.WriteLine("primary: " + Screen.PrimaryScreen.WorkingArea.Size.Width + ", " + Screen.PrimaryScreen.WorkingArea.Size.Height);
+            Console.WriteLine("masik screen " + Screen.GetWorkingArea(this).Width + ", " + Screen.GetWorkingArea(this).Height);
+            Console.WriteLine("location: " + this.Location);
+
+            //      this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
             //this.WindowState = FormWindowState.Maximized;
             //restoreButton.Visible = false;
             //iconButton5.Visible = true;
-            if(this.Size.Width < Screen.PrimaryScreen.WorkingArea.Size.Width ||
-                this.Size.Height < Screen.PrimaryScreen.WorkingArea.Size.Height)
-            {
-                restoreButton.Visible = false;
-                iconButton5.Visible = true;
-            }
-            else
-            {
-                restoreButton.Visible = true;
-                iconButton5.Visible = false;
-            }
+            //if(this.Size.Width < Screen.PrimaryScreen.WorkingArea.Size.Width ||
+            //    this.Size.Height < Screen.PrimaryScreen.WorkingArea.Size.Height)
+            //{
+            //    restoreButton.Visible = false;
+            //    iconButton5.Visible = true;
+            //}
+            //else
+            //{
+            //    restoreButton.Visible = true;
+            //    iconButton5.Visible = false;
+            //}
         }
 
         ////Drag Form
@@ -769,123 +714,16 @@ namespace DecisionSupport
             Console.WriteLine("double cliiiick");
         }
 
-        private void iconButton1_Click(object sender, EventArgs e)
-        {
-            ActivateButton(sender, RGBColors.color1);
-            // OpenChildForm(new formname());
-        }
-
-        private void iconButton2_Click(object sender, EventArgs e)
-        {
-            ActivateButton(sender, RGBColors.color2);
-        }
-
-        private void iconButton3_Click(object sender, EventArgs e)
-        {
-            ActivateButton(sender, RGBColors.color3);
-        }
-
-        private void iconButton4_Click(object sender, EventArgs e)
-        {
-            ActivateButton(sender, RGBColors.color4);
-        }
-
-        private void btnHome_Click(object sender, EventArgs e)
-        {
-            currentChildForm.Close(); 
-            Reset();
-        }
-
-        private void Reset()
-        {
-            DisableButton();
-            leftBorderBtn.Visible = false;
-            iconCurrentChildForm.IconChar = IconChar.Home;
-            iconCurrentChildForm.IconColor = Color.MediumPurple;
-            lblTitleChildForm.Text = "Home";
-        }
-
-        [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        private extern static void ReleaseCapture();
-
-        [DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
-
-        // Drag Form
-        private void panelTitleBar_MouseDown(object sender, MouseEventArgs e)
-        {
-            this.MaximizedBounds = Screen.GetWorkingArea(this);
-            Console.WriteLine("Max: " + MaximizedBounds.Width + ", " + MaximizedBounds.Height);
-            ReleaseCapture();
-            SendMessage(this.Handle, 0x112, 0xf012, 0);
-        }
-
-        private void iconButton6_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
-
-        int LX, LY, SW, SH;
-        private void iconButton5_Click(object sender, EventArgs e) // Maximize button
-        {
-            Console.WriteLine("nagyitas");
-            LX = this.Location.X;
-            LY = this.Location.Y;
-            SW = this.Size.Width;
-            SH = this.Size.Height;
-            restoreButton.Visible = true;
-            iconButton5.Visible = false;
-            //this.Size = Screen.GetWorkingArea(this).Size;
-            //this.Location = Screen.GetWorkingArea(this).Location;
-
-            this.Size = Screen.PrimaryScreen.WorkingArea.Size;
-            this.Location = Screen.PrimaryScreen.WorkingArea.Location;
-            //if(WindowState == FormWindowState.Normal)
-            //{
-            //    this.MaximizedBounds = Screen.GetWorkingArea(this);
-            //    Console.WriteLine("Max: " + MaximizedBounds.Width + ", " + MaximizedBounds.Height);
-            //    WindowState = FormWindowState.Maximized;
-            //}
-            //else
-            //{
-            //    WindowState = FormWindowState.Normal;
-            //}
-        }
-
-        private void minimizeBtn_Click(object sender, EventArgs e)
-        {
-            WindowState = FormWindowState.Minimized;
-        }
-
-        private void restoreButton_Click(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Normal;
-            this.Size = new System.Drawing.Size(800, 600);          
-            this.Location = new System.Drawing.Point(Screen.PrimaryScreen.WorkingArea.Width/2 - 400,
-               Screen.PrimaryScreen.WorkingArea.Height - this.Size.Height - 200);
-
-            restoreButton.Visible = false;
-            iconButton5.Visible = true;
-            Console.WriteLine("restoooooore kicsibe");
-        }
-
-        private void newProjIcon_Click(object sender, EventArgs e)
-        {
-            ActivateButton(sender, RGBColors.color5);
-
-        }
-
-        private void LoadProjIcon_Click(object sender, EventArgs e)
-        {
-            ActivateButton(sender, RGBColors.color6);
-            openFile();
-        }
-
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             openFile();
         }
-        public void openFile()
+        string onlyFileName = "";
+        public string getOpenedFileName()
+        {
+            return onlyFileName;
+        }
+        public int openFile()
         {
             StreamReader reader;
             try
@@ -899,24 +737,27 @@ namespace DecisionSupport
                     openedFileName = ofd.FileName;
                     newWork = 0;
                     Console.WriteLine("fájl név: " + openedFileName);
-                    string onlyFileName = "";
-                    onlyFileName = Path.GetFileName(openedFileName);
 
+                    onlyFileName = Path.GetFileName(openedFileName);
                     //form1.Text = "Decision Support - " + onlyFileName;
+                }
+                else if (res == DialogResult.Cancel || res == DialogResult.Abort)
+                {
+                    return 0;
                 }
                 else if (res != DialogResult.OK || !ofd.FileName.Contains(".csv"))
                 {
                     const string message = "The file can not be opened.\n Please try again!";
                     const string caption = "Opening failed";
                     MessageBox.Show(message, caption);
-                    return;
-                }
+                    return 0;
+                }              
                 else
                 {
                     const string message = "The file can not be opened.\n Please try again!";
                     const string caption = "Opening failed";
                     MessageBox.Show(message, caption);
-                    return;
+                    return 0;
                 }
             }
             catch (Exception ex)
@@ -925,7 +766,7 @@ namespace DecisionSupport
                 const string caption = "Opening failed";
                 MessageBox.Show(message, caption);
                 Console.WriteLine("Openening failed: " + ex.Message);
-                return;
+                return 0;
             }
 
             int rowCount = 0;
@@ -1020,9 +861,29 @@ namespace DecisionSupport
             }
             if (docOpenings == 1)
             {
+                //setSaving(1);
                 setSaving(1);
+                
                 Console.WriteLine("elso doksi nyitás");
             }
+            return 1;
         }
+
+        public void clearEverything()
+        {
+            Tables.Clear();
+            tables.Clear();
+            cache.Clear();
+            counter = 0;
+            docOpenings = 0;
+            Console.WriteLine("clear");
+        saving = 0; // 0 - need to be saved, 1 - already saved
+        saveRes = 0; // 0 - save was not successful, 1 - save was succesful
+        newWork = 1; // 1 - if its a new work from blank sheet, 0 - file was opened 
+        openedFileName = "";
+        saveAs = 0; // 1 - if Save As option was selected
+        savedAs = 0; // 1 - if Save As option was selected and saved
+        secondFileName = ""; // saving after the save as 
+    }
     }
 }

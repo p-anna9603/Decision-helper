@@ -1,4 +1,6 @@
-﻿namespace DecisionSupport
+﻿using System.Windows.Forms;
+
+namespace DecisionSupport
 {
     partial class firstForm
     {
@@ -29,14 +31,14 @@
         private void InitializeComponent()
         {
             this.panelMenu = new System.Windows.Forms.Panel();
-            this.projectSubMenu = new System.Windows.Forms.Panel();
-            this.panelLogo = new System.Windows.Forms.Panel();
             this.exitButton = new FontAwesome.Sharp.IconButton();
             this.evaluateButton = new FontAwesome.Sharp.IconButton();
             this.saveButton = new FontAwesome.Sharp.IconButton();
+            this.projectSubMenu = new System.Windows.Forms.Panel();
             this.LoadProjIcon = new FontAwesome.Sharp.IconButton();
             this.newProjIcon = new FontAwesome.Sharp.IconButton();
             this.projectButton = new FontAwesome.Sharp.IconButton();
+            this.panelLogo = new System.Windows.Forms.Panel();
             this.btnHome = new FontAwesome.Sharp.IconPictureBox();
             this.panelTitleBar = new System.Windows.Forms.Panel();
             this.restoreButton = new FontAwesome.Sharp.IconButton();
@@ -45,7 +47,9 @@
             this.minimizeBtn = new FontAwesome.Sharp.IconButton();
             this.lblTitleChildForm = new System.Windows.Forms.Label();
             this.iconCurrentChildForm = new FontAwesome.Sharp.IconPictureBox();
+            this.panelDesktop2 = new System.Windows.Forms.Panel();
             this.panelDesktop = new System.Windows.Forms.Panel();
+            this.iconPictureBox2 = new FontAwesome.Sharp.IconPictureBox();
             this.iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
             this.panelMenu.SuspendLayout();
             this.projectSubMenu.SuspendLayout();
@@ -53,7 +57,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.btnHome)).BeginInit();
             this.panelTitleBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.iconCurrentChildForm)).BeginInit();
+            this.panelDesktop2.SuspendLayout();
             this.panelDesktop.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -70,28 +76,8 @@
             this.panelMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelMenu.Location = new System.Drawing.Point(0, 0);
             this.panelMenu.Name = "panelMenu";
-            this.panelMenu.Size = new System.Drawing.Size(220, 753);
+            this.panelMenu.Size = new System.Drawing.Size(220, 800);
             this.panelMenu.TabIndex = 9;
-            // 
-            // projectSubMenu
-            // 
-            this.projectSubMenu.Controls.Add(this.LoadProjIcon);
-            this.projectSubMenu.Controls.Add(this.newProjIcon);
-            this.projectSubMenu.Dock = System.Windows.Forms.DockStyle.Top;
-            this.projectSubMenu.Location = new System.Drawing.Point(0, 200);
-            this.projectSubMenu.Name = "projectSubMenu";
-            this.projectSubMenu.Size = new System.Drawing.Size(220, 97);
-            this.projectSubMenu.TabIndex = 5;
-            // 
-            // panelLogo
-            // 
-            this.panelLogo.Controls.Add(this.btnHome);
-            this.panelLogo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelLogo.Location = new System.Drawing.Point(0, 0);
-            this.panelLogo.Name = "panelLogo";
-            this.panelLogo.Padding = new System.Windows.Forms.Padding(10, 0, 20, 0);
-            this.panelLogo.Size = new System.Drawing.Size(220, 140);
-            this.panelLogo.TabIndex = 0;
             // 
             // exitButton
             // 
@@ -162,6 +148,16 @@
             this.saveButton.UseVisualStyleBackColor = true;
             this.saveButton.Click += new System.EventHandler(this.saveButton_Click);
             // 
+            // projectSubMenu
+            // 
+            this.projectSubMenu.Controls.Add(this.LoadProjIcon);
+            this.projectSubMenu.Controls.Add(this.newProjIcon);
+            this.projectSubMenu.Dock = System.Windows.Forms.DockStyle.Top;
+            this.projectSubMenu.Location = new System.Drawing.Point(0, 200);
+            this.projectSubMenu.Name = "projectSubMenu";
+            this.projectSubMenu.Size = new System.Drawing.Size(220, 97);
+            this.projectSubMenu.TabIndex = 5;
+            // 
             // LoadProjIcon
             // 
             this.LoadProjIcon.Dock = System.Windows.Forms.DockStyle.Top;
@@ -227,6 +223,16 @@
             this.projectButton.UseVisualStyleBackColor = true;
             this.projectButton.Click += new System.EventHandler(this.projectButton_Click);
             // 
+            // panelLogo
+            // 
+            this.panelLogo.Controls.Add(this.btnHome);
+            this.panelLogo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelLogo.Location = new System.Drawing.Point(0, 0);
+            this.panelLogo.Name = "panelLogo";
+            this.panelLogo.Padding = new System.Windows.Forms.Padding(10, 0, 20, 0);
+            this.panelLogo.Size = new System.Drawing.Size(220, 140);
+            this.panelLogo.TabIndex = 0;
+            // 
             // btnHome
             // 
             this.btnHome.BackColor = System.Drawing.SystemColors.HighlightText;
@@ -257,7 +263,7 @@
             this.panelTitleBar.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTitleBar.Location = new System.Drawing.Point(220, 0);
             this.panelTitleBar.Name = "panelTitleBar";
-            this.panelTitleBar.Size = new System.Drawing.Size(962, 75);
+            this.panelTitleBar.Size = new System.Drawing.Size(980, 75);
             this.panelTitleBar.TabIndex = 10;
             this.panelTitleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
             // 
@@ -270,7 +276,7 @@
             this.restoreButton.IconColor = System.Drawing.Color.White;
             this.restoreButton.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.restoreButton.IconSize = 30;
-            this.restoreButton.Location = new System.Drawing.Point(883, 24);
+            this.restoreButton.Location = new System.Drawing.Point(897, 10);
             this.restoreButton.Name = "restoreButton";
             this.restoreButton.Size = new System.Drawing.Size(38, 33);
             this.restoreButton.TabIndex = 6;
@@ -286,7 +292,7 @@
             this.iconButton6.IconColor = System.Drawing.Color.White;
             this.iconButton6.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.iconButton6.IconSize = 30;
-            this.iconButton6.Location = new System.Drawing.Point(914, 9);
+            this.iconButton6.Location = new System.Drawing.Point(932, 9);
             this.iconButton6.Name = "iconButton6";
             this.iconButton6.Size = new System.Drawing.Size(36, 35);
             this.iconButton6.TabIndex = 5;
@@ -302,7 +308,7 @@
             this.iconButton5.IconColor = System.Drawing.Color.White;
             this.iconButton5.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.iconButton5.IconSize = 30;
-            this.iconButton5.Location = new System.Drawing.Point(878, 6);
+            this.iconButton5.Location = new System.Drawing.Point(896, 6);
             this.iconButton5.Name = "iconButton5";
             this.iconButton5.Size = new System.Drawing.Size(38, 33);
             this.iconButton5.TabIndex = 4;
@@ -321,7 +327,7 @@
             this.minimizeBtn.IconColor = System.Drawing.Color.White;
             this.minimizeBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.minimizeBtn.IconSize = 30;
-            this.minimizeBtn.Location = new System.Drawing.Point(845, 9);
+            this.minimizeBtn.Location = new System.Drawing.Point(863, 9);
             this.minimizeBtn.Margin = new System.Windows.Forms.Padding(0);
             this.minimizeBtn.Name = "minimizeBtn";
             this.minimizeBtn.Size = new System.Drawing.Size(35, 26);
@@ -353,15 +359,44 @@
             this.iconCurrentChildForm.TabIndex = 0;
             this.iconCurrentChildForm.TabStop = false;
             // 
+            // panelDesktop2
+            // 
+            this.panelDesktop2.AutoScroll = true;
+            this.panelDesktop2.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.panelDesktop2.Controls.Add(this.panelDesktop);
+            this.panelDesktop2.Controls.Add(this.iconPictureBox1);
+            this.panelDesktop2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelDesktop2.Location = new System.Drawing.Point(220, 75);
+            this.panelDesktop2.Name = "panelDesktop2";
+            this.panelDesktop2.Size = new System.Drawing.Size(980, 725);
+            this.panelDesktop2.TabIndex = 12;
+            // 
             // panelDesktop
             // 
-            this.panelDesktop.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.panelDesktop.Controls.Add(this.iconPictureBox1);
+            this.panelDesktop.Controls.Add(this.iconPictureBox2);
             this.panelDesktop.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelDesktop.Location = new System.Drawing.Point(220, 75);
+            this.panelDesktop.Location = new System.Drawing.Point(0, 0);
             this.panelDesktop.Name = "panelDesktop";
-            this.panelDesktop.Size = new System.Drawing.Size(962, 678);
-            this.panelDesktop.TabIndex = 12;
+            this.panelDesktop.Size = new System.Drawing.Size(980, 725);
+            this.panelDesktop.TabIndex = 2;
+            // 
+            // iconPictureBox2
+            // 
+            this.iconPictureBox2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.iconPictureBox2.BackColor = System.Drawing.SystemColors.HighlightText;
+            this.iconPictureBox2.BackgroundImage = global::DecisionSupport.Properties.Resources.logo1;
+            this.iconPictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.iconPictureBox2.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.iconPictureBox2.IconChar = FontAwesome.Sharp.IconChar.None;
+            this.iconPictureBox2.IconColor = System.Drawing.SystemColors.ControlDark;
+            this.iconPictureBox2.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.iconPictureBox2.IconSize = 149;
+            this.iconPictureBox2.Location = new System.Drawing.Point(355, 288);
+            this.iconPictureBox2.Name = "iconPictureBox2";
+            this.iconPictureBox2.Size = new System.Drawing.Size(270, 149);
+            this.iconPictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.iconPictureBox2.TabIndex = 2;
+            this.iconPictureBox2.TabStop = false;
             // 
             // iconPictureBox1
             // 
@@ -374,7 +409,7 @@
             this.iconPictureBox1.IconColor = System.Drawing.SystemColors.ControlDark;
             this.iconPictureBox1.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.iconPictureBox1.IconSize = 149;
-            this.iconPictureBox1.Location = new System.Drawing.Point(333, 196);
+            this.iconPictureBox1.Location = new System.Drawing.Point(342, 219);
             this.iconPictureBox1.Name = "iconPictureBox1";
             this.iconPictureBox1.Size = new System.Drawing.Size(270, 149);
             this.iconPictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -383,16 +418,19 @@
             // 
             // firstForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1182, 753);
-            this.Controls.Add(this.panelDesktop);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoSize = true;
+            this.BackColor = System.Drawing.Color.Lime;
+            this.ClientSize = new System.Drawing.Size(1200, 800);
+            this.Controls.Add(this.panelDesktop2);
             this.Controls.Add(this.panelTitleBar);
             this.Controls.Add(this.panelMenu);
+            this.DoubleBuffered = true;
+            this.IsMdiContainer = true;
             this.MinimumSize = new System.Drawing.Size(1200, 800);
             this.Name = "firstForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "firstForm";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Resize += new System.EventHandler(this.firstForm_Resize);
             this.panelMenu.ResumeLayout(false);
             this.projectSubMenu.ResumeLayout(false);
@@ -401,7 +439,9 @@
             this.panelTitleBar.ResumeLayout(false);
             this.panelTitleBar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.iconCurrentChildForm)).EndInit();
+            this.panelDesktop2.ResumeLayout(false);
             this.panelDesktop.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox1)).EndInit();
             this.ResumeLayout(false);
 
@@ -426,7 +466,9 @@
         private FontAwesome.Sharp.IconButton minimizeBtn;
         private System.Windows.Forms.Label lblTitleChildForm;
         private FontAwesome.Sharp.IconPictureBox iconCurrentChildForm;
-        private System.Windows.Forms.Panel panelDesktop;
+        private System.Windows.Forms.Panel panelDesktop2;
         private FontAwesome.Sharp.IconPictureBox iconPictureBox1;
+        private Panel panelDesktop;
+        private FontAwesome.Sharp.IconPictureBox iconPictureBox2;
     }
 }

@@ -38,15 +38,26 @@ namespace DecisionSupport
         List<Index> indexList = new List<Index>();
         Dictionary<string, Dictionary<List<Index>, double>> combinationMap = new Dictionary<string, Dictionary<List<Index>, double>>();
 
-        public ShowOpts(ref List<Table> tables, Form1 f)
+        public ShowOpts(Form1 f) // ref List<Table> tables, 
         {
-            this.tables = tables;
+            this.tables = f.Tables;
             form = f;
             InitializeComponent();
             //this.Size = new System.Drawing.Size(1100, 800);
             typeof(DataGridView).InvokeMember("DoubleBuffered",
               BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
              null, optionsTable, new object[] { true });
+
+            //typeof(Panel).InvokeMember("DoubleBuffered",
+            //  BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
+            // null, panel3, new object[] { true });
+
+            //typeof(Panel).InvokeMember("DoubleBuffered",
+            // BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
+            // null, panel1, new object[] { true });
+            Console.WriteLine("tables: " + tables.Count);
+           
+
         }
         protected override CreateParams CreateParams
         {
@@ -198,7 +209,7 @@ namespace DecisionSupport
                     }
                 }
                 worker = idx;
-                Console.WriteLine("work: " + worker + ", robot: " + robot);
+           //     Console.WriteLine("work: " + worker + ", robot: " + robot);
                 if(optimum == currentProfit && (Int32.Parse(worker) <= operatorLimit && Int32.Parse(robot) <= robotLimit))
                 {
                     lessRobot = robot;
@@ -206,7 +217,7 @@ namespace DecisionSupport
                 }
                 for (int i = 0; i < optionsTable.Rows.Count; ++i)
                 {
-                    Console.WriteLine("error loop: " + i);
+              //      Console.WriteLine("error loop: " + i);
                     if (optionsTable.Rows[i].HeaderCell.Value.Equals(robot))
                     {
                         matrixRow = i;
@@ -244,7 +255,7 @@ namespace DecisionSupport
             optionsTable.CurrentCell = null;
         }
 
-        private void optionCellClick(object sender, DataGridViewCellEventArgs e)
+        private void optionCellClick(object sender, DataGridViewCellEventArgs e) // double click
         {
             Console.WriteLine("indexek: " + e.RowIndex + ", " + e.ColumnIndex);
             if(e.RowIndex <= -1 || e.ColumnIndex <= -1)
@@ -412,14 +423,61 @@ namespace DecisionSupport
 
             combinationMap.Add(k, optimum);
         }
-
-        private void cellClick(object sender, DataGridViewCellEventArgs e)
+        int prevSelectedRow = -1;
+        int prevSelectedCol = -1;
+        private void cellClick(object sender, DataGridViewCellEventArgs e) // single click
         {
             //DataGridViewCell cell = optionsTable.Rows[e.RowIndex].Cells[e.ColumnIndex];
             //if (cell.Value != null && (cell.Value.ToString() != 0.ToString() || cell.ColumnIndex != 0 || cell.RowIndex != 0))
             //{
             //    cell.Style.BackColor = Color.Azure;
             //}
+            if (e.RowIndex <= -1 || e.ColumnIndex <= -1)
+            {
+                return;
+            }
+            if(prevSelectedCol != -1 && prevSelectedRow != -1)
+            {
+                for (int i = 0; i < prevSelectedRow; ++i)
+                {
+                    if (optionsTable.Rows[i].Cells[prevSelectedCol].Style.BackColor != Color.Yellow &&
+                        optionsTable.Rows[i].Cells[prevSelectedCol].Style.BackColor != Color.Green)
+                    {
+                        optionsTable.Rows[i].Cells[prevSelectedCol].Style.BackColor = Color.White;
+                    }
+                }
+                for (int i = 0; i < prevSelectedCol; ++i)
+                {
+                    if (optionsTable.Rows[prevSelectedRow].Cells[i].Style.BackColor != Color.Yellow &&
+                        optionsTable.Rows[prevSelectedRow].Cells[i].Style.BackColor != Color.Green)
+                    {
+                        optionsTable.Rows[prevSelectedRow].Cells[i].Style.BackColor = Color.White;
+                    }
+                }
+                optionsTable.Rows[prevSelectedRow].HeaderCell.Style.BackColor = Color.Aqua;
+                optionsTable.Columns[prevSelectedCol].HeaderCell.Style.BackColor = Color.Aqua;
+            }
+            DataGridViewCell cell = optionsTable.Rows[e.RowIndex].Cells[e.ColumnIndex];
+            for(int i = 0; i < e.RowIndex; ++i)
+            {
+                if (optionsTable.Rows[i].Cells[e.ColumnIndex].Style.BackColor != Color.Yellow &&
+                    optionsTable.Rows[i].Cells[e.ColumnIndex].Style.BackColor != Color.Green)
+                {
+                    optionsTable.Rows[i].Cells[e.ColumnIndex].Style.BackColor = Color.LightBlue;
+                }
+            }
+            for (int i = 0; i < e.ColumnIndex; ++i)
+            {
+                if (optionsTable.Rows[e.RowIndex].Cells[i].Style.BackColor != Color.Yellow &&
+                    optionsTable.Rows[e.RowIndex].Cells[i].Style.BackColor != Color.Green)
+                {
+                    optionsTable.Rows[e.RowIndex].Cells[i].Style.BackColor = Color.LightBlue;
+                }
+            }
+            prevSelectedRow = e.RowIndex;
+            prevSelectedCol = e.ColumnIndex;
+            optionsTable.Rows[e.RowIndex].HeaderCell.Style.BackColor = Color.Aqua;
+            optionsTable.Columns[e.ColumnIndex].HeaderCell.Style.BackColor = Color.Aqua;
         }
 
         private void ShowOpts_FormClosed(object sender, FormClosedEventArgs e)
@@ -662,6 +720,25 @@ namespace DecisionSupport
             optionsTable.Scroll += new ScrollEventHandler(optionsTable_ScrollRow);
             optionsTable.RowHeightChanged += new DataGridViewRowEventHandler(optionsTable_RowHeightChanged);
             
+        }
+
+        private void ShowOpts_Resize(object sender, EventArgs e)
+        {
+            Console.WriteLine("opsos w: " + this.Width + ", " + this.Height);
+        //    if (this.Width + 250 >= Screen.PrimaryScreen.WorkingArea.Size.Width &&
+        //        this.Height + 100 >= Screen.PrimaryScreen.WorkingArea.Size.Height)
+        //    {
+        //        Console.WriteLine("show optsos resize");
+        //        optionsTable.Size = new Size(1300, 600);
+        //        coverLabel.Size = new Size(1300, 600);
+        //        coverLabel.Location = new Point(coverLabel.Location.X - 150, coverLabel.Location.Y - 50);
+        //    }
+        //    else
+        //    {
+        //        optionsTable.Size = new Size(1000, 500);
+        //        coverLabel.Size = new Size(1000, 500);
+        ////        coverLabel.Location = new Point(coverLabel.Location.X - 150, coverLabel.Location.Y - 50);
+        //    }
         }
     }
 }
