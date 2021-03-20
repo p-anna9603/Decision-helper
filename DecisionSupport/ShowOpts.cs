@@ -37,7 +37,8 @@ namespace DecisionSupport
         List<double> optimums = new List<double>(); // list of the optimum values for the different combinations
         List<Index> indexList = new List<Index>();
         Dictionary<string, Dictionary<List<Index>, double>> combinationMap = new Dictionary<string, Dictionary<List<Index>, double>>();
-
+        int groupBoxY;
+        int coverLabelY;
         public ShowOpts(Form1 f) // ref List<Table> tables, 
         {
             this.tables = f.Tables;
@@ -56,7 +57,8 @@ namespace DecisionSupport
             // BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
             // null, panel1, new object[] { true });
             Console.WriteLine("tables: " + tables.Count);
-           
+            groupBoxY = groupBox1.Location.Y;
+            coverLabelY = coverLabel.Location.Y;
 
         }
         protected override CreateParams CreateParams
@@ -721,24 +723,56 @@ namespace DecisionSupport
             optionsTable.RowHeightChanged += new DataGridViewRowEventHandler(optionsTable_RowHeightChanged);
             
         }
-
+        int minusY = 30;
         private void ShowOpts_Resize(object sender, EventArgs e)
         {
             Console.WriteLine("opsos w: " + this.Width + ", " + this.Height);
-        //    if (this.Width + 250 >= Screen.PrimaryScreen.WorkingArea.Size.Width &&
-        //        this.Height + 100 >= Screen.PrimaryScreen.WorkingArea.Size.Height)
-        //    {
-        //        Console.WriteLine("show optsos resize");
-        //        optionsTable.Size = new Size(1300, 600);
-        //        coverLabel.Size = new Size(1300, 600);
-        //        coverLabel.Location = new Point(coverLabel.Location.X - 150, coverLabel.Location.Y - 50);
-        //    }
-        //    else
-        //    {
-        //        optionsTable.Size = new Size(1000, 500);
-        //        coverLabel.Size = new Size(1000, 500);
-        ////        coverLabel.Location = new Point(coverLabel.Location.X - 150, coverLabel.Location.Y - 50);
-        //    }
+            //    if (this.Width + 250 >= Screen.PrimaryScreen.WorkingArea.Size.Width &&
+            //        this.Height + 100 >= Screen.PrimaryScreen.WorkingArea.Size.Height)
+            //    {
+            //        Console.WriteLine("show optsos resize");
+            //        optionsTable.Size = new Size(1300, 600);
+            //        coverLabel.Size = new Size(1300, 600);
+            //        coverLabel.Location = new Point(coverLabel.Location.X - 150, coverLabel.Location.Y - 50);
+            //    }
+            //    else
+            //    {
+            //        optionsTable.Size = new Size(1000, 500);
+            //        coverLabel.Size = new Size(1000, 500);
+            ////        coverLabel.Location = new Point(coverLabel.Location.X - 150, coverLabel.Location.Y - 50);
+            //    }
+             
+            if(Screen.GetWorkingArea(this) != Screen.PrimaryScreen.WorkingArea &&
+                    this.Width >= 1710 && this.Height >= 965)
+            {
+                //panel1.Height = 100;
+                //groupBox1.Location = new Point(groupBox1.Location.X, groupBoxY - minusY);
+                //coverLabel.Location = new Point(coverLabel.Location.X, coverLabelY - minusY);
+                coverLabel.Width = 1000;
+                coverLabel.Height = 600;
+                optionsTable.Width = 1000;
+                optionsTable.Height = 600;
+                coverLabel.Location = new Point((this.Width / 2) - (coverLabel.Width / 2) - 120, this.Height / 2);
+                optionsTable.Location = new Point((this.Width / 2) - (coverLabel.Width / 2) - 120, this.Height / 2);
+                groupBox1.Location = new Point(coverLabel.Location.X + coverLabel.Width + 50, coverLabel.Location.Y + coverLabel.Height - groupBox1.Height);
+                coverLabel.Margin = new Padding(0, 0, 0, 100);
+                groupBox1.Margin = new Padding(0, 0, 0, 100);
+                optionsTable.Margin = new Padding(0, 0, 0, 100);
+            }
+            else
+            {
+              // panel1.Height = 20;
+                coverLabel.Width = 800;
+                coverLabel.Height = 500;
+                optionsTable.Width = 800;
+                optionsTable.Height = 500;
+                coverLabel.Location = new Point((this.Width / 2) - (coverLabel.Width / 2) - 20, this.Height/2 -10);
+                optionsTable.Location = new Point((this.Width / 2) - (coverLabel.Width / 2) - 20, this.Height/2 - 10);
+                groupBox1.Location = new Point(coverLabel.Location.X + coverLabel.Width + 30, coverLabel.Location.Y + coverLabel.Height - groupBox1.Height -10);
+                coverLabel.Margin = new Padding(0, 0, 0, 100);
+                groupBox1.Margin = new Padding(0, 0, 0, 100);
+                optionsTable.Margin = new Padding(0, 0, 0, 100);
+            }
         }
     }
 }

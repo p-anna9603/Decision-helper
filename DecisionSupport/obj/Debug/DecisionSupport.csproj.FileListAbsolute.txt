@@ -44,3 +44,8 @@ C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\FontAwesome.Sharp.dll
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.firstForm.resources
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.tableExample.resources
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\options2.g.cs
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport_MarkupCompile.cache
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport_MarkupCompile.lref
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\options2.baml
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.g.resources

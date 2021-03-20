@@ -311,7 +311,7 @@ namespace DecisionSupport
             }
             else
             {
-                Table table = new Table(counter++, 20, 0);
+                Table table = new Table(counter++, 20, 80);
                 Controls.Add(table);
 
                 tables.Add(table);
@@ -340,10 +340,10 @@ namespace DecisionSupport
 
 
             tables[0].Location = new System.Drawing.Point(20,
-                                                form.AutoScrollPosition.Y + 50); // első tábla törlése esetén 
+                                                form.AutoScrollPosition.Y + 80); // első tábla törlése esetén 
 
-            Console.WriteLine("0. tábla helye" + tables[0].Location);
-            Console.WriteLine("autoscroll: " + form.AutoScrollPosition);
+    //        Console.WriteLine("0. tábla helye" + tables[0].Location);
+     //       Console.WriteLine("autoscroll: " + form.AutoScrollPosition);
             //int maximumRowHeight = 50 + tables[0].Height;
             int maximumRowHeight = 0;
 
@@ -368,7 +368,7 @@ namespace DecisionSupport
                     ////// Console.WriteLine("maxrowheight: " + maximumRowHeight);
                     maximumRowHeight = i;
                 }
-                 Console.WriteLine(i + ". tábla új helye " + tables[i].Location);
+            //     Console.WriteLine(i + ". tábla új helye " + tables[i].Location);
             }
 
             /* ha a submit gombot eléri a tábla csúsztassuk lejjebb */
@@ -469,7 +469,7 @@ namespace DecisionSupport
                 saveBlue.Name = "saveToolStripMenuItem";
                 saveBlue.ToolTipText = "Save";
                 saveBlue.Click +=  new EventHandler(form1.savingMenuItemClicked);
-                saveBlue.Image = Properties.Resources.saveBlue;
+          //      saveBlue.Image = Properties.Resources.saveBlue; // to hide
           //      menu.Items.Add(saveBlue);
                 menu.Items.Insert(0, saveBlue);
                 savingCount++;
@@ -485,7 +485,7 @@ namespace DecisionSupport
                 saveGray.Name = "saveToolStripMenuItem";
                 saveGray.Click += new EventHandler(form1.savingMenuItemClicked);
                 saveGray.ToolTipText = "Save";
-                saveGray.Image = Properties.Resources.saveGray;
+          //      saveGray.Image = Properties.Resources.saveGray; // hide
                // menu.Items.Add(saveGray);
                 menu.Items.Insert(0, saveGray);
                 savingCount = 0;
@@ -528,6 +528,11 @@ namespace DecisionSupport
         {
             newWork = s;
         }
+
+        public int getSaveRes() // returns if save was successful(1) or not (0)
+        {
+            return saveRes;
+        }
         public void saveMenuClicked()
         {
             if (tables.Count == 0)
@@ -553,6 +558,10 @@ namespace DecisionSupport
                 }
                 else
                 {
+                    Console.WriteLine("rossz név");
+                    const string message = "The given name is incorrect.\n Please give a correct name!";
+                    const string caption = "Saving failed";
+                    MessageBox.Show(message, caption);
                     saveRes = 0;
                     return;
                 }
@@ -673,11 +682,11 @@ namespace DecisionSupport
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-            Console.WriteLine("form 1 resiiize");
+     //       Console.WriteLine("form 1 resiiize");
             adjustPositions(this.FindForm());
-            Console.WriteLine("primary: " + Screen.PrimaryScreen.WorkingArea.Size.Width + ", " + Screen.PrimaryScreen.WorkingArea.Size.Height);
-            Console.WriteLine("masik screen " + Screen.GetWorkingArea(this).Width + ", " + Screen.GetWorkingArea(this).Height);
-            Console.WriteLine("location: " + this.Location);
+     //       Console.WriteLine("primary: " + Screen.PrimaryScreen.WorkingArea.Size.Width + ", " + Screen.PrimaryScreen.WorkingArea.Size.Height);
+    //        Console.WriteLine("masik screen " + Screen.GetWorkingArea(this).Width + ", " + Screen.GetWorkingArea(this).Height);
+     //       Console.WriteLine("location: " + this.Location);
 
             //      this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
             //this.WindowState = FormWindowState.Maximized;

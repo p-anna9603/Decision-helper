@@ -51,6 +51,8 @@ namespace DecisionSupport
             this.panelDesktop = new System.Windows.Forms.Panel();
             this.iconPictureBox2 = new FontAwesome.Sharp.IconPictureBox();
             this.iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            this.options21 = new DecisionSupport.options2();
             this.panelMenu.SuspendLayout();
             this.projectSubMenu.SuspendLayout();
             this.panelLogo.SuspendLayout();
@@ -76,7 +78,7 @@ namespace DecisionSupport
             this.panelMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelMenu.Location = new System.Drawing.Point(0, 0);
             this.panelMenu.Name = "panelMenu";
-            this.panelMenu.Size = new System.Drawing.Size(220, 800);
+            this.panelMenu.Size = new System.Drawing.Size(220, 771);
             this.panelMenu.TabIndex = 9;
             // 
             // exitButton
@@ -263,8 +265,9 @@ namespace DecisionSupport
             this.panelTitleBar.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTitleBar.Location = new System.Drawing.Point(220, 0);
             this.panelTitleBar.Name = "panelTitleBar";
-            this.panelTitleBar.Size = new System.Drawing.Size(980, 75);
+            this.panelTitleBar.Size = new System.Drawing.Size(963, 75);
             this.panelTitleBar.TabIndex = 10;
+            this.panelTitleBar.DragDrop += new System.Windows.Forms.DragEventHandler(this.panelTitleBar_DragDrop);
             this.panelTitleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
             // 
             // restoreButton
@@ -276,7 +279,7 @@ namespace DecisionSupport
             this.restoreButton.IconColor = System.Drawing.Color.White;
             this.restoreButton.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.restoreButton.IconSize = 30;
-            this.restoreButton.Location = new System.Drawing.Point(897, 10);
+            this.restoreButton.Location = new System.Drawing.Point(880, 10);
             this.restoreButton.Name = "restoreButton";
             this.restoreButton.Size = new System.Drawing.Size(38, 33);
             this.restoreButton.TabIndex = 6;
@@ -292,7 +295,7 @@ namespace DecisionSupport
             this.iconButton6.IconColor = System.Drawing.Color.White;
             this.iconButton6.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.iconButton6.IconSize = 30;
-            this.iconButton6.Location = new System.Drawing.Point(932, 9);
+            this.iconButton6.Location = new System.Drawing.Point(915, 9);
             this.iconButton6.Name = "iconButton6";
             this.iconButton6.Size = new System.Drawing.Size(36, 35);
             this.iconButton6.TabIndex = 5;
@@ -308,7 +311,7 @@ namespace DecisionSupport
             this.iconButton5.IconColor = System.Drawing.Color.White;
             this.iconButton5.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.iconButton5.IconSize = 30;
-            this.iconButton5.Location = new System.Drawing.Point(896, 6);
+            this.iconButton5.Location = new System.Drawing.Point(879, 6);
             this.iconButton5.Name = "iconButton5";
             this.iconButton5.Size = new System.Drawing.Size(38, 33);
             this.iconButton5.TabIndex = 4;
@@ -327,7 +330,7 @@ namespace DecisionSupport
             this.minimizeBtn.IconColor = System.Drawing.Color.White;
             this.minimizeBtn.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.minimizeBtn.IconSize = 30;
-            this.minimizeBtn.Location = new System.Drawing.Point(863, 9);
+            this.minimizeBtn.Location = new System.Drawing.Point(846, 9);
             this.minimizeBtn.Margin = new System.Windows.Forms.Padding(0);
             this.minimizeBtn.Name = "minimizeBtn";
             this.minimizeBtn.Size = new System.Drawing.Size(35, 26);
@@ -368,16 +371,18 @@ namespace DecisionSupport
             this.panelDesktop2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelDesktop2.Location = new System.Drawing.Point(220, 75);
             this.panelDesktop2.Name = "panelDesktop2";
-            this.panelDesktop2.Size = new System.Drawing.Size(980, 725);
+            this.panelDesktop2.Size = new System.Drawing.Size(963, 696);
             this.panelDesktop2.TabIndex = 12;
             // 
             // panelDesktop
             // 
+            this.panelDesktop.Controls.Add(this.elementHost1);
             this.panelDesktop.Controls.Add(this.iconPictureBox2);
             this.panelDesktop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelDesktop.Location = new System.Drawing.Point(0, 0);
             this.panelDesktop.Name = "panelDesktop";
-            this.panelDesktop.Size = new System.Drawing.Size(980, 725);
+            this.panelDesktop.AutoSize = true;
+            this.panelDesktop.Size = new System.Drawing.Size(963, 696);
             this.panelDesktop.TabIndex = 2;
             // 
             // iconPictureBox2
@@ -391,7 +396,7 @@ namespace DecisionSupport
             this.iconPictureBox2.IconColor = System.Drawing.SystemColors.ControlDark;
             this.iconPictureBox2.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.iconPictureBox2.IconSize = 149;
-            this.iconPictureBox2.Location = new System.Drawing.Point(355, 288);
+            this.iconPictureBox2.Location = new System.Drawing.Point(346, 274);
             this.iconPictureBox2.Name = "iconPictureBox2";
             this.iconPictureBox2.Size = new System.Drawing.Size(270, 149);
             this.iconPictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -409,28 +414,42 @@ namespace DecisionSupport
             this.iconPictureBox1.IconColor = System.Drawing.SystemColors.ControlDark;
             this.iconPictureBox1.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.iconPictureBox1.IconSize = 149;
-            this.iconPictureBox1.Location = new System.Drawing.Point(342, 219);
+            this.iconPictureBox1.Location = new System.Drawing.Point(333, 205);
             this.iconPictureBox1.Name = "iconPictureBox1";
             this.iconPictureBox1.Size = new System.Drawing.Size(270, 149);
             this.iconPictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.iconPictureBox1.TabIndex = 1;
             this.iconPictureBox1.TabStop = false;
             // 
+            // elementHost1
+            // 
+            this.elementHost1.AutoSize = true;
+            this.elementHost1.BackColor = System.Drawing.Color.Maroon;
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(963, 696);
+            this.elementHost1.TabIndex = 3;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = this.options21;
+            // 
             // firstForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoSize = true;
             this.BackColor = System.Drawing.Color.Lime;
-            this.ClientSize = new System.Drawing.Size(1200, 800);
+            this.ClientSize = new System.Drawing.Size(1183, 771);
             this.Controls.Add(this.panelDesktop2);
             this.Controls.Add(this.panelTitleBar);
             this.Controls.Add(this.panelMenu);
             this.DoubleBuffered = true;
             this.IsMdiContainer = true;
-            this.MinimumSize = new System.Drawing.Size(1200, 800);
+            this.MinimumSize = new System.Drawing.Size(800, 500);
             this.Name = "firstForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "firstForm";
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.firstForm_DragDrop);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.firstForm_Paint);
             this.Resize += new System.EventHandler(this.firstForm_Resize);
             this.panelMenu.ResumeLayout(false);
             this.projectSubMenu.ResumeLayout(false);
@@ -441,6 +460,7 @@ namespace DecisionSupport
             ((System.ComponentModel.ISupportInitialize)(this.iconCurrentChildForm)).EndInit();
             this.panelDesktop2.ResumeLayout(false);
             this.panelDesktop.ResumeLayout(false);
+            this.panelDesktop.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox1)).EndInit();
             this.ResumeLayout(false);
@@ -470,5 +490,7 @@ namespace DecisionSupport
         private FontAwesome.Sharp.IconPictureBox iconPictureBox1;
         private Panel panelDesktop;
         private FontAwesome.Sharp.IconPictureBox iconPictureBox2;
+        private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private options2 options21;
     }
 }

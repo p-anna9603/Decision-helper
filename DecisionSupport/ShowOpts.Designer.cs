@@ -56,16 +56,16 @@
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label12 = new System.Windows.Forms.Label();
             this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel5 = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel6 = new System.Windows.Forms.FlowLayoutPanel();
-            this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label14 = new System.Windows.Forms.Label();
             this.splitter2 = new System.Windows.Forms.Splitter();
+            this.flowLayoutPanel7 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label13 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.flowLayoutPanel8 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.optionsTable)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -88,7 +88,7 @@
             this.CalculateButton.BackColor = System.Drawing.Color.SteelBlue;
             this.CalculateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.CalculateButton.ForeColor = System.Drawing.Color.White;
-            this.CalculateButton.Location = new System.Drawing.Point(3, 156);
+            this.CalculateButton.Location = new System.Drawing.Point(3, 178);
             this.CalculateButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.CalculateButton.MinimumSize = new System.Drawing.Size(120, 30);
             this.CalculateButton.Name = "CalculateButton";
@@ -103,7 +103,7 @@
             this.maxOperator.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.maxOperator.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.maxOperator.Location = new System.Drawing.Point(148, 2);
+            this.maxOperator.Location = new System.Drawing.Point(158, 2);
             this.maxOperator.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.maxOperator.Name = "maxOperator";
             this.maxOperator.Size = new System.Drawing.Size(81, 26);
@@ -115,7 +115,7 @@
             this.maxRobot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.maxRobot.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.maxRobot.Location = new System.Drawing.Point(148, 2);
+            this.maxRobot.Location = new System.Drawing.Point(158, 2);
             this.maxRobot.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.maxRobot.Name = "maxRobot";
             this.maxRobot.Size = new System.Drawing.Size(81, 26);
@@ -130,7 +130,7 @@
             this.label3.Font = new System.Drawing.Font("Microsoft Tai Le", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.Location = new System.Drawing.Point(3, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(139, 60);
+            this.label3.Size = new System.Drawing.Size(149, 60);
             this.label3.TabIndex = 13;
             this.label3.Text = "Max robot";
             // 
@@ -142,7 +142,7 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Tai Le", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(3, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(139, 59);
+            this.label2.Size = new System.Drawing.Size(149, 59);
             this.label2.TabIndex = 12;
             this.label2.Text = "Max operator";
             // 
@@ -175,13 +175,12 @@
             this.optionsTable.AllowUserToDeleteRows = false;
             this.optionsTable.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.optionsTable.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.optionsTable.BackgroundColor = System.Drawing.Color.WhiteSmoke;
+            this.optionsTable.BackgroundColor = System.Drawing.Color.Snow;
             this.optionsTable.ColumnHeadersHeight = 40;
             this.optionsTable.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1});
-            this.optionsTable.Location = new System.Drawing.Point(139, 465);
-            this.optionsTable.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.optionsTable.MaximumSize = new System.Drawing.Size(1500, 0);
+            this.optionsTable.Location = new System.Drawing.Point(129, 441);
+            this.optionsTable.Margin = new System.Windows.Forms.Padding(3, 2, 3, 30);
             this.optionsTable.MinimumSize = new System.Drawing.Size(891, 500);
             this.optionsTable.Name = "optionsTable";
             this.optionsTable.ReadOnly = true;
@@ -359,7 +358,8 @@
             this.coverLabel.BackColor = System.Drawing.Color.WhiteSmoke;
             this.coverLabel.Font = new System.Drawing.Font("Monotype Corsiva", 22.2F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.coverLabel.ForeColor = System.Drawing.Color.SteelBlue;
-            this.coverLabel.Location = new System.Drawing.Point(142, 465);
+            this.coverLabel.Location = new System.Drawing.Point(121, 441);
+            this.coverLabel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 50);
             this.coverLabel.MaximumSize = new System.Drawing.Size(1500, 0);
             this.coverLabel.MinimumSize = new System.Drawing.Size(891, 500);
             this.coverLabel.Name = "coverLabel";
@@ -372,7 +372,7 @@
             // 
             this.flowLayoutPanel1.Controls.Add(this.label2);
             this.flowLayoutPanel1.Controls.Add(this.maxOperator);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 26);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(3, 48);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(279, 59);
             this.flowLayoutPanel1.TabIndex = 28;
@@ -381,7 +381,7 @@
             // 
             this.flowLayoutPanel2.Controls.Add(this.label3);
             this.flowLayoutPanel2.Controls.Add(this.maxRobot);
-            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 91);
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(3, 113);
             this.flowLayoutPanel2.Name = "flowLayoutPanel2";
             this.flowLayoutPanel2.Size = new System.Drawing.Size(279, 60);
             this.flowLayoutPanel2.TabIndex = 29;
@@ -397,8 +397,15 @@
             this.flowLayoutPanel3.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flowLayoutPanel3.Location = new System.Drawing.Point(552, 3);
             this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(302, 211);
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(302, 231);
             this.flowLayoutPanel3.TabIndex = 30;
+            // 
+            // label12
+            // 
+            this.label12.Location = new System.Drawing.Point(3, 0);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(266, 45);
+            this.label12.TabIndex = 30;
             // 
             // flowLayoutPanel4
             // 
@@ -433,16 +440,13 @@
             this.flowLayoutPanel6.Size = new System.Drawing.Size(483, 200);
             this.flowLayoutPanel6.TabIndex = 33;
             // 
-            // flowLayoutPanel7
+            // label14
             // 
-            this.flowLayoutPanel7.BackColor = System.Drawing.Color.Transparent;
-            this.flowLayoutPanel7.Controls.Add(this.label13);
-            this.flowLayoutPanel7.Controls.Add(this.flowLayoutPanel6);
-            this.flowLayoutPanel7.Controls.Add(this.flowLayoutPanel3);
-            this.flowLayoutPanel7.Location = new System.Drawing.Point(3, 52);
-            this.flowLayoutPanel7.Name = "flowLayoutPanel7";
-            this.flowLayoutPanel7.Size = new System.Drawing.Size(875, 228);
-            this.flowLayoutPanel7.TabIndex = 34;
+            this.label14.ForeColor = System.Drawing.Color.Transparent;
+            this.label14.Location = new System.Drawing.Point(3, 0);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(54, 17);
+            this.label14.TabIndex = 36;
             // 
             // splitter2
             // 
@@ -452,15 +456,35 @@
             this.splitter2.TabIndex = 33;
             this.splitter2.TabStop = false;
             // 
+            // flowLayoutPanel7
+            // 
+            this.flowLayoutPanel7.BackColor = System.Drawing.Color.Transparent;
+            this.flowLayoutPanel7.Controls.Add(this.label13);
+            this.flowLayoutPanel7.Controls.Add(this.flowLayoutPanel6);
+            this.flowLayoutPanel7.Controls.Add(this.flowLayoutPanel3);
+            this.flowLayoutPanel7.Location = new System.Drawing.Point(3, 52);
+            this.flowLayoutPanel7.Name = "flowLayoutPanel7";
+            this.flowLayoutPanel7.Size = new System.Drawing.Size(875, 249);
+            this.flowLayoutPanel7.TabIndex = 34;
+            // 
+            // label13
+            // 
+            this.label13.ForeColor = System.Drawing.Color.Transparent;
+            this.label13.Location = new System.Drawing.Point(3, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(54, 17);
+            this.label13.TabIndex = 34;
+            // 
             // label11
             // 
             this.label11.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label11.BackColor = System.Drawing.Color.Transparent;
             this.label11.Font = new System.Drawing.Font("Microsoft Tai Le", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(355, 0);
+            this.label11.Location = new System.Drawing.Point(362, 0);
+            this.label11.Margin = new System.Windows.Forms.Padding(40, 0, 3, 0);
             this.label11.MinimumSize = new System.Drawing.Size(160, 49);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(170, 49);
+            this.label11.Size = new System.Drawing.Size(194, 49);
             this.label11.TabIndex = 35;
             this.label11.Text = "Settings";
             this.label11.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -473,33 +497,10 @@
             this.flowLayoutPanel8.Controls.Add(this.label11);
             this.flowLayoutPanel8.Controls.Add(this.flowLayoutPanel7);
             this.flowLayoutPanel8.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flowLayoutPanel8.Location = new System.Drawing.Point(139, 109);
+            this.flowLayoutPanel8.Location = new System.Drawing.Point(149, 109);
             this.flowLayoutPanel8.Name = "flowLayoutPanel8";
-            this.flowLayoutPanel8.Size = new System.Drawing.Size(1000, 294);
+            this.flowLayoutPanel8.Size = new System.Drawing.Size(1000, 319);
             this.flowLayoutPanel8.TabIndex = 36;
-            // 
-            // label12
-            // 
-            this.label12.Location = new System.Drawing.Point(3, 0);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(266, 23);
-            this.label12.TabIndex = 30;
-            // 
-            // label13
-            // 
-            this.label13.ForeColor = System.Drawing.Color.Transparent;
-            this.label13.Location = new System.Drawing.Point(3, 0);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(54, 17);
-            this.label13.TabIndex = 34;
-            // 
-            // label14
-            // 
-            this.label14.ForeColor = System.Drawing.Color.Transparent;
-            this.label14.Location = new System.Drawing.Point(3, 0);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(54, 17);
-            this.label14.TabIndex = 36;
             // 
             // ShowOpts
             // 
