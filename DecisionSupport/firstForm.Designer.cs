@@ -49,10 +49,9 @@ namespace DecisionSupport
             this.iconCurrentChildForm = new FontAwesome.Sharp.IconPictureBox();
             this.panelDesktop2 = new System.Windows.Forms.Panel();
             this.panelDesktop = new System.Windows.Forms.Panel();
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
             this.iconPictureBox2 = new FontAwesome.Sharp.IconPictureBox();
             this.iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
-            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.options21 = new DecisionSupport.options2();
             this.panelMenu.SuspendLayout();
             this.projectSubMenu.SuspendLayout();
             this.panelLogo.SuspendLayout();
@@ -376,14 +375,26 @@ namespace DecisionSupport
             // 
             // panelDesktop
             // 
+            this.panelDesktop.AutoSize = true;
             this.panelDesktop.Controls.Add(this.elementHost1);
             this.panelDesktop.Controls.Add(this.iconPictureBox2);
             this.panelDesktop.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelDesktop.Location = new System.Drawing.Point(0, 0);
             this.panelDesktop.Name = "panelDesktop";
-            this.panelDesktop.AutoSize = true;
             this.panelDesktop.Size = new System.Drawing.Size(963, 696);
             this.panelDesktop.TabIndex = 2;
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.AutoSize = true;
+            this.elementHost1.BackColor = System.Drawing.Color.Maroon;
+            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(963, 696);
+            this.elementHost1.TabIndex = 3;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = null;
             // 
             // iconPictureBox2
             // 
@@ -421,18 +432,6 @@ namespace DecisionSupport
             this.iconPictureBox1.TabIndex = 1;
             this.iconPictureBox1.TabStop = false;
             // 
-            // elementHost1
-            // 
-            this.elementHost1.AutoSize = true;
-            this.elementHost1.BackColor = System.Drawing.Color.Maroon;
-            this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.elementHost1.Location = new System.Drawing.Point(0, 0);
-            this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(963, 696);
-            this.elementHost1.TabIndex = 3;
-            this.elementHost1.Text = "elementHost1";
-            this.elementHost1.Child = this.options21;
-            // 
             // firstForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -459,6 +458,7 @@ namespace DecisionSupport
             this.panelTitleBar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.iconCurrentChildForm)).EndInit();
             this.panelDesktop2.ResumeLayout(false);
+            this.panelDesktop2.PerformLayout();
             this.panelDesktop.ResumeLayout(false);
             this.panelDesktop.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.iconPictureBox2)).EndInit();
@@ -491,6 +491,5 @@ namespace DecisionSupport
         private Panel panelDesktop;
         private FontAwesome.Sharp.IconPictureBox iconPictureBox2;
         private System.Windows.Forms.Integration.ElementHost elementHost1;
-        private options2 options21;
     }
 }

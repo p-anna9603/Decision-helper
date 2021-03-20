@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:DecisionSupport"
+             xmlns:local="clr-namespace:DecisionSupport" xmlns:tools="http://schemas.microsoft.com/netfx/2009/xaml/presentation" xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
              mc:Ignorable="d" Height="auto" Width="1137.624" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
     <UserControl.Resources>
@@ -297,38 +297,59 @@
                                             <TextBlock Text="Choose the interval (optional)"></TextBlock>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,12,0,0">
                                                 <Label Content="Operator" Width="90"></Label>
-                                                <Slider Width="171" Value="5" Maximum="30" Minimum="0" Height="38" VerticalAlignment="Center" Orientation="Horizontal"
-                                    HorizontalContentAlignment="Center" Padding="0,0,0,0"  Style="{DynamicResource SliderStyle1}"></Slider>
-                                                <Label Name="opIntervalLabel">5</Label>
+                                                <Slider Name="trackBar1" Width="171" Value="5" Maximum="30" Minimum="0" Height="38" VerticalAlignment="Center" Orientation="Horizontal"
+                                    HorizontalContentAlignment="Center" Padding="0,0,0,0" IsSnapToTickEnabled="True" ValueChanged="trackBar1_Scroll" Style="{DynamicResource SliderStyle1}"></Slider>
+                                                <Label Name="opSlide">5</Label>
                                             </StackPanel>
                                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                                 <Label Content="Robot" Width="90"></Label>
-                                                <Slider Width="171" FontSize="18" Value="5" Maximum="30" Minimum="0" Height="45" VerticalAlignment="Center"
+                                                <Slider Name="trackBar2" ValueChanged="trackBar2_Scroll" Width="171" FontSize="18" Value="5" Maximum="30" Minimum="0" Height="45" VerticalAlignment="Center"
                                     HorizontalContentAlignment="Center" TickPlacement="BottomRight" 
                                                 TickFrequency="1" IsSnapToTickEnabled="True" Template="{StaticResource SliderHorizontal}" Style="{DynamicResource SliderStyle1}">
                                                 </Slider>
-                                                <Label Name="robIntervalLabel">5</Label>
+                                                <Label Name="robSlide">5</Label>
                                             </StackPanel>
                                         </StackPanel>
                                         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="260" Margin="20,40,0,0">
                                             <StackPanel Orientation="Horizontal" Height="28">
                                                 <TextBlock Text="Max operator" Width="110"></TextBlock>
-                                                <TextBox Width="65" Margin="5,0,0,0"></TextBox>
+                                                <TextBox Name="maxOperator2" Width="65" Margin="5,0,0,0" PreviewTextInput="maximums_KeyPress"></TextBox>
                                             </StackPanel>
                                             <StackPanel Orientation="Horizontal" Height="28" Margin="0,8,0,0">
                                                 <TextBlock Text="Max robot" Width="110"></TextBlock>
-                                                <TextBox Width="65" Margin="5,0,0,0"></TextBox>
+                                                <TextBox Name="maxRobot" Width="65" Margin="5,0,0,0" PreviewTextInput="maximums_KeyPress"></TextBox>
                                             </StackPanel>
                                         </StackPanel>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
-                                        <Button Content="CALCULATE" Foreground="White" Margin="0,0,0,0" HorizontalAlignment="Center" Width="143" Height="36" Background="#FF203A95"></Button>
+                                        <Button Content="CALCULATE" Click="CalculateButtonClick" Foreground="White" Margin="0,0,0,0" HorizontalAlignment="Center" Width="143" Height="36" Background="#FF203A95"></Button>
                                     </StackPanel>
                                 </StackPanel>
                             </GroupBox>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" Width="1056" Height="Auto" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="-10,0,-46,0">
-                            <DataGrid HorizontalAlignment="Center" Height="346" VerticalAlignment="Center" Width="616" Margin="200,0,0,10"/>
+                        <StackPanel Orientation="Horizontal" Width="1056" Height="Auto" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="-10,20,-46,0">
+                            <TextBlock Name="hidingPanel" Height="360" Visibility="Visible" Margin="200,0,0,10" Width="625" Text="Data output"
+                                       TextAlignment="Center" FontSize="22" FontFamily="century" Background="#ccdeba" VerticalAlignment="Center" Padding="0,150,0,0"></TextBlock>
+                            <StackPanel Name="panelOfData" Visibility="Collapsed" Orientation="Horizontal" Margin="200,0,0,10">
+                                <TextBlock Background="AliceBlue" Margin="0,4,0,0" Text="Robots" Height="26" Width="332" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock.LayoutTransform>
+                                        <RotateTransform Angle="270"></RotateTransform>
+                                    </TextBlock.LayoutTransform>
+                                </TextBlock>
+                                <StackPanel Orientation="Vertical"  >
+                                    <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Background="AliceBlue" Height="21" Width="622">Operators</TextBlock>
+                                    <WindowsFormsHost Name="winHost" Height="338" Width="622">
+                                        <forms:DataGridView  Name="optionsTable2" Height="346"  Width="616" RowHeadersVisible="True" RowHeadersWidthSizeMode="AutoSizeToAllHeaders" AllowUserToAddRows="False"
+                                                         CellClick="cellClick" CellDoubleClick="optionCellClick">
+
+                                        </forms:DataGridView>
+                                    </WindowsFormsHost>
+                                    <!--<DataGrid Name="optionsTable" AutoGenerateColumns="False" HorizontalAlignment="Center" Height="346" VerticalAlignment="Center" Width="616"  RowHeaderWidth="10">
+                                    <DataGrid.Columns>
+                                    </DataGrid.Columns>
+                                </DataGrid>-->
+                                </StackPanel>
+                            </StackPanel>
                             <GroupBox VerticalAlignment="Bottom" HorizontalAlignment="Left" BorderThickness="1" BorderBrush="White" Header="Legend" Width="171" Height="124" FontSize="15" FontFamily="Century Schoolbook" Margin="20,238,0,30">
                                 <StackPanel Orientation="Vertical" VerticalAlignment="Top">
                                     <StackPanel Orientation="Horizontal">

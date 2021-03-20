@@ -626,8 +626,8 @@ namespace DecisionSupport
                         //   showOpt.ShowDialog(); // uj ablakban megnyitni
                         evaluated = 1;
 
-                        options2 showOpt2 = new options2();
-                        OpenChildUserControl(showOpt2);
+                        options2 showOpt2 = new options2(form1);
+                        elementHost1.Child = showOpt2;
                         form1.setModification(1);
                     }
                 }
@@ -664,6 +664,8 @@ namespace DecisionSupport
             }
         
             form1.Hide();
+            options2 showOpt2 = new options2(form1);
+            elementHost1.Child = showOpt2;
             Reset();
         }
         private void Reset()
@@ -839,7 +841,7 @@ namespace DecisionSupport
                 options2 ch = (options2)elementHost1.Child;
                 //ch.Height = elementHost1.Height;
                 Console.WriteLine("host: " + elementHost1.Height + " , " + elementHost1.Width);
-                Console.WriteLine("child: " + ch.Height + " , " + ch.Width);
+           //     Console.WriteLine("child: " + ch.Height + " , " + ch.Width);
             }
             this.ResumeLayout();
             this.Show();

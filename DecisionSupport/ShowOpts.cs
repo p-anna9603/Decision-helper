@@ -60,6 +60,9 @@ namespace DecisionSupport
             groupBoxY = groupBox1.Location.Y;
             coverLabelY = coverLabel.Location.Y;
 
+            Console.WriteLine("rws: " + optionsTable.Rows.Count);
+            Console.WriteLine("rws: " + optionsTable.Columns.Count);
+
         }
         protected override CreateParams CreateParams
         {
@@ -163,8 +166,12 @@ namespace DecisionSupport
                     sub = robotInterval - i; // 5..0
                     if (robotLimit - sub >= 0)
                     {
+                        Console.WriteLine("rws2: " + optionsTable.Rows.Count); // 0
                         optionsTable.Rows.Add();
                         optionsTable.Rows[optionsTable.Rows.Count - 1].HeaderCell.Value = (robotLimit - sub).ToString();
+                        Console.WriteLine("big error " + (robotLimit - sub).ToString());
+                        Console.WriteLine("big error " + optionsTable.Rows[optionsTable.Rows.Count - 1].HeaderCell.Value);
+                        Console.WriteLine("sor: " + (optionsTable.Rows.Count - 1).ToString());
                     }
                     else
                     {
@@ -598,7 +605,7 @@ namespace DecisionSupport
             e.Graphics.FillRectangle(new SolidBrush(Color.White), mergedHeaderRect);
 
             //Draw the merged Header Column Text.
-            e.Graphics.DrawString("Address", optionsTable.ColumnHeadersDefaultCellStyle.Font, Brushes.Black, xCord, yCord);
+            e.Graphics.DrawString("Address", optionsTable.ColumnHeadersoptionsTable.Rows.Add()llStyle.Font, Brushes.Black, xCord, yCord);
             */
             r1 = optionsTable.GetCellDisplayRectangle(0, -1, true);
         //    int w2 = optionsTable.GetCellDisplayRectangle(2, -1, true).Width;
