@@ -57,29 +57,17 @@ namespace DecisionSupport
             form = f;
             InitializeComponent();
             initialized = 1;
-         //   optionsTable = this.optionsTable2;
             optionsTable = (System.Windows.Forms.DataGridView)this.winHost.Child;
             maxOperator = maxOperator2;
-            Console.WriteLine("name. " + optionsTable.Name);
-            Console.WriteLine("maxOperator. " + maxOperator);
+            optionsTable.ColumnHeadersDefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
 
-            Console.WriteLine(optionsTable.Columns.Count);
-            Console.WriteLine(" rws" + optionsTable.Rows.Count);
-            //optionsTable.Columns.Add("column1", "jh");
-            //optionsTable.Rows.Add();
-            //optionsTable.Rows[0].HeaderCell.Value = "df2";
-            //optionsTable.RowHeadersDefaultCellStyle.ForeColor = System.Drawing.Color.Black;
-            //optionsTable.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.EnableResizing;
-            //optionsTable.Rows.Add();
-            typeof(System.Windows.Forms.DataGridView).InvokeMember("DoubleBuffered",
+           typeof(System.Windows.Forms.DataGridView).InvokeMember("DoubleBuffered",
             BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
-           null, optionsTable, new object[] { true });
+            null, optionsTable, new object[] { true });
         }
 
         public void fillOptions()
         {
-            optionsTable.Rows.Clear();
-
             int selectedRobRow = 0;
             int selectedOpCol = 0;
             string lessRobot = "";
@@ -102,11 +90,6 @@ namespace DecisionSupport
                         //    optionsTable.Columns[i].HeaderCell.Value = (operatorLimit - sub).ToString(); //
                         optionsTable.Columns.Add(colName, (operatorLimit - sub).ToString());
                         optionsTable.Columns[optionsTable.Columns.Count - 1].Width = 40;
-
-                        /*
-                        DataGridTextColumn t1 = new DataGridTextColumn();
-                        t1.Header = (operatorLimit - sub).ToString();
-                        optionsTable.Columns.Add(t1);*/
                     }
                     else
                     {
@@ -122,25 +105,15 @@ namespace DecisionSupport
                     optionsTable.Columns.Add(colName, (operatorLimit + add).ToString());
                     optionsTable.Columns[optionsTable.Columns.Count - 1].Width = 40;
 
-                    //DataGridTextColumn t1 = new DataGridTextColumn();
-                    //t1.Header = (operatorLimit + add).ToString();
-                    //optionsTable.Columns.Add(t1);
                 }
                 /* To get which cell is currently queried */
                 if (operatorLimit - sub >= 0)
                 {
-                    var style = new Style(typeof(System.Windows.Controls.Primitives.DataGridColumnHeader));
-                    style.Setters.Add(new Setter { Property = System.Windows.Controls.Primitives.DataGridColumnHeader.BackgroundProperty, Value = "Yellow" });
                     if (optionsTable.Columns[optionsTable.Columns.Count - 1].HeaderCell.Value.Equals(operatorLimit.ToString()))
                     {
                         selectedOpCol = optionsTable.Columns.Count - 1;
-                        optionsTable.Columns[optionsTable.Columns.Count - 1].HeaderCell.Style.BackColor = System.Drawing.Color.Yellow;
+                        optionsTable.Columns[optionsTable.Columns.Count - 1].HeaderCell.Style.BackColor = System.Drawing.ColorTranslator.FromHtml("#ffffcc");
                     }
-                    //if (optionsTable.Columns[optionsTable.Columns.Count - 1].Header.ToString().Equals(operatorLimit.ToString()))
-                    //{
-                    //    selectedOpCol = optionsTable.Columns.Count - 1;
-                    //    optionsTable.Columns[optionsTable.Columns.Count - 1].HeaderStyle = style;
-                    //}
                 }
             }
             int rowIdx = 0;
@@ -151,19 +124,8 @@ namespace DecisionSupport
                     sub = robotInterval - i; // 5..0
                     if (robotLimit - sub >= 0)
                     {
-                        Console.WriteLine("rws2: " + optionsTable.Rows.Count); // 0
-                        //if (robotLimit - sub != 0)
-                        //{
                         rowIdx =  optionsTable.Rows.Add();
-                        //int idx = optionsTable.Rows.Count - 1;
-                            Console.WriteLine("itt nullásban");
-                        //}
-                        Console.WriteLine("rws3: " + optionsTable.Rows.Count); // 1
                         optionsTable.Rows[rowIdx].HeaderCell.Value = (robotLimit - sub).ToString();
-                        //optionsTable.Rows[idx].HeaderCell.Value = (3333).ToString();
-                        Console.WriteLine("big error " + (robotLimit - sub).ToString());
-                        Console.WriteLine("big error " + optionsTable.Rows[optionsTable.Rows.Count - 1].HeaderCell.Value);
-                        Console.WriteLine("sor: " + rowIdx.ToString());
                     }
                     else
                     {
@@ -184,17 +146,16 @@ namespace DecisionSupport
                     if (optionsTable.Rows[rowIdx].HeaderCell.Value.Equals(robotLimit.ToString()))
                     {
                         selectedRobRow = rowIdx;
-                        optionsTable.Rows[rowIdx].HeaderCell.Style.BackColor = System.Drawing.Color.Yellow;
+                        optionsTable.Rows[rowIdx].HeaderCell.Style.BackColor = System.Drawing.ColorTranslator.FromHtml("#ffffcc");
                     }
                 }
             }
 
-            Console.WriteLine("Selected row: " + selectedRobRow + ", col: " + selectedOpCol);
-            optionsTable.Rows[selectedRobRow].Cells[selectedOpCol].Style.BackColor = System.Drawing.Color.Yellow;
+         //   Console.WriteLine("Selected row: " + selectedRobRow + ", col: " + selectedOpCol);
+            optionsTable.Rows[selectedRobRow].Cells[selectedOpCol].Style.BackColor = System.Drawing.ColorTranslator.FromHtml("#ffffcc");
             foreach (var entry in combinationMap)
             {
                 int rowCount = optionsTable.Rows.Count;
-                Console.WriteLine("SOR##########################" + rowCount);
                 string key = entry.Key;
                 string worker = "";
                 string robot = "";
@@ -213,7 +174,7 @@ namespace DecisionSupport
                     }
                 }
                 worker = idx;
-                Console.WriteLine("work: " + worker + ", robot: " + robot);
+              //  Console.WriteLine("work: " + worker + ", robot: " + robot);
                 if (optimum == currentProfit && (Int32.Parse(worker) <= operatorLimit && Int32.Parse(robot) <= robotLimit))
                 {
                     lessRobot = robot;
@@ -221,11 +182,6 @@ namespace DecisionSupport
                 }
                 for (int i = 0; i < rowCount; ++i)
                 {
-
-            
-                    Console.WriteLine("row loop: " + optionsTable.Rows[i].HeaderCell.Value);
-                 //   Console.WriteLine("error loop: " + optionsTable.Rows[i].HeaderCell.Value.ToString());
-
                     if (optionsTable.Rows[i].HeaderCell.Value.ToString().Equals(robot))
                     {
                         matrixRow = i;
@@ -234,35 +190,42 @@ namespace DecisionSupport
                 }
                 for (int i = 0; i < optionsTable.Columns.Count; ++i)
                 {
-                    Console.WriteLine("col loop: " + optionsTable.Columns[i].HeaderCell.Value);
                     if (optionsTable.Columns[i].HeaderCell.Value.Equals(worker))
                     {
                         matrixCol = i;
                         break;
                     }
                 }
-                Console.WriteLine("column: " + matrixCol + ", row: " + matrixRow);
+              //  Console.WriteLine("column: " + matrixCol + ", row: " + matrixRow);
                 optionsTable.Rows[matrixRow].Cells[matrixCol].Value = currentProfit;
-                Console.WriteLine("profit: " + currentProfit);
+             //   Console.WriteLine("profit: " + currentProfit);
             }
-            for (int i = 0; i < optionsTable.Rows.Count; ++i)
+            if(lessRobot != "")
             {
-                if (optionsTable.Rows[i].HeaderCell.Value.Equals(lessRobot))
+                for (int i = 0; i < optionsTable.Rows.Count; ++i)
                 {
-                    matrixRow = i;
-                    break;
+                    if (optionsTable.Rows[i].HeaderCell.Value.Equals(lessRobot))
+                    {
+                        matrixRow = i;
+                        break;
+                    }
                 }
             }
-            for (int i = 0; i < optionsTable.Columns.Count; ++i)
+            if(lessWorker != "")
             {
-                if (optionsTable.Columns[i].HeaderCell.Value.Equals(lessWorker))
+                for (int i = 0; i < optionsTable.Columns.Count; ++i)
                 {
-                    matrixCol = i;
-                    optionsTable.Rows[matrixRow].Cells[matrixCol].Style.BackColor = System.Drawing.Color.Green;
-                    break;
+                    if (optionsTable.Columns[i].HeaderCell.Value.Equals(lessWorker))
+                    {
+                        matrixCol = i;
+                        optionsTable.Rows[matrixRow].Cells[matrixCol].Style.BackColor = System.Drawing.Color.Green;
+                        break;
+                    }
                 }
             }
-            optionsTable.CurrentCell = null;
+            optionsTable.CurrentCell = null; // to inactivate default selection
+            optionsTable.Rows[0].Cells[0].Selected = false;
+           
         }
         private void optionCellClick(object sender, System.Windows.Forms.DataGridViewCellEventArgs e) // double click
         {
@@ -313,23 +276,20 @@ namespace DecisionSupport
 
         private void CalculateOptions()
         {
-        //    coverLabel.Visible = false; //TODO
             optionsTable.Visible = true;
             robotLimit = Int32.Parse(maxRobot.Text);
-            Console.WriteLine("robot limiteee: " + robotLimit);
             operatorLimit = Int32.Parse(maxOperator.Text);
             optimums.Clear();
             form.TotalCount = 0;
             form.ReadCache = 0;
             indexes = new List<Index>();
-            Console.WriteLine(" nullázás " + form.ReadCache);
-            //if (calculate != 0)
-            //{
-            optionsTable.Rows.Clear();
-            optionsTable.Columns.Clear();
-            optionsTable.ClearSelection();
-            combinationMap.Clear();
-            //}
+            if (calculate != 0)
+            {
+                optionsTable.Rows.Clear();
+                optionsTable.Columns.Clear();
+                optionsTable.ClearSelection();
+                combinationMap.Clear();
+            }
             if (calculate > 0 && Form1.getCacheCount() <= 0)
             {
                 combinationMap.Clear();
@@ -343,9 +303,9 @@ namespace DecisionSupport
                 stopwatch.Start();
                 optimum = form.getPrevOptVal(tables.Count - 1, robotLimit, operatorLimit, ref idxs);
                 stopwatch.Stop();
-                for (int i = 0; i <= robotInterval; ++i)
+                for (int i = 0; i <= robotInterval; ++i) // default 5
                 {
-                    for (int z = 0; z <= workerInterval; ++z)
+                    for (int z = 0; z <= workerInterval; ++z) // default 5
                     {
                         string k;
                         // RobotLimit-- OperatorLimit++
@@ -399,9 +359,9 @@ namespace DecisionSupport
             }
         }
         /* selector:  0 : Robot -- && Operator --
-      *            1 : Robot -- && Operator ++
-      *            2 : Robot ++ && Operator --
-      *            3 : Robot ++ && Operator ++
+      *               1 : Robot -- && Operator ++
+      *               2 : Robot ++ && Operator --
+      *               3 : Robot ++ && Operator ++
       * */
         private void OptimumsCalculator(int i, int z, string k, int selector)
         {
@@ -446,21 +406,23 @@ namespace DecisionSupport
             System.Drawing.Color white = System.Drawing.Color.White;
             System.Drawing.Color aqua = System.Drawing.Color.Aqua;
             System.Drawing.Color lightBlue = System.Drawing.Color.LightBlue;
+            System.Drawing.Color control = System.Drawing.SystemColors.Control;
+            System.Drawing.Color yellow2 = System.Drawing.ColorTranslator.FromHtml("#ffffcc");
             //DataGridViewCell cell = optionsTable.Rows[e.RowIndex].Cells[e.ColumnIndex];
             //if (cell.Value != null && (cell.Value.ToString() != 0.ToString() || cell.ColumnIndex != 0 || cell.RowIndex != 0))
             //{
             //    cell.Style.BackColor = Color.Azure;
             //}
-            if (e.RowIndex <= -1 || e.ColumnIndex <= -1)
+            if (e.RowIndex <= -1 || e.ColumnIndex <= -1) // clicked on headers
             {
                 return;
             }
-            if (prevSelectedCol != -1 && prevSelectedRow != -1)
+            if (prevSelectedCol != -1 && prevSelectedRow != -1) // remove previous selection if any
             {
                 for (int i = 0; i < prevSelectedRow; ++i)
                 {
                    
-                    if (optionsTable.Rows[i].Cells[prevSelectedCol].Style.BackColor != yellow &&
+                    if (optionsTable.Rows[i].Cells[prevSelectedCol].Style.BackColor != yellow2 &&
                         optionsTable.Rows[i].Cells[prevSelectedCol].Style.BackColor != green)
                     {
                         optionsTable.Rows[i].Cells[prevSelectedCol].Style.BackColor = white;
@@ -468,19 +430,25 @@ namespace DecisionSupport
                 }
                 for (int i = 0; i < prevSelectedCol; ++i)
                 {
-                    if (optionsTable.Rows[prevSelectedRow].Cells[i].Style.BackColor != yellow &&
+                    if (optionsTable.Rows[prevSelectedRow].Cells[i].Style.BackColor != yellow2 &&
                         optionsTable.Rows[prevSelectedRow].Cells[i].Style.BackColor != green)
                     {
                         optionsTable.Rows[prevSelectedRow].Cells[i].Style.BackColor = white;
                     }
                 }
-                optionsTable.Rows[prevSelectedRow].HeaderCell.Style.BackColor = aqua;
-                optionsTable.Columns[prevSelectedCol].HeaderCell.Style.BackColor = aqua;
+                if(optionsTable.Rows[prevSelectedRow].HeaderCell.Style.BackColor != System.Drawing.ColorTranslator.FromHtml("#ffffcc"))
+                {
+                    optionsTable.Rows[prevSelectedRow].HeaderCell.Style.BackColor = control;
+                }
+                if (optionsTable.Columns[prevSelectedCol].HeaderCell.Style.BackColor != System.Drawing.ColorTranslator.FromHtml("#ffffcc"))
+                {
+                    optionsTable.Columns[prevSelectedCol].HeaderCell.Style.BackColor = control;
+                }
             }
-            System.Windows.Forms.DataGridViewCell cell = optionsTable.Rows[e.RowIndex].Cells[e.ColumnIndex];
+            System.Windows.Forms.DataGridViewCell cell = optionsTable.Rows[e.RowIndex].Cells[e.ColumnIndex]; // clicked cell
             for (int i = 0; i < e.RowIndex; ++i)
             {
-                if (optionsTable.Rows[i].Cells[e.ColumnIndex].Style.BackColor != yellow &&
+                if (optionsTable.Rows[i].Cells[e.ColumnIndex].Style.BackColor != yellow2 &&
                     optionsTable.Rows[i].Cells[e.ColumnIndex].Style.BackColor != green)
                 {
                     optionsTable.Rows[i].Cells[e.ColumnIndex].Style.BackColor = lightBlue;
@@ -488,7 +456,7 @@ namespace DecisionSupport
             }
             for (int i = 0; i < e.ColumnIndex; ++i)
             {
-                if (optionsTable.Rows[e.RowIndex].Cells[i].Style.BackColor != yellow &&
+                if (optionsTable.Rows[e.RowIndex].Cells[i].Style.BackColor != yellow2 &&
                     optionsTable.Rows[e.RowIndex].Cells[i].Style.BackColor != green)
                 {
                     optionsTable.Rows[e.RowIndex].Cells[i].Style.BackColor = lightBlue;
@@ -496,8 +464,16 @@ namespace DecisionSupport
             }
             prevSelectedRow = e.RowIndex;
             prevSelectedCol = e.ColumnIndex;
-            optionsTable.Rows[e.RowIndex].HeaderCell.Style.BackColor = aqua;
-            optionsTable.Columns[e.ColumnIndex].HeaderCell.Style.BackColor = aqua;
+
+            if (optionsTable.Rows[e.RowIndex].HeaderCell.Style.BackColor != System.Drawing.ColorTranslator.FromHtml("#ffffcc"))
+            {
+                optionsTable.Rows[e.RowIndex].HeaderCell.Style.BackColor = lightBlue;
+            }
+            if (optionsTable.Columns[e.ColumnIndex].HeaderCell.Style.BackColor != System.Drawing.ColorTranslator.FromHtml("#ffffcc"))
+            {
+                optionsTable.Columns[e.ColumnIndex].HeaderCell.Style.BackColor = lightBlue;
+            }
+
         }
         //private void ShowOpts_FormClosed(object sender, FormClosedEventArgs e) //TODO
         //{
@@ -561,6 +537,9 @@ namespace DecisionSupport
         //    }
         //}
         Regex regex = new Regex("[^0-9]+");
+
+        public List<ShowSolution> ShowSolList { get => showSolList; set => showSolList = value; }
+
         private void maximums_KeyPress(object sender, TextCompositionEventArgs e)
         {
             TextBox ad = sender as TextBox;

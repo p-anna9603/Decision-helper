@@ -205,9 +205,6 @@ namespace DecisionSupport
                     }
                     max = max > curr ? max : curr;
                     ++col;
-
-
-
                     //Console.WriteLine("\tcurr: " + curr);
                 }
                 ++row;
@@ -264,10 +261,13 @@ namespace DecisionSupport
         public int Count { get => count; set => count = value; }
         public int TotalCount { get => totalCount; set => totalCount = value; }
         public  List<Table> Tables { get => tables; set => tables = value; }
+        public int CanCloseParent { get => canCloseParent; set => canCloseParent = value; }
 
+        private int canCloseParent = 0; // 0 - do not, 1 - can close parent window (firstForm)
         private void savingData(Object sender, FormClosingEventArgs e)
-        {
-            if (tables.Count != 0 && getSaving() == 0)
+        {          
+            if (tables.Count != 0 && getSaving() == 0 ||
+                tables.Count == 0 && wasTableDeleted == 1)
             {
                 Console.WriteLine("kérdés form1 savingData");
                 const string message = "Do you want to save the data before exit?";
@@ -276,25 +276,55 @@ namespace DecisionSupport
                                             MessageBoxButtons.YesNoCancel);
                 if (result == DialogResult.Yes)
                 {
+                    Console.WriteLine("yes");
                     savingMenuItemClicked(sender, e);
                 }
                 else if (result == DialogResult.No)
                 {
+                    Console.WriteLine("no");
+                    canCloseParent = 1;
                     e.Cancel = false;
+                }
+                else if(result == DialogResult.Cancel)
+                {
+                    Console.WriteLine("cancel");
+                    canCloseParent = 0;
+                    e.Cancel = true;
                 }
                 if (saveRes == 0 && result == DialogResult.Yes)
                 {
                     MessageBox.Show("Saving failed", "Please try again!");
+                    canCloseParent = 0;
                     e.Cancel = true;
                 }
                 else if (saveRes == 1 && result == DialogResult.Yes)
                 {
                     MessageBox.Show("Success", "Saving was successful!");
+                    canCloseParent = 1;
                 }
+            }
+            else if(tables.Count != 0 && getSaving() == 1)
+            {
+                Console.WriteLine("van tábla nem kell menteni");
+                canCloseParent = 1;
+                e.Cancel = false;
+            }
+            else if(tables.Count == 0 && wasTableDeleted != 1)
+            {
+                Console.WriteLine("nincs tábla de nem is volt törölve");
+                canCloseParent = 1;
+                e.Cancel = false;
+            }
+            else if(wasTableDeleted == 1)
+            {
+
             }
         }
         private void newProductMenu_Click(object sender, EventArgs e)
         {
+            firstForm.DisableButton();
+            firstForm.IconBtn.IconChar = IconChar.Tasks;
+            firstForm.Title.Text = "Project";
             if (tables.Count != 0)
             {
                 //System.Drawing.Point prevPos = this.FindForm().PointToClient(
@@ -413,7 +443,7 @@ namespace DecisionSupport
             //    i.Anchor = AnchorStyles.Top;
             //}
         }
-
+        public static int wasTableDeleted = 0;
         public static void deleteTable(Form form, int idx)
         {
             int toDelete = 0;
@@ -445,6 +475,7 @@ namespace DecisionSupport
                 //// Console.WriteLine(j + ". tábla, új felirat " + tables[j].ProductCountLabel.Text);
             }
             counter--;
+            wasTableDeleted = 1;
             adjustPositions(form);
             clearCache();
             setSaving(0);            
@@ -657,9 +688,10 @@ namespace DecisionSupport
         catch(Exception ex)
         {
             const string message = "The file is propably open.\n Please close the file first!";
-            const string caption = "Opening failed";
+            const string caption = "Saving failed";
             MessageBox.Show(message, caption);
             Console.WriteLine("Openening failed: " + ex.Message);
+            saveRes = 0;
             return;
         }
          setSaving(1);

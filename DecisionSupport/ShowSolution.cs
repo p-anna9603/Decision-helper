@@ -32,6 +32,7 @@ namespace DecisionSupport
         int allWorker = 0;
         int prodCount = 1;
         int calculate = 0;
+        int firstSelect = 0;
         Stopwatch stopwatch = new Stopwatch();
 
         /* For matrix options */
@@ -53,15 +54,19 @@ namespace DecisionSupport
             Console.WriteLine("w. " + this.Width + " h: " + this.Height);
             fillTable();
             fillChart();
+            dataTable.CurrentCell = null;
+            dataTable.ClearSelection();
+            dataTable.FirstDisplayedCell = null;
+            Console.WriteLine("selected 2 : " + dataTable.CurrentCell);
         }
-
+        double profitSum = 0;
         public void fillTable()
         {
             int cellIdx = 0;
             int rowIndex = dataTable.Rows.Add();
             int prodCount = 1;
             int keyIndex = 0;
-            double profitSum = 0;
+
 
             foreach (var i in indexList) // 3,1,6,2,1,1, = i
             {
@@ -70,6 +75,8 @@ namespace DecisionSupport
                 double profit = form.getU(i.Product, i.Robot, i.Worker);
                 Console.WriteLine("pr: " + profit);
                 profitSum += profit;
+                dataTable.Rows[rowIndex].Cells[cellIdx].Selected = false;
+                dataTable.Rows[rowIndex].Selected = false;
                 dataTable.Rows[rowIndex].Cells[cellIdx].Value = i.Product+1;
                 dataTable.Rows[rowIndex].Cells[++cellIdx].Value = i.Robot;
                 dataTable.Rows[rowIndex].Cells[++cellIdx].Value = i.Worker;
@@ -94,6 +101,8 @@ namespace DecisionSupport
             robMax.Text = "/  " + robotLimit;
             opMax.Text  = "/  " + operatorLimit;
             dataTable.CurrentCell = null;
+            Console.WriteLine("selected 1 : " + dataTable.CurrentCell);
+            dataTable.ClearSelection();
         }     
 
         private void ShowSolution_Load(object sender, EventArgs e)
@@ -178,16 +187,12 @@ namespace DecisionSupport
                 excelWorkSheet.Cells["B1"].Value = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 excelWorkSheet.Column(2).Width = 20;
                 excelWorkSheet.Cells["A2"].Value = "Available sources:";
-                excelWorkSheet.Column(1).AutoFit();
-                excelWorkSheet.Column(2).AutoFit();
-                excelWorkSheet.Column(3).AutoFit();
-                excelWorkSheet.Column(4).AutoFit();
                 excelWorkSheet.Cells["B2"].Value = "Robots:";
                 excelWorkSheet.Cells["B2"].Style.HorizontalAlignment = (OfficeOpenXml.Style.ExcelHorizontalAlignment)HorizontalAlignmentStyle.Right;
                 excelWorkSheet.Cells["B3"].Value = "Operators:";
                 excelWorkSheet.Cells["B3"].Style.HorizontalAlignment = (OfficeOpenXml.Style.ExcelHorizontalAlignment)HorizontalAlignmentStyle.Right;
-                excelWorkSheet.Cells["C3"].Value = 4;
-                excelWorkSheet.Cells["C2"].Value = 10;
+                excelWorkSheet.Cells["C3"].Value = robotLimit;
+                excelWorkSheet.Cells["C2"].Value = operatorLimit;
                 excelWorkSheet.Cells["A5"].Value = "Product";
                 excelWorkSheet.Cells["B5"].Value = "Number of robots";
                 excelWorkSheet.Cells["C5"].Value = "Number of operators";
@@ -211,9 +216,12 @@ namespace DecisionSupport
                 //writeText.Write("All products: " + ";" + prodCount + "\n");
                 //writeText.WriteLine("Allocation by products:");
                 //writeText.Write("Product" + ";" + "Number of robots" + ";" + "Number of operators" + ";" + "Profit\n");
+                string fromYellowLine;
+                string toYellowLine;
+                string all;
                 int prodcnt = 1;
                 int rowCnt = 6;
-                foreach (var i in indexes) // 
+                foreach (var i in indexList) // 
                 {
                     Console.WriteLine("forban");
                         Table table = tables[i.Product];
@@ -223,14 +231,37 @@ namespace DecisionSupport
                         excelWorkSheet.Cells["B" + rowCnt].Value = i.Robot;
                         excelWorkSheet.Cells["C" + rowCnt].Value = i.Worker;
                         excelWorkSheet.Cells["D" + rowCnt].Value = profit;
-                        //excelWorkSheet.Cells["D" + rowCnt].Style.Numberformat = (OfficeOpenXml.Style.ExcelNumberFormat)NumberFormatBuilder.Accounting(3, true);
-                        //writeText.WriteLine(prodcnt + "." + ";" + i[j] + ";" + i[j + 1] + ";" + profit);
-                        prodcnt++;
+                    //excelWorkSheet.Cells["D" + rowCnt].Style.Numberformat = (OfficeOpenXml.Style.ExcelNumberFormat)NumberFormatBuilder.Accounting(3, true);
+                    //writeText.WriteLine(prodcnt + "." + ";" + i[j] + ";" + i[j + 1] + ";" + profit);
+                    fromYellowLine = "A" + rowCnt.ToString();
+                    toYellowLine = "D" + rowCnt.ToString();
+                    all = fromYellowLine + ":" + toYellowLine;
+                    excelWorkSheet.Cells[all].Style.HorizontalAlignment = (OfficeOpenXml.Style.ExcelHorizontalAlignment)HorizontalAlignmentStyle.Center;
+                    all = fromYellowLine + ":" + toYellowLine;
+
+                    prodcnt++;
                         rowCnt++;                    
                 }
-                excelWorkSheet.Cells["C" + rowCnt].Value = "Total";
-                excelWorkSheet.Cells["D" + rowCnt].Value = optimum;
+                excelWorkSheet.Cells["A" + rowCnt].Value = "Total";
+                excelWorkSheet.Cells["B" + rowCnt].Value = allRobot;
+                excelWorkSheet.Cells["C" + rowCnt].Value = allWorker;
+                excelWorkSheet.Cells["D" + rowCnt].Value = profitSum;
+                fromYellowLine = "A" + rowCnt.ToString();
+                toYellowLine = "D" + rowCnt.ToString();
+                all = fromYellowLine + ":" + toYellowLine;
+                excelWorkSheet.Cells[all].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                excelWorkSheet.Cells[all].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow);
+                excelWorkSheet.Cells[all].Style.HorizontalAlignment = (OfficeOpenXml.Style.ExcelHorizontalAlignment)HorizontalAlignmentStyle.Center;
+                //excelWorkSheet.Cells["B" + rowCnt].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow);
+                //excelWorkSheet.Cells["C" + rowCnt].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow);
+                //excelWorkSheet.Cells["D" + rowCnt].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow);
                 //writeText.WriteLine(";" + ";" + "Total;" + values.Values.First());
+
+                excelWorkSheet.Column(1).AutoFit();
+                excelWorkSheet.Column(2).AutoFit();
+                excelWorkSheet.Column(3).AutoFit();
+                excelWorkSheet.Column(4).AutoFit();
+                excelWorkSheet.Column(5).AutoFit();
 
                 excel.SaveAs(excelFile);
             }
@@ -282,6 +313,20 @@ namespace DecisionSupport
             //{
 
             //}
+        }
+
+        private void dataTable_SelectionChanged(object sender, EventArgs e)
+        {
+         //  DataGridViewCell cell = sender as DataGridViewCell;
+            //Console.WriteLine("changed to " + cell.RowIndex + ", " + cell.ColumnIndex);
+            Console.WriteLine("changed to ");
+            if(firstSelect < 3)
+            {
+                dataTable.CurrentCell = null;
+                dataTable.ClearSelection();
+                dataTable.FirstDisplayedCell = null;
+            }
+            firstSelect++;
         }
 
         /*    private void CalculateButton_Click(object sender, EventArgs e)

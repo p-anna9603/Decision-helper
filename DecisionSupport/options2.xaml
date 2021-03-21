@@ -340,7 +340,8 @@
                                     <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Background="AliceBlue" Height="21" Width="622">Operators</TextBlock>
                                     <WindowsFormsHost Name="winHost" Height="338" Width="622">
                                         <forms:DataGridView  Name="optionsTable2" Height="346"  Width="616" RowHeadersVisible="True" RowHeadersWidthSizeMode="AutoSizeToAllHeaders" AllowUserToAddRows="False"
-                                                         CellClick="cellClick" CellDoubleClick="optionCellClick">
+                                                         CellClick="cellClick" CellDoubleClick="optionCellClick" BackgroundColor="Snow" AutoSizeColumnsMode="AllCells"
+                                                             EnableHeadersVisualStyles="False" AllowUserToOrderColumns="False" ReadOnly="True">
 
                                         </forms:DataGridView>
                                     </WindowsFormsHost>
@@ -354,11 +355,11 @@
                                 <StackPanel Orientation="Vertical" VerticalAlignment="Top">
                                     <StackPanel Orientation="Horizontal">
                                         <Button Background="Yellow" Width="20" Height="20"/>
-                                        <Label Content="Currently queried" Margin="5,0,0,0"/>
+                                        <TextBlock Text="Currently queried" Margin="5,10,0,0"/>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal">
                                         <Button Background="Green" Width="20" Height="20"/>
-                                        <Label Content="Currently queried" Margin="5,0,0,0"/>
+                                        <TextBlock Text="Optimum with better resources" TextWrapping="Wrap" Margin="5,3,0,0" Width="131"/>
                                     </StackPanel>
                                 </StackPanel>
                             </GroupBox>

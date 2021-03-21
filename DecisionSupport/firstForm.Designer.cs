@@ -30,6 +30,8 @@ namespace DecisionSupport
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(firstForm));
             this.panelMenu = new System.Windows.Forms.Panel();
             this.exitButton = new FontAwesome.Sharp.IconButton();
             this.evaluateButton = new FontAwesome.Sharp.IconButton();
@@ -41,6 +43,7 @@ namespace DecisionSupport
             this.panelLogo = new System.Windows.Forms.Panel();
             this.btnHome = new FontAwesome.Sharp.IconPictureBox();
             this.panelTitleBar = new System.Windows.Forms.Panel();
+            this.save = new System.Windows.Forms.Label();
             this.restoreButton = new FontAwesome.Sharp.IconButton();
             this.iconButton6 = new FontAwesome.Sharp.IconButton();
             this.iconButton5 = new FontAwesome.Sharp.IconButton();
@@ -52,6 +55,7 @@ namespace DecisionSupport
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
             this.iconPictureBox2 = new FontAwesome.Sharp.IconPictureBox();
             this.iconPictureBox1 = new FontAwesome.Sharp.IconPictureBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panelMenu.SuspendLayout();
             this.projectSubMenu.SuspendLayout();
             this.panelLogo.SuspendLayout();
@@ -255,6 +259,7 @@ namespace DecisionSupport
             // panelTitleBar
             // 
             this.panelTitleBar.BackColor = System.Drawing.Color.DarkRed;
+            this.panelTitleBar.Controls.Add(this.save);
             this.panelTitleBar.Controls.Add(this.restoreButton);
             this.panelTitleBar.Controls.Add(this.iconButton6);
             this.panelTitleBar.Controls.Add(this.iconButton5);
@@ -268,6 +273,18 @@ namespace DecisionSupport
             this.panelTitleBar.TabIndex = 10;
             this.panelTitleBar.DragDrop += new System.Windows.Forms.DragEventHandler(this.panelTitleBar_DragDrop);
             this.panelTitleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
+            // 
+            // save
+            // 
+            this.save.BackColor = System.Drawing.Color.Transparent;
+            this.save.Font = new System.Drawing.Font("Microsoft Tai Le", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.save.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.save.Location = new System.Drawing.Point(140, 19);
+            this.save.Name = "save";
+            this.save.Size = new System.Drawing.Size(347, 41);
+            this.save.TabIndex = 7;
+            this.save.Text = "Successful save";
+            this.save.Visible = false;
             // 
             // restoreButton
             // 
@@ -283,6 +300,7 @@ namespace DecisionSupport
             this.restoreButton.Size = new System.Drawing.Size(38, 33);
             this.restoreButton.TabIndex = 6;
             this.restoreButton.UseVisualStyleBackColor = true;
+            this.restoreButton.Visible = false;
             this.restoreButton.Click += new System.EventHandler(this.restoreButton_Click);
             // 
             // iconButton6
@@ -316,7 +334,6 @@ namespace DecisionSupport
             this.iconButton5.TabIndex = 4;
             this.iconButton5.Text = "iconButton5";
             this.iconButton5.UseVisualStyleBackColor = true;
-            this.iconButton5.Visible = false;
             this.iconButton5.Click += new System.EventHandler(this.iconButton5_Click);
             // 
             // minimizeBtn
@@ -432,6 +449,11 @@ namespace DecisionSupport
             this.iconPictureBox1.TabIndex = 1;
             this.iconPictureBox1.TabStop = false;
             // 
+            // timer1
+            // 
+            this.timer1.Interval = 2500;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // firstForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -442,6 +464,7 @@ namespace DecisionSupport
             this.Controls.Add(this.panelTitleBar);
             this.Controls.Add(this.panelMenu);
             this.DoubleBuffered = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MinimumSize = new System.Drawing.Size(800, 500);
             this.Name = "firstForm";
@@ -491,5 +514,7 @@ namespace DecisionSupport
         private Panel panelDesktop;
         private FontAwesome.Sharp.IconPictureBox iconPictureBox2;
         private System.Windows.Forms.Integration.ElementHost elementHost1;
+        private Label save;
+        private Timer timer1;
     }
 }

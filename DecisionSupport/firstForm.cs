@@ -18,62 +18,37 @@ namespace DecisionSupport
     {
         // Fields
         private UserControl userControl;
-        private IconButton currentBtn;
-        private Panel leftBorderBtn;
+        options2 showOpt2;
+        private static IconButton CurrentBtn;
+        private static Panel leftBorderBtn;
         private Form currentChildForm;
         string hiddenChild = "";
         int newProject = 0;
         private Panel firstPanel;
-        Form1 form1 = new Form1();
-        ShowOpts evaluateProject;
+        Form1 form1;
+        options2 evaluateProject;
         ShowOpts showOpts;
         int resize = 0;
-        string prevActive = "";
+       static string prevActive = "";
         Dictionary<IconButton, Project> projects = new Dictionary<IconButton, Project>();
         int buttons = 0;
         IconButton iconButton1;
         IconButton xiconButton;
         int evaluated = 0; // 1 - project has been already evaluated, 0 - (new) project has not been evaluated
         Padding _oldPadding;
+        int shownWindow = 0;
+        private static IconPictureBox iconBtn;
+        private static Label title;
         public firstForm()
         {
             InitializeComponent();
             panelDesktop.Hide();
-            //Console.WriteLine("konstrutor");
-
-            /* Form to screen operations */
-            //   this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
-            //       this.MaximizedBounds = Screen.GetWorkingArea(this);
             Rectangle rec;
             rec = Screen.GetWorkingArea(this);
             rec.X = this.MaximizedBounds.X;
             rec.Y = this.MaximizedBounds.Y;
-            this.MaximizedBounds = rec;
-            //  this.WindowState = FormWindowState.Maximized;
-            //Console.WriteLine("Max: " + MaximizedBounds.Width + ", " + MaximizedBounds.Height);
-            /*
-            if (this.WindowState == FormWindowState.Maximized)
-            {
-                //Console.WriteLine("maximiiized");
-                this.FormBorderStyle = FormBorderStyle.None;
-
-            }
-            else
-            {
-                this.FormBorderStyle = FormBorderStyle.Sizable;
-                this.FormBorderStyle = FormBorderStyle.None;
-            }*/
-            this.FormBorderStyle = FormBorderStyle.None;
-            //   //  int screenLeft = SystemInformation.Sre.Left;
-            //     int screenLeft = Screen.GetWorkingArea(this).Left;
-            ////     int screenTop = SystemInformation.VirtualScreen.Top;
-            //     int screenTop = Screen.GetWorkingArea(this).Top;
-            //     //int screenWidth = SystemInformation.VirtualScreen.Width;
-            //     int screenWidth = Screen.GetWorkingArea(this).Width;
-            //     int screenHeight = Screen.GetWorkingArea(this).Height;
-
-            //this.Size = new System.Drawing.Size(screenWidth, screenHeight);
-            //this.Location = new System.Drawing.Point(screenLeft, screenTop);
+            this.MaximizedBounds = rec;        
+            this.FormBorderStyle = FormBorderStyle.None;         
 
             //Remove form title bar
             this.Text = string.Empty;
@@ -89,7 +64,8 @@ namespace DecisionSupport
             leftBorderBtn.Size = new System.Drawing.Size(7, 60);
             panelMenu.Controls.Add(leftBorderBtn);
             projectSubMenu.Visible = false;
-            restoreButton.Visible = true;
+            restoreButton.Visible = false;
+            iconButton5.Visible = true;
         
             panelDesktop2.Location = new System.Drawing.Point(0, 0);
             panelMenu.Location = new System.Drawing.Point(0, 0);
@@ -99,6 +75,9 @@ namespace DecisionSupport
                    null, panelDesktop2, new object[] { true });
             currentChildForm = null;
             userControl = null;
+            iconBtn = iconCurrentChildForm;
+            title = lblTitleChildForm;
+            elementHost1.Hide();
         }
         private void OpenChildForm(Form childForm)
         {
@@ -117,6 +96,7 @@ namespace DecisionSupport
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
             childForm.Dock = DockStyle.Fill;
+            panelDesktop.Hide();
             panelDesktop2.Controls.Add(childForm);
             panelDesktop2.Controls.Remove(iconPictureBox1);
             panelDesktop2.Tag = childForm;
@@ -139,28 +119,6 @@ namespace DecisionSupport
                    null, childForm, new object[] { true });
         }
         
-        private void OpenChildUserControl(System.Windows.Controls.UserControl window)
-        {
-        //    if (userControl != null)
-        //    {
-        //        // open only form
-        //        userControl.Hide();
-        //    }
-        // //   window.Dock = DockStyle.Fill;
-        //    panelDesktop2.Controls.Remove(iconPictureBox1);
-        //    panelDesktop2.Controls.Add(window);
-        //    panelDesktop2.
-        //    panelDesktop2.Tag = window;
-
-        //    window.BringToFront();
-        //    window.Show();
-        //    window.AutoScroll = true;
-        ////    window.AutoSize = false;
-        //    window.AutoScaleMode = AutoScaleMode.None;
-        //    panelDesktop2.BackgroundImage = Properties.Resources.backg_1;
-        //    this.BackgroundImage = Properties.Resources.backg_1;
-        //    this.BackgroundImageLayout = ImageLayout.Stretch;
-        }
         private void OpenChildFormEvaluation(Form childForm)
         {
             if (currentChildForm != null)
@@ -214,17 +172,17 @@ namespace DecisionSupport
             {
                 DisableButton();
                 //Button
-                currentBtn = (IconButton)senderBtn;
-                currentBtn.BackColor = System.Drawing.Color.FromArgb(191, 64, 64);
-                currentBtn.ForeColor = color;
-                currentBtn.TextAlign = ContentAlignment.MiddleCenter;
-                currentBtn.IconColor = color;
-                currentBtn.TextImageRelation = TextImageRelation.TextBeforeImage;
-                currentBtn.ImageAlign = ContentAlignment.MiddleRight;
+                CurrentBtn = (IconButton)senderBtn;
+                CurrentBtn.BackColor = System.Drawing.Color.FromArgb(191, 64, 64);
+                CurrentBtn.ForeColor = color;
+                CurrentBtn.TextAlign = ContentAlignment.MiddleCenter;
+                CurrentBtn.IconColor = color;
+                CurrentBtn.TextImageRelation = TextImageRelation.TextBeforeImage;
+                CurrentBtn.ImageAlign = ContentAlignment.MiddleRight;
                 //Left border button
                 leftBorderBtn.BackColor = color;
                 //Console.WriteLine("button y: " + currentBtn.Location.Y);
-                if (currentBtn.Name.Equals(projectButton.Name))
+                if (CurrentBtn.Name.Equals(projectButton.Name))
                 {
                     if (projectSubMenu.Visible)
                     {
@@ -235,43 +193,44 @@ namespace DecisionSupport
                         projectSubMenu.Visible = true;
                     }
                 }
-                else if (!(currentBtn.Parent.Name.Equals("projectSubMenu")))
+                else if (!(CurrentBtn.Parent.Name.Equals("projectSubMenu")))
                 {
                     projectSubMenu.Visible = false;
                 }
 
-                if (currentBtn.Parent.Name.Equals("projectSubMenu"))
+                if (CurrentBtn.Parent.Name.Equals("projectSubMenu"))
                 {
                     leftBorderBtn.Size = new System.Drawing.Size(7, 40);
-                    leftBorderBtn.Location = new System.Drawing.Point(0, currentBtn.Parent.Location.Y + currentBtn.Location.Y);
+                    leftBorderBtn.Location = new System.Drawing.Point(0, CurrentBtn.Parent.Location.Y + CurrentBtn.Location.Y);
                 }
                 else
                 {
                     leftBorderBtn.Size = new System.Drawing.Size(7, 60);
-                    leftBorderBtn.Location = new System.Drawing.Point(0, currentBtn.Location.Y);
+                    leftBorderBtn.Location = new System.Drawing.Point(0, CurrentBtn.Location.Y);
                 }
                 leftBorderBtn.Visible = true;
                 leftBorderBtn.BringToFront();
 
                 //Icon Current child form
-                iconCurrentChildForm.IconChar = currentBtn.IconChar;
+                iconCurrentChildForm.IconChar = CurrentBtn.IconChar;
                 iconCurrentChildForm.IconColor = color;
-                lblTitleChildForm.Text = currentBtn.Text;
+                lblTitleChildForm.Text = CurrentBtn.Text;
             }
         }
 
-        private void DisableButton()
+        public static void DisableButton()
         {
-            if (currentBtn != null)
+            if (CurrentBtn != null)
             {
                 //currentBtn.BackColor = System.Drawing.Color.FromArgb(134, 45, 45); // dark red
-                currentBtn.BackColor = System.Drawing.Color.DarkRed; // dark red
-                currentBtn.ForeColor = System.Drawing.Color.Gainsboro;
-                currentBtn.TextAlign = ContentAlignment.MiddleLeft;
-                currentBtn.IconColor = System.Drawing.Color.Gainsboro;
-                currentBtn.TextImageRelation = TextImageRelation.ImageBeforeText;
-                currentBtn.ImageAlign = ContentAlignment.MiddleLeft;
-                prevActive = currentBtn.Name;
+                CurrentBtn.BackColor = System.Drawing.Color.DarkRed; // dark red
+                CurrentBtn.ForeColor = System.Drawing.Color.Gainsboro;
+                CurrentBtn.TextAlign = ContentAlignment.MiddleLeft;
+                CurrentBtn.IconColor = System.Drawing.Color.Gainsboro;
+                CurrentBtn.TextImageRelation = TextImageRelation.ImageBeforeText;
+                CurrentBtn.ImageAlign = ContentAlignment.MiddleLeft;
+                leftBorderBtn.Visible = false;
+                prevActive = CurrentBtn.Name;
             }
         }
         private void projectButton_Click(object sender, EventArgs e)
@@ -281,7 +240,7 @@ namespace DecisionSupport
         int justLoaded = 0;
         private void newProjIcon_Click(object sender, EventArgs e)
         {
-            if (form1.getTablesCount() > 0) // ha már volt betöltve projekt
+            if (form1 != null && form1.getTablesCount() > 0) // ha már volt betöltve projekt
             {
                 //Console.WriteLine("kérdés newprojectIcon_Click");
                 const string message = "Do you want to save the data before exit?";
@@ -306,6 +265,7 @@ namespace DecisionSupport
                         evaluated = 0;
                         form1.setNewWork(1);
                         Console.WriteLine("1");
+                        shownWindow = 0;
                     }
                 }
                 else if (result == DialogResult.No)
@@ -323,6 +283,7 @@ namespace DecisionSupport
                     evaluated = 0;
                     form1.setNewWork(1);
                     Console.WriteLine("2");
+                    shownWindow = 0;
                 }
                 else if(result == DialogResult.Cancel)
                 {
@@ -354,7 +315,7 @@ namespace DecisionSupport
             ActivateButton(sender, RGBColors.color4);
             //if (newProject == 0) // nincs még megkezdett projekt és új formot kell kezdeni
             //{
-            if (form1.getTablesCount() > 0 && form1.getModification() == 0) // ha már volt betöltve projekt
+            if (form1 != null && form1.getTablesCount() > 0 && form1.getModification() == 0) // ha már volt betöltve projekt
             {
                 const string message = "Do you want to save the data before exit?";
                 const string caption = "Current project";
@@ -378,7 +339,9 @@ namespace DecisionSupport
                         {
                             form1.MdiParent = this;
                             OpenChildForm(form1);
-                            lblTitleChildForm.Text = form1.getOpenedFileName();
+                            lblTitleChildForm.Text = "Project";
+                            iconCurrentChildForm.IconChar = IconChar.Tasks;
+                            //    lblTitleChildForm.Text = form1.getOpenedFileName();
                             justLoaded = 1;
                             setIconTitle();
                             evaluated = 0;
@@ -400,7 +363,9 @@ namespace DecisionSupport
                     {
                         form1.MdiParent = this;
                         OpenChildForm(form1);
-                        lblTitleChildForm.Text = form1.getOpenedFileName();
+                        //      lblTitleChildForm.Text = form1.getOpenedFileName();
+                        lblTitleChildForm.Text = "Project";
+                        iconCurrentChildForm.IconChar = IconChar.Tasks;
                         justLoaded = 1;                     
                         setIconTitle();
                         evaluated = 0;
@@ -409,8 +374,11 @@ namespace DecisionSupport
             }
             else
             {
-                form1.clearEverything();
-                form1.Close();
+                if(form1 != null)
+                {
+                    form1.clearEverything();
+                    form1.Close();
+                }
                 removeIconTitle();
                 form1 = new Form1();
                 Reset();
@@ -422,7 +390,9 @@ namespace DecisionSupport
                 {
                     form1.MdiParent = this;
                     OpenChildForm(form1);
-                    lblTitleChildForm.Text = form1.getOpenedFileName();
+                    //lblTitleChildForm.Text = form1.getOpenedFileName();
+                    lblTitleChildForm.Text = "Project";
+                    iconCurrentChildForm.IconChar = IconChar.Tasks;
                     justLoaded = 1;                  
                     setIconTitle();
                     evaluated = 0;
@@ -517,7 +487,9 @@ namespace DecisionSupport
             if(projects.ContainsKey(btn))
             {
                 //Console.WriteLine("ssz? " + projects.Keys);
-                if(currentChildForm != null)
+                shownWindow = 0;
+                elementHost1.Hide();
+                if (currentChildForm != null)
                 {
                     currentChildForm.Hide();
                 }
@@ -528,6 +500,7 @@ namespace DecisionSupport
                 DisableButton();
                 leftBorderBtn.Visible = false;
                 iconCurrentChildForm.IconColor = Color.MediumPurple;
+                resizeChildForm();
                 //Console.WriteLine("key");
             }
         }
@@ -542,22 +515,37 @@ namespace DecisionSupport
             if (result == DialogResult.Yes)
             {
                 form1.saveMenuClicked();
-          //      ActivateButton(saveButton, RGBColors.color4);
-                form1.clearEverything();
-                currentChildForm.Close();
-                currentChildForm = null;
-                form1.Close();
-                evaluated = 0; 
-                if (currentChildForm != null)
+                //      ActivateButton(saveButton, RGBColors.color4);
+
+                if (form1.getSaveRes() == 1)
                 {
+                    save.Visible = true;
+                    form1.clearEverything();
                     currentChildForm.Close();
-                }
-                //form1.Hide();
-                Reset();
-                justLoaded = 0;
-                panelTitleBar.Controls.Remove(iconButton1);
-                panelTitleBar.Controls.Remove(xiconButton);
-             
+                    currentChildForm = null;
+                    form1.Close();
+                    evaluated = 0;
+                    if (currentChildForm != null)
+                    {
+                        currentChildForm.Close();
+                    }
+                    //form1.Hide();
+                    Reset();
+                    justLoaded = 0;
+                    panelTitleBar.Controls.Remove(iconButton1);
+                    panelTitleBar.Controls.Remove(xiconButton);
+
+                    save.Visible = true;
+                    var t = new Timer();
+                    t.Interval = 2000;
+                    t.Tick += (s, r) =>
+                    {
+                        save.Visible = false;
+                        t.Stop();
+                    };
+                    t.Start();
+                    ////timer1.Enabled = true;
+                }            
             }
             else if (result == DialogResult.No)
             {
@@ -586,10 +574,22 @@ namespace DecisionSupport
         {
             ActivateButton(sender, RGBColors.color4);
            
-            form1.saveMenuClicked();
-            if(form1.getSaveRes() == 1)
+            if(form1 != null)
+            {
+                form1.saveMenuClicked();
+            }
+            if(form1 != null && form1.getSaveRes() == 1)
             {
                 iconButton1.Text = form1.getSavedFileName();
+                save.Visible = true;
+                var t = new Timer();
+                t.Interval = 2000;
+                t.Tick += (s, r) =>
+                {
+                    save.Visible = false;
+                    t.Stop();
+                };
+                t.Start();
             }
         }
 
@@ -598,7 +598,9 @@ namespace DecisionSupport
             ActivateButton(sender, RGBColors.color4);
             if (hiddenChild.Equals("ShowOpts"))
             {
-                currentChildForm.Show();
+                panelDesktop.Show();
+                elementHost1.Show();
+                //currentChildForm.Show();
                 hiddenChild = "";
             }
             else
@@ -606,12 +608,16 @@ namespace DecisionSupport
                 if (form1.getOptimum() == 1) // van tábla
                 {
                     //Console.WriteLine("Van tábla");
-
+                    shownWindow = 1;
                     if(evaluated == 1 && form1.getModification() == 1) // volt már kiértékelve és nem történt módosítás
                     {
                         //Console.WriteLine("kivolt már értékelve");
-                        currentChildForm = evaluateProject;
-                        currentChildForm.Show();
+                        //currentChildForm = evaluateProject;
+                        //currentChildForm.Show();
+
+                        elementHost1.Show();
+                        panelDesktop.Show();
+                        Console.WriteLine("régi evaluate");
                         form1.Hide();
                         //Console.WriteLine("childform: " + currentChildForm);
                     }
@@ -620,14 +626,27 @@ namespace DecisionSupport
                         form1.getModification() == 0 && evaluated == 0)   // volt módosítás és még nem volt kiértékelve (betöltés esetén)
                     {
                         //Console.WriteLine("elsbeeen");
-                        ShowOpts showOpt = new ShowOpts(form1);
-                        OpenChildForm(showOpt);
-                        evaluateProject = showOpt;
+                        //ShowOpts showOpt = new ShowOpts(form1);
+                        //OpenChildForm(showOpt);
+                        ////evaluateProject = showOpt;
                         //   showOpt.ShowDialog(); // uj ablakban megnyitni
                         evaluated = 1;
-
-                        options2 showOpt2 = new options2(form1);
+                        if(showOpt2 != null)
+                        {
+                            for (int i = 0; i < showOpt2.ShowSolList.Count; i++)
+                            {
+                                showOpt2.ShowSolList[i].Close();
+                            }
+                        }
+                        Console.WriteLine("új evaluate");
+                        showOpt2 = new options2(form1);
+                        form1.Hide();
+                        currentChildForm.Hide();                        
+                       
                         elementHost1.Child = showOpt2;
+                        evaluateProject = showOpt2;
+                        elementHost1.Show();
+                        panelDesktop.Show();
                         form1.setModification(1);
                     }
                 }
@@ -651,8 +670,21 @@ namespace DecisionSupport
         }
 
         private void exitButton_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
+        {           
+            if(form1 != null) // van form és van tábla benne
+            {
+                form1.Close();
+                if(form1.CanCloseParent == 1)
+                {
+                    Console.WriteLine("first, canclose");
+                    Application.Exit();
+                }
+            }
+            else
+            {
+                Console.WriteLine("first else");
+                Application.Exit();
+            }
         }
 
         private void btnHome_Click(object sender, EventArgs e)
@@ -664,8 +696,10 @@ namespace DecisionSupport
             }
         
             form1.Hide();
-            options2 showOpt2 = new options2(form1);
-            elementHost1.Child = showOpt2;
+            panelDesktop.Hide();
+            elementHost1.Hide();
+            //options2 showOpt2 = new options2(form1);
+            //elementHost1.Child = showOpt2;
             Reset();
         }
         private void Reset()
@@ -708,133 +742,23 @@ namespace DecisionSupport
         private void firstForm_Resize(object sender, EventArgs e)
         {
             resize++;
-            this.SuspendLayout();
-            Console.WriteLine("valami? " + this.AutoScaleFactor);
-            //Console.WriteLine("screens: " + Screen.AllScreens[0]);
-            //Console.WriteLine("screens: " + Screen.AllScreens[1]);
-            //Console.WriteLine("resiiize");
-            //      Invalidate();
-            //        this.MaximizedBounds = Screen.GetWorkingArea(this);
-            Console.WriteLine("Max: " + MaximizedBounds.Width + ", " + MaximizedBounds.Height);
-            Console.WriteLine("Max 2: " + MaximizedBounds);
-            Console.WriteLine("xy: " + Screen.GetWorkingArea(this).X + ", " + Screen.GetWorkingArea(this).Y);
-            Console.WriteLine("xy 2: " + Screen.GetWorkingArea(this));
-
-            //Console.WriteLine("form location: " + this.Location);
-            //Console.WriteLine("form : " + this.Width + ", " + this.Height);
-            ////Console.WriteLine("0 most: " + this.Width + ", " + this.Height);
-            //        adjustPositions(this.FindForm());
-            //      this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
-            //this.WindowState = FormWindowState.Maximized;
-            //restoreButton.Visible = false;
-            //iconButton5.Visible = true;
-
-            /*
-            if(Screen.GetWorkingArea(this) == Screen.PrimaryScreen.WorkingArea)
-            {
-                if (this.Size.Width < Screen.PrimaryScreen.WorkingArea.Size.Width ||
-                     this.Size.Height < Screen.PrimaryScreen.WorkingArea.Size.Height)
-                {
-                    restoreButton.Visible = false;
-                    iconButton5.Visible = true;
-                    this.FormBorderStyle = FormBorderStyle.Sizable;
-                }
-                else
-                {
-                    restoreButton.Visible = true;
-                    iconButton5.Visible = false;
-                    this.FormBorderStyle = FormBorderStyle.None;
-                }
-            }
-            else
-            {
-                if (this.Size.Width < Screen.GetWorkingArea(this).Size.Width ||
-                      this.Size.Height < Screen.GetWorkingArea(this).Size.Height)
-                {
-                    restoreButton.Visible = false;
-                    iconButton5.Visible = true;
-                //    this.FormBorderStyle = FormBorderStyle.Sizable;
-                }
-                else if(toMax == 1)
-                {
-                    //Console.WriteLine("maximized a második monitoron");
-                    restoreButton.Visible = true;
-                    iconButton5.Visible = false;
-
-                    this.Size = Screen.GetWorkingArea(this).Size;
-                    this.Location = new Point(Screen.GetWorkingArea(this).X, Screen.GetWorkingArea(this).Y);
-                    this.FormBorderStyle = FormBorderStyle.None;
-               //     //Console.WriteLine("location: " + this.Location);
-                }
-                else
-                {
-                    //Console.WriteLine("else maximized a második monitoron");
-                    restoreButton.Visible = true;
-                    iconButton5.Visible = false;
-
-                    this.Size = Screen.GetWorkingArea(this).Size;
-                    this.Location = new Point(Screen.GetWorkingArea(this).X, Screen.GetWorkingArea(this).Y);
-                    //Console.WriteLine(Screen.GetWorkingArea(this).X + ", " + Screen.GetWorkingArea(this).Y);
-               //     this.FormBorderStyle = FormBorderStyle.None;
-                    //Console.WriteLine("location: " + this.Location);
-                }
-            }*/
-
-
-            //Console.WriteLine("location: " + this.Location);
+            this.SuspendLayout();           
             if (this.WindowState == FormWindowState.Maximized)
             {
-                //Console.WriteLine("maximiiized");
                 this.FormBorderStyle = FormBorderStyle.None;
-             //   _oldPadding = this.Padding;
-            //    this.Padding = new Padding(10);
+                restoreButton.Visible = true;
+                iconButton5.Visible = false;
             }
             else
             {
                 this.FormBorderStyle = FormBorderStyle.Sizable;
-         //       this.Padding = _oldPadding;
-                //this.FormBorderStyle = FormBorderStyle.None;
+                restoreButton.Visible = false;
+                iconButton5.Visible = true;
             }
 
-            //if (resize % 10 == 0 || resize < 10)
-            //{
-
-            if (currentChildForm != null && hiddenChild == "")
-                {
-                panelDesktop.SuspendLayout();
-                panelDesktop.Hide();
-                //this.SuspendLayout();
-                panelDesktop2.Controls.Remove(currentChildForm);
-                currentChildForm.Hide();
-                currentChildForm.SuspendLayout();
-                currentChildForm.FormBorderStyle = FormBorderStyle.Sizable;
-                    //Console.WriteLine("resizing parent###################################");
-                 //   currentChildForm.Dock = DockStyle.Fill;
-                    //  currentChildForm.WindowState = FormWindowState.Maximized;
-                    int newHeight = panelDesktop2.Height;
-                    int newWidth = panelDesktop2.Width;
-                    //currentChildForm.Width = panelDesktop.Width;
-                    //currentChildForm.Height = panelDesktop.Height;
-                    //currentChildForm.Location = panelDesktop.Location;
-                    currentChildForm.Size = new System.Drawing.Size(panelDesktop2.Width, panelDesktop2.Height);
-
-                    //Console.WriteLine("child width " + currentChildForm.Width + ", " + currentChildForm.Height);
-               //     //Console.WriteLine("panelDesktop width" + panelDesktop2.Width + ", " + panelDesktop2.Height);
-             //       //Console.WriteLine("width" + newWidth + ", " + newHeight);
-                   panelDesktop2.Controls.Add(currentChildForm);
-                    currentChildForm.BringToFront();
-                    currentChildForm.FormBorderStyle = FormBorderStyle.None;
-                    currentChildForm.Show();
-                panelDesktop.ResumeLayout(false);
-                panelDesktop.PerformLayout(); 
-                //this.ResumeLayout(false);
-                //this.PerformLayout();
-
-                currentChildForm.ResumeLayout(false);
-                currentChildForm.PerformLayout();
-
-                //  OpenChildForm(form1);
-                //   form1.adjustPositions(currentChildForm);
+            if (currentChildForm != null && hiddenChild == "" && shownWindow == 0)
+            {
+                resizeChildForm();               
             }
             if(elementHost1 != null)
             {
@@ -848,7 +772,43 @@ namespace DecisionSupport
             
             //}
         }
+        private void resizeChildForm()
+        {
+            panelDesktop.SuspendLayout();
+            panelDesktop.Hide();
+            //this.SuspendLayout();
+            panelDesktop2.Controls.Remove(currentChildForm);
+            currentChildForm.Hide();
+            currentChildForm.SuspendLayout();
+            currentChildForm.FormBorderStyle = FormBorderStyle.Sizable;
+            //Console.WriteLine("resizing parent###################################");
+            //   currentChildForm.Dock = DockStyle.Fill;
+            //  currentChildForm.WindowState = FormWindowState.Maximized;
+            int newHeight = panelDesktop2.Height;
+            int newWidth = panelDesktop2.Width;
+            //currentChildForm.Width = panelDesktop.Width;
+            //currentChildForm.Height = panelDesktop.Height;
+            //currentChildForm.Location = panelDesktop.Location;
+            currentChildForm.Size = new System.Drawing.Size(panelDesktop2.Width, panelDesktop2.Height);
 
+            //Console.WriteLine("child width " + currentChildForm.Width + ", " + currentChildForm.Height);
+            //     //Console.WriteLine("panelDesktop width" + panelDesktop2.Width + ", " + panelDesktop2.Height);
+            //       //Console.WriteLine("width" + newWidth + ", " + newHeight);
+            panelDesktop2.Controls.Add(currentChildForm);
+            currentChildForm.BringToFront();
+            currentChildForm.FormBorderStyle = FormBorderStyle.None;
+            currentChildForm.Show();
+            panelDesktop.ResumeLayout(false);
+            panelDesktop.PerformLayout();
+            //this.ResumeLayout(false);
+            //this.PerformLayout();
+
+            currentChildForm.ResumeLayout(false);
+            currentChildForm.PerformLayout();
+
+            //  OpenChildForm(form1);
+            //   form1.adjustPositions(currentChildForm);
+        }
         private void minimizeBtn_Click(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Minimized;
@@ -887,6 +847,12 @@ namespace DecisionSupport
         {
           //  ControlPaint.DrawBorder(e.Graphics, ClientRectangle, Color.DarkRed, ButtonBorderStyle.Solid);
             //Console.WriteLine("paiiint");
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            save.Visible = true;
+            timer1.Enabled = false;
         }
 
         private void iconButton5_Click(object sender, EventArgs e) // Maximize
@@ -969,7 +935,20 @@ namespace DecisionSupport
 
         private void iconButton6_Click(object sender, EventArgs e) // Exit button
         {
-            Application.Exit();
+            if (form1 != null) // van form és van tábla benne
+            {
+                form1.Close();
+                if (form1.CanCloseParent == 1)
+                {
+                    Console.WriteLine("first, canclose");
+                    Application.Exit();
+                }
+            }
+            else
+            {
+                Console.WriteLine("first else");
+                Application.Exit();
+            }
         }
 
         protected override CreateParams CreateParams
@@ -981,5 +960,8 @@ namespace DecisionSupport
                 return cp;
             }
         }
+
+        public static IconPictureBox IconBtn { get => iconBtn; set => iconBtn = value; }
+        public static Label Title { get => title; set => title = value; }
     }
 }
