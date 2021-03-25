@@ -34,6 +34,7 @@ namespace DecisionSupport
         int prodCount = 1;
         int calculate = 0;
         Stopwatch stopwatch = new Stopwatch();
+        Stopwatch stopwatchAll = new Stopwatch();
         ShowSolution showSol;
         List<ShowSolution> showSolList = new List<ShowSolution>();
         Rectangle r1;
@@ -138,7 +139,7 @@ namespace DecisionSupport
                     rowIdx =  optionsTable.Rows.Add();
                     int add = Math.Abs(robotInterval - i);
                     optionsTable.Rows[rowIdx].HeaderCell.Value = (robotLimit + add).ToString();
-                    Console.WriteLine("idx: " + rowIdx + ", " + optionsTable.Rows[rowIdx].HeaderCell.Value);
+                    //Console.WriteLine("idx: " + rowIdx + ", " + optionsTable.Rows[rowIdx].HeaderCell.Value);
                 }
                 /* To get which cell is currently queried */
                 if (robotLimit - sub >= 0)
@@ -271,7 +272,8 @@ namespace DecisionSupport
             Console.WriteLine("nem cachből: " + form.Count);
             Console.WriteLine("ÖSSZ keresés: " + form.TotalCount);
             Console.WriteLine("cache összméret " + form.Cache.Count);
-            Console.WriteLine("ellapsed milliseconds: " + stopwatch.ElapsedMilliseconds);
+            Console.WriteLine("ellapsed milliseconds (to 1 limit): " + stopwatch.ElapsedMilliseconds);
+            Console.WriteLine("ellapsed milliseconds (to all): " + stopwatchAll.ElapsedMilliseconds);
         }
 
         private void CalculateOptions()
@@ -301,6 +303,7 @@ namespace DecisionSupport
             else
             {
                 stopwatch.Start();
+                stopwatchAll.Start();
                 optimum = form.getPrevOptVal(tables.Count - 1, robotLimit, operatorLimit, ref idxs);
                 stopwatch.Stop();
                 for (int i = 0; i <= robotInterval; ++i) // default 5
@@ -354,6 +357,7 @@ namespace DecisionSupport
                         OptimumsCalculator(i, z, k, 3);
                     }
                 }
+                stopwatchAll.Stop();
                 fillOptions();
                 calculate++;
             }
@@ -391,7 +395,7 @@ namespace DecisionSupport
             foreach (Index j in indexes)
             {
                 idx.Add(j);
-                Console.WriteLine("prod: " + j.Product + ", robot: " + j.Robot + ", operator: " + j.Worker);
+                //Console.WriteLine("prod: " + j.Product + ", robot: " + j.Robot + ", operator: " + j.Worker);
             }
             optimum.Add(idx, opt);
 
@@ -497,6 +501,8 @@ namespace DecisionSupport
             {
                 opSlide.Content = trackBar1.Value.ToString();
                 workerInterval = (int)trackBar1.Value;
+                prevSelectedRow = -1;
+                prevSelectedCol = -1;
                 CalculateOptions();
             }
         }
@@ -515,6 +521,8 @@ namespace DecisionSupport
             {
                 robSlide.Content = trackBar2.Value.ToString();
                 robotInterval = (int)trackBar2.Value;
+                prevSelectedRow = -1;
+                prevSelectedCol = -1;
                 CalculateOptions();
             }
         }

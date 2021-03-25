@@ -605,7 +605,7 @@ namespace DecisionSupport
             }
             else
             {
-                if (form1.getOptimum() == 1) // van tábla
+                if (form1 != null && form1.getOptimum() == 1) // van tábla
                 {
                     //Console.WriteLine("Van tábla");
                     shownWindow = 1;

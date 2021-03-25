@@ -339,7 +339,7 @@
                                 <StackPanel Orientation="Vertical"  >
                                     <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Background="AliceBlue" Height="21" Width="622">Operators</TextBlock>
                                     <WindowsFormsHost Name="winHost" Height="338" Width="622">
-                                        <forms:DataGridView  Name="optionsTable2" Height="346"  Width="616" RowHeadersVisible="True" RowHeadersWidthSizeMode="AutoSizeToAllHeaders" AllowUserToAddRows="False"
+                                        <forms:DataGridView  Name="optionsTable2" Height="346"  Width="616" RowHeadersVisible="True" ColumnHeadersHeight="30" RowHeadersWidthSizeMode="AutoSizeToAllHeaders" AllowUserToAddRows="False"
                                                          CellClick="cellClick" CellDoubleClick="optionCellClick" BackgroundColor="Snow" AutoSizeColumnsMode="AllCells"
                                                              EnableHeadersVisualStyles="False" AllowUserToOrderColumns="False" ReadOnly="True">
 

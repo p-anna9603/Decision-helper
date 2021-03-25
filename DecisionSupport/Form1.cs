@@ -127,7 +127,7 @@ namespace DecisionSupport
         public double getPrevOptVal(int product, int robotLimit, int workerLimit, ref List<Index> indexes)
         {
             totalCount++;
-            Console.WriteLine(totalCount + ". fv hívás");
+            //Console.WriteLine(totalCount + ". fv hívás");
             indexes = new List<Index>();
             List<int> idList = new List<int>();
             idList.Add(product);
@@ -142,7 +142,7 @@ namespace DecisionSupport
             {
                 return 0;
             }
-            Console.WriteLine("\tújra: " + k);
+            //Console.WriteLine("\tújra: " + k);
             if (cache.Keys.Contains(k))
             {
                 this.readCache++;
@@ -198,7 +198,7 @@ namespace DecisionSupport
                         maxIndexes.Clear();
                         foreach (Index i in prevIndexes)
                         {
-                            Console.WriteLine("prod: " + i.Product + ", robot: " + i.Robot + ", operator: " + i.Worker);
+                            //Console.WriteLine("prod: " + i.Product + ", robot: " + i.Robot + ", operator: " + i.Worker);
                             maxIndexes.Add(i);
                         }
                         maxIndexes.Add(id);                       
@@ -215,7 +215,7 @@ namespace DecisionSupport
             foreach (Index i in maxIndexes)
             {
                 idx.Add(i);
-                Console.WriteLine("prod: " + i.Product + ", robot: " + i.Robot + ", operator: " + i.Worker);
+                //Console.WriteLine("prod: " + i.Product + ", robot: " + i.Robot + ", operator: " + i.Worker);
             }
             Dictionary<List<Index>, double> optimum = new Dictionary<List<Index>, double>();
             optimum.Add(idx, max);
