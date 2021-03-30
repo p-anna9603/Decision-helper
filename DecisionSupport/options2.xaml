@@ -313,11 +313,13 @@
                                         <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Width="260" Margin="20,40,0,0">
                                             <StackPanel Orientation="Horizontal" Height="28">
                                                 <TextBlock Text="Max operator" Width="110"></TextBlock>
-                                                <TextBox Name="maxOperator2" Width="65" Margin="5,0,0,0" PreviewTextInput="maximums_KeyPress"></TextBox>
+                                                <TextBox Text="5" Name="maxOperator2" Width="65" Margin="5,0,0,0" PreviewTextInput="maximums_KeyPress"
+                                                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
                                             </StackPanel>
                                             <StackPanel Orientation="Horizontal" Height="28" Margin="0,8,0,0">
                                                 <TextBlock Text="Max robot" Width="110"></TextBlock>
-                                                <TextBox Name="maxRobot" Width="65" Margin="5,0,0,0" PreviewTextInput="maximums_KeyPress"></TextBox>
+                                                <TextBox Text="5" Name="maxRobot" Width="65" Margin="5,0,0,0" PreviewTextInput="maximums_KeyPress" 
+                                                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center"></TextBox>
                                             </StackPanel>
                                         </StackPanel>
                                     </StackPanel>

@@ -27,9 +27,9 @@ namespace DecisionSupport
         private Panel firstPanel;
         Form1 form1;
         options2 evaluateProject;
-        ShowOpts showOpts;
+        // ShowOpts showOpts;
         int resize = 0;
-       static string prevActive = "";
+        static string prevActive = "";
         Dictionary<IconButton, Project> projects = new Dictionary<IconButton, Project>();
         int buttons = 0;
         IconButton iconButton1;
@@ -508,6 +508,12 @@ namespace DecisionSupport
         public void projectCancelClicked(object sender, EventArgs e)
         {
             //Console.WriteLine("kérdés projectCancelClick");
+            if (form1.Tables.Count == 0 ||
+                form1.Tables.Count != 0 && form1.getSaving() == 1)
+            {
+                closeProject();
+                return;
+            }
             const string message = "Do you want to save the data before exit?";
             const string caption = "Current project";
             var result = MessageBox.Show(message, caption,
@@ -549,21 +555,8 @@ namespace DecisionSupport
             }
             else if (result == DialogResult.No)
             {
-         //       ActivateButton(saveButton, RGBColors.color4);
-                form1.clearEverything();
-                currentChildForm.Close();
-                form1.Close();
-                currentChildForm = null;
-                evaluated = 0;
-                if (currentChildForm != null)
-                {
-            //        currentChildForm.Hide();
-                }
-             //   form1.Hide();
-                Reset();
-                justLoaded = 0;
-                panelTitleBar.Controls.Remove(iconButton1);
-                panelTitleBar.Controls.Remove(xiconButton);
+                closeProject();
+
             }
             else if (result == DialogResult.Cancel)
             {
@@ -593,6 +586,28 @@ namespace DecisionSupport
             }
         }
 
+        private void closeProject()
+        {
+            //       ActivateButton(saveButton, RGBColors.color4);
+            form1.clearEverything();
+            currentChildForm.Close();
+            form1.Close();
+            currentChildForm = null;
+            evaluated = 0;
+            if (currentChildForm != null)
+            {
+                currentChildForm.Hide();
+            }
+            if (elementHost1.Child != null)
+            {
+                elementHost1.Hide();
+            }
+            //   form1.Hide();
+            Reset();
+            justLoaded = 0;
+            panelTitleBar.Controls.Remove(iconButton1);
+            panelTitleBar.Controls.Remove(xiconButton);
+        }
         private void evaluateButton_Click(object sender, EventArgs e)
         {
             ActivateButton(sender, RGBColors.color4);

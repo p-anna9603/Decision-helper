@@ -122,7 +122,7 @@ namespace DecisionSupport
             return result; 
         }
 
-        int count = 0;
+        private int countNotFromCache = 0;
         int readCache = 0;
         public double getPrevOptVal(int product, int robotLimit, int workerLimit, ref List<Index> indexes)
         {
@@ -151,7 +151,7 @@ namespace DecisionSupport
             }
             else
             {
-                count++;
+                countNotFromCache++;
             }
 
             Table table = tables[product];
@@ -258,14 +258,15 @@ namespace DecisionSupport
 
         public int ReadCache { get => readCache; set => readCache = value; }
         public Dictionary<string, Dictionary<List<Index>, double>> Cache { get => cache; set => cache = value; }
-        public int Count { get => count; set => count = value; }
+     //   public int Count { get => count; set => count = value; }
         public int TotalCount { get => totalCount; set => totalCount = value; }
         public  List<Table> Tables { get => tables; set => tables = value; }
         public int CanCloseParent { get => canCloseParent; set => canCloseParent = value; }
+        public int CountNotFromCache { get => countNotFromCache; set => countNotFromCache = value; }
 
         private int canCloseParent = 0; // 0 - do not, 1 - can close parent window (firstForm)
         private void savingData(Object sender, FormClosingEventArgs e)
-        {          
+        {  
             if (tables.Count != 0 && getSaving() == 0 ||
                 tables.Count == 0 && wasTableDeleted == 1)
             {
@@ -587,6 +588,10 @@ namespace DecisionSupport
                     openedFileName = filename;
                     newWork = 0;
                 }
+                else if(res == DialogResult.Cancel)
+                {
+                    return;
+                }
                 else
                 {
                     Console.WriteLine("rossz név");
@@ -603,12 +608,12 @@ namespace DecisionSupport
                     secondFileName = filename;
                 }
             }
-            else if(savedAs == 1)
+            else if(savedAs == 1) // save a new project that has been already saved (do not ask)
             {
                 // DO nothing
                 filename = secondFileName;
             }
-            else
+            else // save loaded file (do not ask)
             {
                 filename = openedFileName;
             }
@@ -714,39 +719,7 @@ namespace DecisionSupport
 
         private void Form1_Resize(object sender, EventArgs e)
         {
-     //       Console.WriteLine("form 1 resiiize");
             adjustPositions(this.FindForm());
-     //       Console.WriteLine("primary: " + Screen.PrimaryScreen.WorkingArea.Size.Width + ", " + Screen.PrimaryScreen.WorkingArea.Size.Height);
-    //        Console.WriteLine("masik screen " + Screen.GetWorkingArea(this).Width + ", " + Screen.GetWorkingArea(this).Height);
-     //       Console.WriteLine("location: " + this.Location);
-
-            //      this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
-            //this.WindowState = FormWindowState.Maximized;
-            //restoreButton.Visible = false;
-            //iconButton5.Visible = true;
-            //if(this.Size.Width < Screen.PrimaryScreen.WorkingArea.Size.Width ||
-            //    this.Size.Height < Screen.PrimaryScreen.WorkingArea.Size.Height)
-            //{
-            //    restoreButton.Visible = false;
-            //    iconButton5.Visible = true;
-            //}
-            //else
-            //{
-            //    restoreButton.Visible = true;
-            //    iconButton5.Visible = false;
-            //}
-        }
-
-        ////Drag Form
-        //[DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
-        //private extern static void ReleaseCapture();
-
-        //[DllImport("user32.DLL", EntryPoint = "SendMessage")]
-        //private extern static void SendMessage(System.IntPtr hWnd, int wMsg, int wParam, int lParam);
-        private void menuStrip1_MouseDown(object sender, MouseEventArgs e)
-        {
-            //ReleaseCapture();
-            //SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
 
         private void menuStrip1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -918,13 +891,13 @@ namespace DecisionSupport
             counter = 0;
             docOpenings = 0;
             Console.WriteLine("clear");
-        saving = 0; // 0 - need to be saved, 1 - already saved
-        saveRes = 0; // 0 - save was not successful, 1 - save was succesful
-        newWork = 1; // 1 - if its a new work from blank sheet, 0 - file was opened 
-        openedFileName = "";
-        saveAs = 0; // 1 - if Save As option was selected
-        savedAs = 0; // 1 - if Save As option was selected and saved
-        secondFileName = ""; // saving after the save as 
+            saving = 0; // 0 - need to be saved, 1 - already saved
+            saveRes = 0; // 0 - save was not successful, 1 - save was succesful
+            newWork = 1; // 1 - if its a new work from blank sheet, 0 - file was opened 
+            openedFileName = "";
+            saveAs = 0; // 1 - if Save As option was selected
+            savedAs = 0; // 1 - if Save As option was selected and saved
+            secondFileName = ""; // saving after the save as 
     }
     }
 }

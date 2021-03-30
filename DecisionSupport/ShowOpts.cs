@@ -304,10 +304,11 @@ namespace DecisionSupport
             }
             Console.WriteLine("OPT: " + optimum);
             Console.WriteLine("cachből: " + form.ReadCache);
-            Console.WriteLine("nem cachből: " + form.Count);
+            Console.WriteLine("nem cachből: " + form.CountNotFromCache);
             Console.WriteLine("ÖSSZ keresés: " + form.TotalCount);
             Console.WriteLine("cache összméret " + form.Cache.Count);
             Console.WriteLine("ellapsed milliseconds: " + stopwatch.ElapsedMilliseconds);
+            form.CountNotFromCache = 0;
         }
         private void CalculateOptions()
         {

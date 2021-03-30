@@ -111,7 +111,6 @@ namespace DecisionSupport
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.Visible = false;
             this.menuStrip1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.menuStrip1_MouseDoubleClick);
-            this.menuStrip1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.menuStrip1_MouseDown);
             // 
             // saveToolStripMenuItem
             // 

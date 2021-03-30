@@ -40,7 +40,6 @@ namespace DecisionSupport
         Rectangle r1;
 
         /* For matrix options */
-        int defaultInterval = 5;
         int robotInterval = 5;
         int workerInterval = 5;
         List<Index> indexes = new List<Index>();
@@ -66,15 +65,14 @@ namespace DecisionSupport
             BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
             null, optionsTable, new object[] { true });
         }
-
+        int matrixRow = 0;
+        int matrixCol = 0;
+        int selectedRobRow = 0;
+        int selectedOpCol = 0;
         public void fillOptions()
         {
-            int selectedRobRow = 0;
-            int selectedOpCol = 0;
             string lessRobot = "";
             string lessWorker = "";
-            int matrixRow = 0;
-            int matrixCol = 0;
             int sub = 0;
             int colIndex;
 
@@ -226,7 +224,30 @@ namespace DecisionSupport
             }
             optionsTable.CurrentCell = null; // to inactivate default selection
             optionsTable.Rows[0].Cells[0].Selected = false;
-           
+            getMoreBetters();
+        }
+        int breakOuterFor = 0;
+        private void getMoreBetters()
+        {
+            for (int i = 0; i < selectedOpCol; ++i)
+            {
+                for(int j = 0; j < selectedRobRow; ++j)
+                {
+                    if(optimum == Double.Parse(optionsTable.Rows[j].Cells[i].Value.ToString()) &&
+                       ((i != 0) && optimum != Double.Parse(optionsTable.Rows[j].Cells[i-1].Value.ToString())))
+                    {
+                        Console.WriteLine("sor: " + j + ", o: " + i + ", érték: " + optionsTable.Rows[i].Cells[j].Value.ToString());
+                        optionsTable.Rows[j].Cells[i].Style.BackColor = System.Drawing.Color.Green;
+                        breakOuterFor = 1;
+                        break;
+                    }
+                }
+                //if(breakOuterFor == 1)
+                //{
+                //    breakOuterFor = 0;
+                //    continue;
+                //}
+            }
         }
         private void optionCellClick(object sender, System.Windows.Forms.DataGridViewCellEventArgs e) // double click
         {
@@ -269,7 +290,7 @@ namespace DecisionSupport
             }
             Console.WriteLine("OPT: " + optimum);
             Console.WriteLine("cachből: " + form.ReadCache);
-            Console.WriteLine("nem cachből: " + form.Count);
+            Console.WriteLine("nem cachből: " + form.CountNotFromCache);
             Console.WriteLine("ÖSSZ keresés: " + form.TotalCount);
             Console.WriteLine("cache összméret " + form.Cache.Count);
             Console.WriteLine("ellapsed milliseconds (to 1 limit): " + stopwatch.ElapsedMilliseconds);
