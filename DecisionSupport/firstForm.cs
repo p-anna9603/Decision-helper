@@ -369,7 +369,11 @@ namespace DecisionSupport
                         justLoaded = 1;                     
                         setIconTitle();
                         evaluated = 0;
-                    }                    
+                    } 
+                    else
+                    {
+                        form1 = null;
+                    }
                 }
             }
             else
@@ -396,6 +400,10 @@ namespace DecisionSupport
                     justLoaded = 1;                  
                     setIconTitle();
                     evaluated = 0;
+                }
+                else
+                {
+                    form1 = null;
                 }
             }
 
@@ -571,6 +579,11 @@ namespace DecisionSupport
             {
                 form1.saveMenuClicked();
             }
+            else
+            {
+                MessageBox.Show("There is nothing to save.\nStart you work now!", "Saving?");
+                return;
+            }
             if(form1 != null && form1.getSaveRes() == 1)
             {
                 iconButton1.Text = form1.getSavedFileName();
@@ -709,8 +722,10 @@ namespace DecisionSupport
                 currentChildForm.Hide();
                 hiddenChild = currentChildForm.Name;
             }
-        
-            form1.Hide();
+            if (form1 != null)
+            {
+                form1.Hide();
+            }
             panelDesktop.Hide();
             elementHost1.Hide();
             //options2 showOpt2 = new options2(form1);
@@ -950,8 +965,10 @@ namespace DecisionSupport
 
         private void iconButton6_Click(object sender, EventArgs e) // Exit button
         {
+            Console.WriteLine("bezárás");
             if (form1 != null) // van form és van tábla benne
             {
+                Console.WriteLine("első if cacnel");
                 form1.Close();
                 if (form1.CanCloseParent == 1)
                 {

@@ -337,7 +337,7 @@
                                     <TextBlock.LayoutTransform>
                                         <RotateTransform Angle="270"></RotateTransform>
                                     </TextBlock.LayoutTransform>
-                                </TextBlock>
+                                </TextBlock>                                
                                 <StackPanel Orientation="Vertical"  >
                                     <TextBlock HorizontalAlignment="Center" TextAlignment="Center" Background="AliceBlue" Height="21" Width="622">Operators</TextBlock>
                                     <WindowsFormsHost Name="winHost" Height="338" Width="622">

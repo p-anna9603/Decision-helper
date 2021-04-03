@@ -29,6 +29,7 @@ namespace DecisionSupport
         int totalCount = 0;
         static System.Windows.Forms.Button submitButton;
         static int docOpenings = 0;
+
         static Dictionary<string, Dictionary<List<Index>, double>> cache = new Dictionary<string, Dictionary<List<Index>, double>>();
 
         Dictionary<int, Index> optProducts = new Dictionary<int, Index>();
@@ -788,7 +789,7 @@ namespace DecisionSupport
             TableData tableData = new TableData();
             while (!reader.EndOfStream)
             {
-                Console.WriteLine("not end");
+                //Console.WriteLine("not end");
                 String strLine = reader.ReadLine();
                 if (strLine == "")
                 {
@@ -848,11 +849,11 @@ namespace DecisionSupport
                         }
                         Dictionary<List<Index>, double> optimum = new Dictionary<List<Index>, double>();
                         optimum.Add(indexlist, Double.Parse(strArray[2]));
-                        Console.WriteLine("kulcs: " + k);
+                        //Console.WriteLine("kulcs: " + k);
                         Cache.Add(k, optimum);
                     }
                 }
-                Console.WriteLine("###############beolvasva: ");
+                //Console.WriteLine("###############beolvasva: ");
                 foreach (var i in cache.Keys)
                 {
                     for (int j = 0; j < i.Length; ++j)
@@ -866,7 +867,7 @@ namespace DecisionSupport
             Console.WriteLine("open");
             adjustPositions(this.FindForm());
             reader.Close();
-            Console.WriteLine("reader close utan");
+            //Console.WriteLine("reader close utan");
             if (docOpenings > 1)
             {
                 cache.Clear();

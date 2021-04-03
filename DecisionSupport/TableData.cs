@@ -24,7 +24,7 @@ namespace DecisionSupport
 
         public void addToRow(int row, string value)
         {
-            Console.WriteLine("row: " + row + ", values: " + value);
+            //Console.WriteLine("row: " + row + ", values: " + value);
             int valInt = -1;
             try
             {

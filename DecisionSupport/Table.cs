@@ -900,7 +900,7 @@ namespace DecisionSupport
 
         private void addWorkerNum_ValueChanged(object sender, EventArgs e)
         {
-            Console.WriteLine("\nkezdeees################");
+            //Console.WriteLine("\nkezdeees################");
             MyNumericUpDown t = sender as MyNumericUpDown;
             if(t.Value > t.Maximum)
             {
@@ -909,12 +909,12 @@ namespace DecisionSupport
             }
             int idx = numMens.IndexOf(t);
             int count = 1;
-            Console.WriteLine("darabszam össz : " + numMens.Count);
-            Console.WriteLine("index  " + idx + " value: " + numMens[idx].Value);
+            //Console.WriteLine("darabszam össz : " + numMens.Count);
+            //Console.WriteLine("index  " + idx + " value: " + numMens[idx].Value);
             if(numMens[idx].Value == t.Maximum && idx != numMens.Count-1)
             {
                 numMens[idx].Value = numMens[idx].Value - (numMens.Count-1) - idx;
-                Console.WriteLine("jelenlegi modosított: " + numMens[idx].Value);
+                //Console.WriteLine("jelenlegi modosított: " + numMens[idx].Value);
             }
             if (idx != 0)
             {
@@ -939,7 +939,7 @@ namespace DecisionSupport
                 if (numMens[idx].Value >= numMens[i].Value)
                 {
                     numMens[i].Value = numMens[idx].Value + count;
-                    Console.WriteLine("utána a " + i + ".-ik: " + numMens[i].Value);
+                    //Console.WriteLine("utána a " + i + ".-ik: " + numMens[i].Value);
                     count++;
                 }
             }
