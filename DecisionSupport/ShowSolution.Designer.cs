@@ -125,6 +125,7 @@
             this.dataTable.RowHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.dataTable.RowHeadersWidth = 80;
             this.dataTable.RowTemplate.Height = 24;
+            this.dataTable.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataTable.Size = new System.Drawing.Size(674, 351);
             this.dataTable.TabIndex = 2;
             this.dataTable.SelectionChanged += new System.EventHandler(this.dataTable_SelectionChanged);

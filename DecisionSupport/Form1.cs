@@ -36,7 +36,7 @@ namespace DecisionSupport
         List<Index> optProdIdx = new List<Index>();
         // product,robot,worker index,  indexlista optimumra   érték(optimum)
 
-        public static int saving = 0; // 0 - need to be saved, 1 - already saved
+        private static int saving = 0; // 0 - need to be saved, 1 - already saved
         public static int modification = 0; // 1 - no change, 0 - any change happened
         public static MenuStrip menu;
         static int saveRes = 0; // 0 - save was not successful, 1 - save was succesful
@@ -46,7 +46,7 @@ namespace DecisionSupport
         static int savedAs = 0; // 1 - if Save As option was selected and saved
         static string secondFileName = ""; // saving after the save as 
         static string formTitle = "";
-        static Form1 form1;
+        static Form1 form1;     
 
         // Fields
         private IconButton currentBtn;
@@ -264,10 +264,12 @@ namespace DecisionSupport
         public  List<Table> Tables { get => tables; set => tables = value; }
         public int CanCloseParent { get => canCloseParent; set => canCloseParent = value; }
         public int CountNotFromCache { get => countNotFromCache; set => countNotFromCache = value; }
+        public int Saving { get => saving; set => saving = value; }
 
         private int canCloseParent = 0; // 0 - do not, 1 - can close parent window (firstForm)
         private void savingData(Object sender, FormClosingEventArgs e)
-        {  
+        {
+            Console.WriteLine("exit saved: " + getSaving());
             if (tables.Count != 0 && getSaving() == 0 ||
                 tables.Count == 0 && wasTableDeleted == 1)
             {
@@ -369,7 +371,7 @@ namespace DecisionSupport
                 tables[i].SuspendLayout();
                 tables[i].Hide();
             }
-
+            form.VerticalScroll.Visible = false;
 
             tables[0].Location = new System.Drawing.Point(20,
                                                 form.AutoScrollPosition.Y + 80); // első tábla törlése esetén 
@@ -433,7 +435,7 @@ namespace DecisionSupport
             
             form.ResumeLayout(false);
             form.PerformLayout();
-
+            form.VerticalScroll.Visible = true;
             ////// Console.WriteLine("\nAutoscroll offset: " + form.AutoScrollOffset);
             ////// Console.WriteLine("\nAutoscroll poz offset: " + form.AutoScrollPosition);
             ////// Console.WriteLine("\nform.VerticalScroll.Value : " + form.VerticalScroll.Value);
@@ -487,10 +489,12 @@ namespace DecisionSupport
             cache.Clear();
         }
         static int savingCount = 0;
+
         public static void setSaving(int s)
         {           
             saving = s;
             modification = s;
+            /*
             if(saving == 0 && savingCount == 0)
             {
                 int toolId;
@@ -523,6 +527,7 @@ namespace DecisionSupport
                 menu.Items.Insert(0, saveGray);
                 savingCount = 0;
             }
+            */
         }
         public int getTablesCount()
         {
@@ -701,6 +706,7 @@ namespace DecisionSupport
             return;
         }
          setSaving(1);
+         Console.WriteLine("saved: " + getSaving());
         }
         private void evaluateToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -854,14 +860,14 @@ namespace DecisionSupport
                     }
                 }
                 //Console.WriteLine("###############beolvasva: ");
-                foreach (var i in cache.Keys)
-                {
-                    for (int j = 0; j < i.Length; ++j)
-                    {
-                        Console.Write(i[j]);
-                    }
-                    Console.Write("\n");
-                }
+                //foreach (var i in cache.Keys)
+                //{
+                //    for (int j = 0; j < i.Length; ++j)
+                //    {
+                //        Console.Write(i[j]);
+                //    }
+                //    Console.Write("\n");
+                //}
             }
             docOpenings++;
             Console.WriteLine("open");

@@ -931,11 +931,9 @@ namespace DecisionSupport
                     numMens[idx].Value = prevVal + 1;
                 }
             }
-            Console.WriteLine("for elott");
             for (int i = idx + 1; i < numMens.Count; i++)
             {
                 // Upcoming values can not be lower then current one --> set them to the current + 1
-                Console.WriteLine("forban if elott");
                 if (numMens[idx].Value >= numMens[i].Value)
                 {
                     numMens[i].Value = numMens[idx].Value + count;

@@ -40,3 +40,12 @@ C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSuppo
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.csproj.CopyComplete
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.exe
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.pdb
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\FontAwesome.Sharp.dll
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\options2.g.cs
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport_MarkupCompile.cache
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport_MarkupCompile.lref
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\options2.baml
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.g.resources
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.firstForm.resources
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.ShowOpts.resources
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.tableExample.resources

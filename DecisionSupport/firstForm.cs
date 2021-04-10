@@ -253,9 +253,9 @@ namespace DecisionSupport
                     if (form1.getSaveRes() == 1)
                     {
                         ActivateButton(sender, RGBColors.color4);
-                        form1.clearEverything();
                         currentChildForm.Close();
                         form1.Close();
+                        form1.clearEverything();
                         form1 = new Form1();
                         OpenChildForm(form1);
                         newProject = 1;
@@ -271,9 +271,9 @@ namespace DecisionSupport
                 else if (result == DialogResult.No)
                 {
                     ActivateButton(sender, RGBColors.color4);
-                    form1.clearEverything();
                     currentChildForm.Close();
-                    form1.Close();                   
+                    form1.Close();
+                    form1.clearEverything();
                     form1 = new Form1();
                     OpenChildForm(form1);
                     newProject = 1;
@@ -294,11 +294,11 @@ namespace DecisionSupport
             else
             {
                 ActivateButton(sender, RGBColors.color4);
-                if (currentChildForm != null)
+                if (currentChildForm != null && form1 != null)
                 {
                     currentChildForm.Close();
-                    form1.clearEverything();
                     form1.Close();
+                    form1.clearEverything();
                 }
                 form1 = new Form1();
                 OpenChildForm(form1);
@@ -326,8 +326,8 @@ namespace DecisionSupport
                     form1.saveMenuClicked();
                     if(form1.getSaveRes() == 1)
                     {
-                        form1.clearEverything();
                         form1.Close();
+                        form1.clearEverything();
                         removeIconTitle();
                         form1 = new Form1();
                         Reset();
@@ -350,8 +350,10 @@ namespace DecisionSupport
                 }
                 else if (result == DialogResult.No)
                 {
-                    form1.clearEverything();
+                    form1.Saving = 1;
+                    Console.WriteLine("sav: " + form1.getSaving()); // TODO
                     form1.Close();
+                    form1.clearEverything();
                     removeIconTitle();
                     form1 = new Form1();
                     Reset();
@@ -380,10 +382,11 @@ namespace DecisionSupport
             {
                 if(form1 != null)
                 {
-                    form1.clearEverything();
                     form1.Close();
+                    form1.clearEverything();
                 }
                 removeIconTitle();
+                Form1 formBackup = form1;
                 form1 = new Form1();
                 Reset();
                 if (currentChildForm != null) // ha előtte lett volna már kiértékelve projekt
@@ -448,6 +451,7 @@ namespace DecisionSupport
             iconButton1.Name = "Project " + buttons;
             buttons++;
             iconButton1.Click += new System.EventHandler(this.backToProject);
+            iconButton1.MouseHover += new System.EventHandler(projectHover);
             this.iconButton1.IconChar = FontAwesome.Sharp.IconChar.None;
             this.iconButton1.IconColor = System.Drawing.Color.Black;
             iconButton1.BackColor = Color.SeaShell;            
@@ -485,6 +489,11 @@ namespace DecisionSupport
             this.panelTitleBar.Controls.Add(this.iconButton1);
             this.panelTitleBar.Controls.Add(this.xiconButton);
         }
+        public void projectHover(object sender, EventArgs e)
+        {
+            ToolTip tooltip = new ToolTip();
+            tooltip.SetToolTip(iconButton1, iconButton1.Text);
+        }
         public void backToProject(object sender, EventArgs e)
         {
             //Console.WriteLine("back to project");
@@ -515,7 +524,7 @@ namespace DecisionSupport
 
         public void projectCancelClicked(object sender, EventArgs e)
         {
-            //Console.WriteLine("kérdés projectCancelClick");
+            Console.WriteLine("kérdés projectCancelClick");
             if (form1.Tables.Count == 0 ||
                 form1.Tables.Count != 0 && form1.getSaving() == 1)
             {
@@ -533,16 +542,18 @@ namespace DecisionSupport
 
                 if (form1.getSaveRes() == 1)
                 {
-                    save.Visible = true;
-                    form1.clearEverything();
+                    save.Visible = true;                    
                     currentChildForm.Close();
                     currentChildForm = null;
                     form1.Close();
+                    form1.clearEverything();
                     evaluated = 0;
                     if (currentChildForm != null)
                     {
                         currentChildForm.Close();
                     }
+                    elementHost1.Hide();
+                    panelDesktop.Hide();
                     //form1.Hide();
                     Reset();
                     justLoaded = 0;
@@ -563,8 +574,9 @@ namespace DecisionSupport
             }
             else if (result == DialogResult.No)
             {
+                form1.Saving = 1;
+                Console.WriteLine("sav 2: " + form1.getSaving());
                 closeProject();
-
             }
             else if (result == DialogResult.Cancel)
             {
@@ -602,19 +614,21 @@ namespace DecisionSupport
         private void closeProject()
         {
             //       ActivateButton(saveButton, RGBColors.color4);
-            form1.clearEverything();
             currentChildForm.Close();
             form1.Close();
+            form1.clearEverything();
             currentChildForm = null;
             evaluated = 0;
             if (currentChildForm != null)
             {
                 currentChildForm.Hide();
             }
-            if (elementHost1.Child != null)
-            {
+            //if (elementHost1.Child != null)
+            //{
+                Console.WriteLine("hide child wpf");
                 elementHost1.Hide();
-            }
+                panelDesktop.Hide();
+            //}
             //   form1.Hide();
             Reset();
             justLoaded = 0;
@@ -667,14 +681,15 @@ namespace DecisionSupport
                             }
                         }
                         Console.WriteLine("új evaluate");
-                        showOpt2 = new options2(form1);
-                        form1.Hide();
-                        currentChildForm.Hide();                        
+                        showOpt2 = new options2(form1);                  
                        
                         elementHost1.Child = showOpt2;
                         evaluateProject = showOpt2;
                         elementHost1.Show();
                         panelDesktop.Show();
+
+                        form1.Hide();
+                        currentChildForm.Hide();
                         form1.setModification(1);
                     }
                 }

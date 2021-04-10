@@ -329,7 +329,7 @@ namespace DecisionSupport
                 stopwatch.Start();
                 stopwatchAll.Start();
                 optimum = form.getPrevOptVal(tables.Count - 1, robotLimit, operatorLimit, ref idxs);
-                stopwatch.Stop();
+                stopwatch.Stop();                
                 for (int i = 0; i <= robotInterval; ++i) // default 5
                 {
                     for (int z = 0; z <= workerInterval; ++z) // default 5
@@ -380,7 +380,7 @@ namespace DecisionSupport
                         //Plus
                         OptimumsCalculator(i, z, k, 3);
                     }
-                }
+                }               
                 stopwatchAll.Stop();
                 fillOptions();
                 calculate++;
