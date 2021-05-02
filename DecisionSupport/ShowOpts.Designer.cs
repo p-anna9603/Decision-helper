@@ -524,7 +524,6 @@
             this.Text = "Optimum Solution";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ShowOpts_FormClosed);
             this.Load += new System.EventHandler(this.ShowOpts_Load);
-            this.Resize += new System.EventHandler(this.ShowOpts_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.optionsTable)).EndInit();
             this.groupBox1.ResumeLayout(false);

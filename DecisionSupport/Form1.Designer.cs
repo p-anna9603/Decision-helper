@@ -48,8 +48,11 @@ namespace DecisionSupport
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.fileSystemWatcher1 = new System.IO.FileSystemWatcher();
             this.newProductMenu = new System.Windows.Forms.Button();
+            this.panelContainer = new System.Windows.Forms.FlowLayoutPanel();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).BeginInit();
+            this.panelContainer.SuspendLayout();
             this.SuspendLayout();
             // 
             // newProductToolStripMenuItem
@@ -76,21 +79,20 @@ namespace DecisionSupport
             // submitToolStripMenuItem
             // 
             this.submitToolStripMenuItem.Name = "submitToolStripMenuItem";
-            this.submitToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.submitToolStripMenuItem.Size = new System.Drawing.Size(143, 26);
             this.submitToolStripMenuItem.Text = "Save";
             // 
             // SaveAsStripMenuItem1
             // 
             this.SaveAsStripMenuItem1.Name = "SaveAsStripMenuItem1";
-            this.SaveAsStripMenuItem1.Size = new System.Drawing.Size(224, 26);
+            this.SaveAsStripMenuItem1.Size = new System.Drawing.Size(143, 26);
             this.SaveAsStripMenuItem1.Text = "Save As";
             // 
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(143, 26);
             this.openToolStripMenuItem.Text = "Open";
-            this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // menuStrip1
             // 
@@ -110,7 +112,6 @@ namespace DecisionSupport
             this.menuStrip1.TabIndex = 9;
             this.menuStrip1.Text = "menuStrip1";
             this.menuStrip1.Visible = false;
-            this.menuStrip1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.menuStrip1_MouseDoubleClick);
             // 
             // saveToolStripMenuItem
             // 
@@ -118,7 +119,6 @@ namespace DecisionSupport
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.Size = new System.Drawing.Size(34, 24);
             this.saveToolStripMenuItem.Visible = false;
-            this.saveToolStripMenuItem.MouseHover += new System.EventHandler(this.saveToolStripMenuItem_MouseHover);
             // 
             // insertToolStripMenuItem
             // 
@@ -131,7 +131,7 @@ namespace DecisionSupport
             // newProductMenu2
             // 
             this.newProductMenu2.Name = "newProductMenu2";
-            this.newProductMenu2.Size = new System.Drawing.Size(224, 26);
+            this.newProductMenu2.Size = new System.Drawing.Size(178, 26);
             this.newProductMenu2.Text = "New product";
             this.newProductMenu2.Click += new System.EventHandler(this.newProductMenu_Click);
             // 
@@ -141,7 +141,6 @@ namespace DecisionSupport
             this.evaluateToolStripMenuItem.Size = new System.Drawing.Size(79, 24);
             this.evaluateToolStripMenuItem.Text = "Evaluate";
             this.evaluateToolStripMenuItem.Visible = false;
-            this.evaluateToolStripMenuItem.Click += new System.EventHandler(this.evaluateToolStripMenuItem_Click);
             // 
             // fileSystemWatcher1
             // 
@@ -151,9 +150,11 @@ namespace DecisionSupport
             // newProductMenu
             // 
             this.newProductMenu.BackColor = System.Drawing.Color.White;
+            this.panelContainer.SetFlowBreak(this.newProductMenu, true);
             this.newProductMenu.Font = new System.Drawing.Font("Microsoft Tai Le", 7.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.newProductMenu.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.newProductMenu.Location = new System.Drawing.Point(15, 12);
+            this.newProductMenu.Location = new System.Drawing.Point(20, 3);
+            this.newProductMenu.Margin = new System.Windows.Forms.Padding(20, 3, 3, 10);
             this.newProductMenu.Name = "newProductMenu";
             this.newProductMenu.Size = new System.Drawing.Size(111, 39);
             this.newProductMenu.TabIndex = 10;
@@ -161,14 +162,37 @@ namespace DecisionSupport
             this.newProductMenu.UseVisualStyleBackColor = false;
             this.newProductMenu.Click += new System.EventHandler(this.newProductMenu_Click);
             // 
+            // panelContainer
+            // 
+            this.panelContainer.AutoScroll = true;
+            this.panelContainer.BackColor = System.Drawing.Color.White;
+            this.panelContainer.BackgroundImage = global::DecisionSupport.Properties.Resources.backg_1;
+            this.panelContainer.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.panelContainer.Controls.Add(this.newProductMenu);
+            this.panelContainer.Controls.Add(this.panel1);
+            this.panelContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelContainer.Location = new System.Drawing.Point(0, 0);
+            this.panelContainer.Name = "panelContainer";
+            this.panelContainer.Size = new System.Drawing.Size(1106, 679);
+            this.panelContainer.TabIndex = 11;
+            this.panelContainer.Scroll += new System.Windows.Forms.ScrollEventHandler(this.panelContainer_Scroll);
+            // 
+            // panel1
+            // 
+            this.panel1.Location = new System.Drawing.Point(0, 55);
+            this.panel1.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(0, 0);
+            this.panel1.TabIndex = 11;
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.BackColor = System.Drawing.Color.DarkRed;
+            this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.BackgroundImage = global::DecisionSupport.Properties.Resources.backg_1;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1106, 679);
-            this.Controls.Add(this.newProductMenu);
+            this.Controls.Add(this.panelContainer);
             this.Controls.Add(this.menuStrip1);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -180,6 +204,7 @@ namespace DecisionSupport
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.fileSystemWatcher1)).EndInit();
+            this.panelContainer.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -189,7 +214,6 @@ namespace DecisionSupport
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.NumericUpDown numericUpDown3;
         private System.Windows.Forms.NumericUpDown numericUpDown4;
         private System.Windows.Forms.ToolStripMenuItem newProductToolStripMenuItem;
@@ -206,6 +230,8 @@ namespace DecisionSupport
         private ToolStripMenuItem newProductMenu2;
         private System.IO.FileSystemWatcher fileSystemWatcher1;
         private Button newProductMenu;
+        private FlowLayoutPanel panelContainer;
+        private Panel panel1;
     }
 }
 

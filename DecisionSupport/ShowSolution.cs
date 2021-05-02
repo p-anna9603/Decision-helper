@@ -22,33 +22,23 @@ namespace DecisionSupport
     {
         List<Index> idxs = new List<Index>();
         Form1 form = new Form1();
-        double optimum;
         private List<Table> tables;
         string robotLimit;
         string operatorLimit;
-        string maxRobot;
-        string maxWorker;
         int allRobot = 0;
         int allWorker = 0;
-        int prodCount = 1;
-        int calculate = 0;
         int firstSelect = 0;
         Stopwatch stopwatch = new Stopwatch();
 
         /* For matrix options */
-        List<Index> indexes = new List<Index>();
         List<Index> indexList = new List<Index>();
-
 
         public ShowSolution(ref List<Table> tables, ref List<Index> idxList, string worker, string robot)
         {
             this.tables = tables;
-            //   form = f;
             robotLimit = robot;
             operatorLimit = worker;
             indexList = idxList;
-            //maxRobot = robMax.ToString();
-            //maxWorker = workMax.ToString();
             InitializeComponent();
             this.Size = new System.Drawing.Size(770, 600);
             Console.WriteLine("w. " + this.Width + " h: " + this.Height);
@@ -57,7 +47,6 @@ namespace DecisionSupport
             dataTable.CurrentCell = null;
             dataTable.ClearSelection();
             dataTable.FirstDisplayedCell = null;
-            Console.WriteLine("selected 2 : " + dataTable.CurrentCell);
         }
         double profitSum = 0;
         public void fillTable()
@@ -68,12 +57,10 @@ namespace DecisionSupport
             int keyIndex = 0;
 
 
-            foreach (var i in indexList) // 3,1,6,2,1,1, = i
+            foreach (var i in indexList)
             {
-                Console.WriteLine("forban");
                 Table table = tables[i.Product];
                 double profit = form.getU(i.Product, i.Robot, i.Worker);
-                Console.WriteLine("pr: " + profit);
                 profitSum += profit;
                 dataTable.Rows[rowIndex].Cells[cellIdx].Selected = false;
                 dataTable.Rows[rowIndex].Selected = false;
@@ -101,14 +88,12 @@ namespace DecisionSupport
             robMax.Text = "/  " + robotLimit;
             opMax.Text  = "/  " + operatorLimit;
             dataTable.CurrentCell = null;
-            Console.WriteLine("selected 1 : " + dataTable.CurrentCell);
             dataTable.ClearSelection();
         }     
 
         private void ShowSolution_Load(object sender, EventArgs e)
         {
             this.Size = new System.Drawing.Size(770, 600);
-            Console.WriteLine("0 w. " + this.Width + " h: " + this.Height);
          //   maxRobot.KeyPress += limitKeyPress;
         }
 
@@ -154,23 +139,26 @@ namespace DecisionSupport
             {
                 return;
             }
-            int cellIdx = 0;
             int rowIndex = dataTable.Rows.Add();
-            int keyIndex = 0;
             string filename;
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Xlsx files|*.xlsx|Xls files|*.xls";
             DialogResult res = sfd.ShowDialog();
             filename = sfd.FileName;
-            var regExp = @"^(?:[\w]\:|\\)(\\[a-zA-Z_\-\.\s0-9]+)+\.((xlsx)|(xls))$";
+            var regExp = @"^(?:[\w]\:|\\)(\\[\p{L}_\-\.\s0-9]+)+\.((xlsx)|(xls))$";
             Regex regex = new Regex(regExp);
             if (res == DialogResult.OK && regex.IsMatch(filename))
             {
                 filename = sfd.FileName;
             }
+            else if(res == DialogResult.Cancel)
+            {
+                return;
+            }
             else
             {
-                MessageBox.Show("Could not save file\nTry again!", "Saving failed");
+                MessageBoxIcon messageBoxIcon = MessageBoxIcon.Error;
+                MessageBox.Show("Could not save file\nTry again!", "Saving failed", MessageBoxButtons.OK, messageBoxIcon);
                 return;
             }
             using (ExcelPackage excel = new ExcelPackage())
@@ -252,10 +240,6 @@ namespace DecisionSupport
                 excelWorkSheet.Cells[all].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                 excelWorkSheet.Cells[all].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow);
                 excelWorkSheet.Cells[all].Style.HorizontalAlignment = (OfficeOpenXml.Style.ExcelHorizontalAlignment)HorizontalAlignmentStyle.Center;
-                //excelWorkSheet.Cells["B" + rowCnt].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow);
-                //excelWorkSheet.Cells["C" + rowCnt].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow);
-                //excelWorkSheet.Cells["D" + rowCnt].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Yellow);
-                //writeText.WriteLine(";" + ";" + "Total;" + values.Values.First());
 
                 excelWorkSheet.Column(1).AutoFit();
                 excelWorkSheet.Column(2).AutoFit();
@@ -308,17 +292,10 @@ namespace DecisionSupport
                     }
                 }
             }
-
-            //if(results.ChartElementType == System.Windows.Forms.DataVisualization.Charting.ChartElementType.DataPoint)
-            //{
-
-            //}
         }
 
         private void dataTable_SelectionChanged(object sender, EventArgs e)
         {
-         //  DataGridViewCell cell = sender as DataGridViewCell;
-            //Console.WriteLine("changed to " + cell.RowIndex + ", " + cell.ColumnIndex);
             Console.WriteLine("changed to ");
             if(firstSelect < 3)
             {
@@ -328,120 +305,6 @@ namespace DecisionSupport
             }
             firstSelect++;
         }
-
-        /*    private void CalculateButton_Click(object sender, EventArgs e)
-            {
-                robotLimit = Int32.Parse(maxRobot.Text);
-                operatorLimit = Int32.Parse(maxOperator.Text);
-                combinationMap.Clear();
-                combosPlus.Clear();
-                optimums.Clear();
-                form.TotalCount = 0;
-                form.ReadCache = 0;
-                indexes = new List<Index>();
-                Console.WriteLine(" nullázás " + form.ReadCache);
-                if (calculate != 0)
-                {
-                    dataTable.Rows.Clear();
-                    optionsTable.Rows.Clear();
-                }
-                if(maxRobot.Text.Length == 0 || maxOperator.Text.Length == 0)
-                {
-                    MessageBox.Show("Please give me the maximum limits!", "Missing number.");
-                }
-                else
-                {
-                    stopwatch.Start();
-                    optimum = form.getPrevOptVal(tables.Count - 1, robotLimit, operatorLimit, ref idxs);
-                    stopwatch.Stop();         
-
-                    for (int i = 0; i <= defaultInterval; ++i)
-                    {
-                        for (int z = 0; z <= defaultInterval; ++z)
-                        {
-                            string k;
-                            // RobotLimit-- OperatorLimit++
-                            if (robotLimit - i >= 0)
-                            {
-                                k = (robotLimit - i).ToString() + "," + (operatorLimit + z).ToString();
-                                if (combinationMap.Keys.Contains(k))
-                                {
-                                    continue;
-                                }
-                                OptimumsCalculator(i, z, k, 1);
-                            }
-                            // Robotlimit-- Operatorlimit--
-                            if (robotLimit - i >= 0 && operatorLimit - z >= 0)
-                            {
-                                k = (robotLimit - i).ToString() + "," + (operatorLimit - z).ToString();
-                                if (combinationMap.Keys.Contains(k))
-                                {
-                                    continue;
-                                }
-                                OptimumsCalculator(i, z, k, 0);
-                            }
-                            // Robotlimit++ Operatorlimit--
-                            if (operatorLimit - z >= 0)
-                            {
-                                k = (robotLimit + i).ToString() + "," + (operatorLimit - z).ToString();
-                                if (combinationMap.Keys.Contains(k))
-                                {
-                                    continue;
-                                }
-                                OptimumsCalculator(i, z, k, 2);
-                            }
-                        }
-                    }
-                    for (int i = 0; i <= defaultInterval; ++i)
-                    {
-                        for (int z = 0; z <= defaultInterval; ++z)
-                        {
-                            string k = (robotLimit + i).ToString() + "," + (operatorLimit + z).ToString();
-
-                            if (combinationMap.Keys.Contains(k))
-                            {
-                                continue;
-                            }
-                            //Plus
-                            OptimumsCalculator(i, z, k, 3);                       
-                        }
-                    }
-                    // int toDelete = -1;
-                    //for (int i = 1; i < indexes.Count(); ++i)
-                    //{
-                    //    if (indexes[i].Product == indexes[i - 1].Product)
-                    //    {
-                    //        toDelete = i - 1;
-                    //        Console.WriteLine(" Ugyanaz: " + indexes[i].Product + " index : " + toDelete);
-                    //    }
-                    //}
-                    //if (toDelete != -1)
-                    //{
-                    //    indexes.RemoveAt(toDelete);
-                    //    Console.WriteLine("todeleteben: " + toDelete);
-                    //}
-                    fillOptions();
-                    Console.WriteLine("0 es: "  + optimum); // optimum
-                    Console.WriteLine("-1 es: " + combinationMap.First().Key + ": " + combinationMap[combinationMap.First().Key].First().Value); // optimum
-                    //Console.WriteLine("8,4 es: " + combinationMap["8,4"].First().Value); // optimum
-
-                   foreach(var entry in combinationMap)
-                    {
-                        string k = entry.Key;
-                        Console.WriteLine(k + " limitekre : " + entry.Value.First().Value);
-                    }
-                    //Console.WriteLine("+1 es: " + combinationMap[0].First().Value); // optimum
-                    fillTable();
-                    calculate = 1;
-                }
-
-                Console.WriteLine("OPT: " + optimum);
-                Console.WriteLine("cachből: " + form.ReadCache);
-                Console.WriteLine("nem cachből: " + form.Count);
-                Console.WriteLine("ÖSSZ keresés: " + form.TotalCount);
-                Console.WriteLine("cache összméret " + form.Cache.Count);
-                Console.WriteLine("ellapsed milliseconds: " + stopwatch.ElapsedMilliseconds);
-
-            }*/
+     
     }
 }

@@ -29,15 +29,11 @@ namespace DecisionSupport
         private List<Table> tables;
         int robotLimit;
         int operatorLimit;
-        int allRobot = 0;
-        int allWorker = 0;
-        int prodCount = 1;
         int calculate = 0;
         Stopwatch stopwatch = new Stopwatch();
         Stopwatch stopwatchAll = new Stopwatch();
         ShowSolution showSol;
         List<ShowSolution> showSolList = new List<ShowSolution>();
-        Rectangle r1;
 
         /* For matrix options */
         int robotInterval = 5;
@@ -46,8 +42,6 @@ namespace DecisionSupport
         List<double> optimums = new List<double>(); // list of the optimum values for the different combinations
         List<Index> indexList = new List<Index>();
         Dictionary<string, Dictionary<List<Index>, double>> combinationMap = new Dictionary<string, Dictionary<List<Index>, double>>();
-        int groupBoxY;
-        int coverLabelY;
         System.Windows.Forms.DataGridView optionsTable;
         TextBox maxOperator;
         int initialized = 0;
@@ -151,9 +145,7 @@ namespace DecisionSupport
                     }
                 }
             }
-
-         //   Console.WriteLine("Selected row: " + selectedRobRow + ", col: " + selectedOpCol);
-            //optionsTable.Rows[selectedRobRow].Cells[selectedOpCol].Style.BackColor = System.Drawing.ColorTranslator.FromHtml("#ffffcc");
+            //optionsTable.Rows[selectedRobRow].Cells[selectedOpCol].Style.BackColor = System.Drawing.ColorTranslator.FromHtml("#ffffcc"); // lighter yellow
             optionsTable.Rows[selectedRobRow].Cells[selectedOpCol].Style.BackColor = System.Drawing.Color.Yellow;
             foreach (var entry in combinationMap)
             {
@@ -176,7 +168,6 @@ namespace DecisionSupport
                     }
                 }
                 worker = idx;
-              //  Console.WriteLine("work: " + worker + ", robot: " + robot);
                 if (optimum == currentProfit && (Int32.Parse(worker) <= operatorLimit && Int32.Parse(robot) <= robotLimit))
                 {
                     lessRobot = robot;
@@ -198,9 +189,7 @@ namespace DecisionSupport
                         break;
                     }
                 }
-              //  Console.WriteLine("column: " + matrixCol + ", row: " + matrixRow);
                 optionsTable.Rows[matrixRow].Cells[matrixCol].Value = currentProfit;
-             //   Console.WriteLine("profit: " + currentProfit);
             }
             if(lessRobot != "")
             {
@@ -228,9 +217,9 @@ namespace DecisionSupport
             }
             optionsTable.CurrentCell = null; // to inactivate default selection
             optionsTable.Rows[0].Cells[0].Selected = false;
-            getMoreBetters();
+            getBetterOptions();
         }
-        private void getMoreBetters()
+        private void getBetterOptions()
         {
             for (int i = 0; i < selectedOpCol; ++i)
             {
@@ -239,7 +228,6 @@ namespace DecisionSupport
                     if(optimum == Double.Parse(optionsTable.Rows[j].Cells[i].Value.ToString()) &&
                        ((i != 0) && optimum != Double.Parse(optionsTable.Rows[j].Cells[i-1].Value.ToString())))
                     {
-                        Console.WriteLine("sor: " + j + ", o: " + i + ", érték: " + optionsTable.Rows[i].Cells[j].Value.ToString());
                         optionsTable.Rows[j].Cells[i].Style.BackColor = System.Drawing.Color.Green;
                         optionsTable.Rows[j].Cells[i].Style.ForeColor = System.Drawing.Color.White;
                         break;
@@ -249,7 +237,6 @@ namespace DecisionSupport
         }
         private void optionCellClick(object sender, System.Windows.Forms.DataGridViewCellEventArgs e) // double click
         {
-            Console.WriteLine("indexek: " + e.RowIndex + ", " + e.ColumnIndex);
             if (e.RowIndex <= -1 || e.ColumnIndex <= -1)
             {
                 return;
@@ -286,10 +273,10 @@ namespace DecisionSupport
                 panelOfData.Visibility = Visibility.Visible;
                 CalculateOptions();
             }
-            Console.WriteLine("OPT: " + optimum);
+            Console.WriteLine("Optimum: " + optimum);
+            Console.WriteLine("ÖSSZ keresés: " + form.TotalCount);
             Console.WriteLine("cachből: " + form.ReadCache);
             Console.WriteLine("nem cachből: " + form.CountNotFromCache);
-            Console.WriteLine("ÖSSZ keresés: " + form.TotalCount);
             Console.WriteLine("cache összméret " + form.Cache.Count);
             Console.WriteLine("ellapsed milliseconds (to 1 limit): " + stopwatch.ElapsedMilliseconds);
             Console.WriteLine("ellapsed milliseconds (to all): " + stopwatchAll.ElapsedMilliseconds);
@@ -329,7 +316,8 @@ namespace DecisionSupport
                 stopwatch.Start();
                 stopwatchAll.Start();
                 optimum = form.getPrevOptVal(tables.Count - 1, robotLimit, operatorLimit, ref idxs);
-                stopwatch.Stop();                
+                stopwatch.Stop();  
+                
                 for (int i = 0; i <= robotInterval; ++i) // default 5
                 {
                     for (int z = 0; z <= workerInterval; ++z) // default 5
@@ -375,12 +363,14 @@ namespace DecisionSupport
 
                         if (combinationMap.Keys.Contains(k))
                         {
+                            Console.WriteLine("ujra használ");
                             continue;
                         }
                         //Plus
                         OptimumsCalculator(i, z, k, 3);
                     }
-                }               
+                }            
+                
                 stopwatchAll.Stop();
                 fillOptions();
                 calculate++;
@@ -421,7 +411,6 @@ namespace DecisionSupport
             foreach (Index j in indexes)
             {
                 idx.Add(j);
-                //Console.WriteLine("prod: " + j.Product + ", robot: " + j.Robot + ", operator: " + j.Worker);
             }
             optimum.Add(idx, opt);
 
@@ -439,11 +428,7 @@ namespace DecisionSupport
             System.Drawing.Color lightBlue = System.Drawing.Color.LightBlue;
             System.Drawing.Color control = System.Drawing.SystemColors.Control;
             System.Drawing.Color yellow2 = System.Drawing.ColorTranslator.FromHtml("#ffffcc");
-            //DataGridViewCell cell = optionsTable.Rows[e.RowIndex].Cells[e.ColumnIndex];
-            //if (cell.Value != null && (cell.Value.ToString() != 0.ToString() || cell.ColumnIndex != 0 || cell.RowIndex != 0))
-            //{
-            //    cell.Style.BackColor = Color.Azure;
-            //}
+
             if (e.RowIndex <= -1 || e.ColumnIndex <= -1) // clicked on headers
             {
                 return;
@@ -506,13 +491,6 @@ namespace DecisionSupport
             }
 
         }
-        //private void ShowOpts_FormClosed(object sender, FormClosedEventArgs e) //TODO
-        //{
-        //    for (int i = 0; i < showSolList.Count; i++)
-        //    {
-        //        showSolList[i].Close();
-        //    }
-        //}
 
         private void trackBar1_Scroll(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -553,24 +531,7 @@ namespace DecisionSupport
                 CalculateOptions();
             }
         }
-        //private void maxRobot_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
-        //{
-        //    if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != ',')
-        //    {
-        //        e.Handled = true;
-        //    }
-        //    if (e.KeyChar == '.' || e.KeyChar == ',')
-        //    {
-        //        e.Handled = true;
-        //    }
-        //    TextBox t = sender as TextBox;
 
-        //    //Delete the placeholder 0
-        //    if (t.Text == "0" && char.IsDigit(e.KeyChar))
-        //    {
-        //        t.Text = "";
-        //    }
-        //}
         Regex regex = new Regex("[^0-9]+");
 
         public List<ShowSolution> ShowSolList { get => showSolList; set => showSolList = value; }
@@ -579,30 +540,6 @@ namespace DecisionSupport
         {
             TextBox ad = sender as TextBox;
             e.Handled = regex.IsMatch(e.Text);
-            //if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != ',')
-            //{
-            //    e.Handled = true;
-            //}
-            //TextBox t = sender as TextBox;
-
-            ////Delete the placeholder 0
-            //if (t.Text == "0" && char.IsDigit(e.KeyChar))
-            //{
-            //    t.Text = "";
-            //}
-            //if (e.KeyChar == '.' || e.KeyChar == ',')
-            //{
-            //    e.Handled = true;
-            //}
-        }
-        private void ShowOpts_Load(object sender, EventArgs e)
-        { //TODO
-            TextBlock t = new TextBlock();
-
-            //coverLabel.Visible = true;
-            //coverLabel.Width = optionsTable.Width;
-            //coverLabel.Height = optionsTable.Height;
-            //coverLabel.Location = new System.Drawing.Point(optionsTable.Location.X, optionsTable.Location.Y);
         }
     }
 }

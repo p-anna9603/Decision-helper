@@ -12,6 +12,7 @@ using System.Windows.Forms;
 
 namespace DecisionSupport
 {
+    /* The original Windows Forms form of the evaluation (currently: options2 class) */
     public partial class ShowOpts : Form
     {
         List<Index> idxs = new List<Index>();
@@ -166,12 +167,8 @@ namespace DecisionSupport
                     sub = robotInterval - i; // 5..0
                     if (robotLimit - sub >= 0)
                     {
-                        Console.WriteLine("rws2: " + optionsTable.Rows.Count); // 0
                         optionsTable.Rows.Add();
                         optionsTable.Rows[optionsTable.Rows.Count - 1].HeaderCell.Value = (robotLimit - sub).ToString();
-                        Console.WriteLine("big error " + (robotLimit - sub).ToString());
-                        Console.WriteLine("big error " + optionsTable.Rows[optionsTable.Rows.Count - 1].HeaderCell.Value);
-                        Console.WriteLine("sor: " + (optionsTable.Rows.Count - 1).ToString());
                     }
                     else
                     {
@@ -694,26 +691,10 @@ namespace DecisionSupport
             optionsTable.Rows.Add();
 
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            //trackBar1.BackColor = Color.FromArgb(40, Color.White);
-            //trackBar2.BackColor = Color.FromArgb(40, Color.White);
             groupBox1.BackColor = Color.FromArgb(40, Color.White);
             label7.BackColor = Color.Transparent;
             label4.BackColor = Color.Transparent;
             coverLabel.BackColor = Color.FromArgb(60, Color.White);
-            //optionsTable.Rows[0].Cells[0].Value = 4;
-            //Console.WriteLine("id of row: " + (optionsTable.Rows.Count - 1));
-            optionsTable.Columns.Add("valami", "Col 1");
-            //optionsTable.Columns.Add("valami", " Col 2");
-            //optionsTable.Columns.Add("valami", "Col 3");
-            //optionsTable.Rows[0].HeaderCell.Value = 2.ToString();
-            //optionsTable.Rows[0].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight;
-
-            //optionsTable.Rows.Add();
-            //optionsTable.Rows.Add();
-            //optionsTable.Rows[1].HeaderCell.Value = 2.ToString();
-            //optionsTable.Rows[2].HeaderCell.Value = 233333.ToString();
-
-            //Console.WriteLine("number of cols: " + optionsTable.Columns.Count);
 
             optionsTable.ColumnHeadersHeight = 50;
             optionsTable.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.BottomCenter;
@@ -723,7 +704,6 @@ namespace DecisionSupport
             optionsTable.ColumnWidthChanged += new DataGridViewColumnEventHandler(optionsTable_ColumnWidthChanged);
 
             optionsTable.RowHeadersWidth = 90;
-        //    optionsTable.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
             optionsTable.RowHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
             optionsTable.CellPainting += new DataGridViewCellPaintingEventHandler(optionsTable_CellPainting);
             optionsTable.Paint += new PaintEventHandler(optionsTable_Paint);
@@ -731,31 +711,11 @@ namespace DecisionSupport
             optionsTable.RowHeightChanged += new DataGridViewRowEventHandler(optionsTable_RowHeightChanged);
             
         }
-        int minusY = 30;
         private void ShowOpts_Resize(object sender, EventArgs e)
-        {
-            Console.WriteLine("opsos w: " + this.Width + ", " + this.Height);
-            //    if (this.Width + 250 >= Screen.PrimaryScreen.WorkingArea.Size.Width &&
-            //        this.Height + 100 >= Screen.PrimaryScreen.WorkingArea.Size.Height)
-            //    {
-            //        Console.WriteLine("show optsos resize");
-            //        optionsTable.Size = new Size(1300, 600);
-            //        coverLabel.Size = new Size(1300, 600);
-            //        coverLabel.Location = new Point(coverLabel.Location.X - 150, coverLabel.Location.Y - 50);
-            //    }
-            //    else
-            //    {
-            //        optionsTable.Size = new Size(1000, 500);
-            //        coverLabel.Size = new Size(1000, 500);
-            ////        coverLabel.Location = new Point(coverLabel.Location.X - 150, coverLabel.Location.Y - 50);
-            //    }
-             
+        {             
             if(Screen.GetWorkingArea(this) != Screen.PrimaryScreen.WorkingArea &&
                     this.Width >= 1710 && this.Height >= 965)
             {
-                //panel1.Height = 100;
-                //groupBox1.Location = new Point(groupBox1.Location.X, groupBoxY - minusY);
-                //coverLabel.Location = new Point(coverLabel.Location.X, coverLabelY - minusY);
                 coverLabel.Width = 1000;
                 coverLabel.Height = 600;
                 optionsTable.Width = 1000;

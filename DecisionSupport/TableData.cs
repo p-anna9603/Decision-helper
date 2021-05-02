@@ -30,7 +30,9 @@ namespace DecisionSupport
             {
                 valInt = Int32.Parse(value);
             }
-            catch (Exception e) { 
+            catch (Exception e) 
+            {
+                Console.WriteLine("Error: " + e.Message);
             }
 
             if (values.Count == row)
@@ -55,7 +57,6 @@ namespace DecisionSupport
         {
             if (values.Count == 0)
             {
-                //Console.WriteLine("getColumnCount()-ban");
                 return 0;
             }
             //Console.WriteLine("values[0].COunt: " + values[0].Count);

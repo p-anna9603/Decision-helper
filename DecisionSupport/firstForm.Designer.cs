@@ -271,7 +271,6 @@ namespace DecisionSupport
             this.panelTitleBar.Name = "panelTitleBar";
             this.panelTitleBar.Size = new System.Drawing.Size(963, 75);
             this.panelTitleBar.TabIndex = 10;
-            this.panelTitleBar.DragDrop += new System.Windows.Forms.DragEventHandler(this.panelTitleBar_DragDrop);
             this.panelTitleBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTitleBar_MouseDown);
             // 
             // save
@@ -424,7 +423,7 @@ namespace DecisionSupport
             this.iconPictureBox2.IconColor = System.Drawing.SystemColors.ControlDark;
             this.iconPictureBox2.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.iconPictureBox2.IconSize = 149;
-            this.iconPictureBox2.Location = new System.Drawing.Point(346, 274);
+            this.iconPictureBox2.Location = new System.Drawing.Point(333, 205);
             this.iconPictureBox2.Name = "iconPictureBox2";
             this.iconPictureBox2.Size = new System.Drawing.Size(270, 149);
             this.iconPictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -470,8 +469,6 @@ namespace DecisionSupport
             this.Name = "firstForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "firstForm";
-            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.firstForm_DragDrop);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.firstForm_Paint);
             this.Resize += new System.EventHandler(this.firstForm_Resize);
             this.panelMenu.ResumeLayout(false);
             this.projectSubMenu.ResumeLayout(false);

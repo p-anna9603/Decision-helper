@@ -14,6 +14,7 @@ namespace DecisionSupport
 {
     public class Table : FlowLayoutPanel
     {
+        Form1 form1;
         TableLayoutPanel product01;
         IconButton addMan;
         IconButton addRobot;
@@ -98,9 +99,9 @@ namespace DecisionSupport
             this.product01.Controls.Add(this.addMan, this.product01.ColumnCount-1, 0);
             this.product01.Controls.Add(this.addRobot, 0, this.product01.RowCount - 1);
         }
-        public static Table createFromTableData(TableData tableData, int idx, int x, int y)
+        public static Table createFromTableData(TableData tableData, int idx, Form1 parent)
         {
-            Table result = new Table(idx, x, y); // TODO remove xy params
+            Table result = new Table(idx, parent);
             for(int i = 0; i < tableData.getRowCount(); ++i)
             {
                 for(int j = 0; j < tableData.getColumnCount(); ++j)
@@ -112,15 +113,15 @@ namespace DecisionSupport
             result.CostWorker.Text = (tableData.WorkerCost).ToString();
             result.productValue.Text = (tableData.ProductValue).ToString();
 
-            Console.WriteLine("count: " + tableData.getColumnCount());
             result.addPlus(tableData.getRowCount() > 1, tableData.getColumnCount() > 1 && 
                 tableData.get(tableData.getRowCount()-1, tableData.getColumnCount()-1) != -1);
 
             return result;
         }
 
-        public Table(int idx, int x, int y)
+        public Table(int idx, Form1 parent)
         {
+            form1 = parent;
             this.idx = idx;
             this.prodCnt = idx + 1;
             this.product01 = new System.Windows.Forms.TableLayoutPanel();
@@ -159,11 +160,6 @@ namespace DecisionSupport
             this.costWorkerContainer.SuspendLayout();
             this.costRobotContainer.SuspendLayout();
             
-        //    numRobots.RemoveAt(0);
-       
-            // 
-            // product01
-            // 
             foreach(Control C in this.product01.Controls)
             {
                 C.SuspendLayout();
@@ -171,9 +167,6 @@ namespace DecisionSupport
             //
             // product01 = táblázat maga
             //
-            //this.product01.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            //| System.Windows.Forms.AnchorStyles.Left)
-            //| System.Windows.Forms.AnchorStyles.Right)));
             this.product01.AutoSize = true;
             this.product01.Dock = DockStyle.Top; // space probléma
             this.product01.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
@@ -186,7 +179,6 @@ namespace DecisionSupport
             //this.product01.Controls.Add(this.robotLabel, 0, 0);
             this.product01.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.product01.Location = new System.Drawing.Point(3, 6);
-            //this.product01.Name = "product01";
             this.product01.RowCount = 2;
             this.product01.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
             this.product01.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
@@ -206,7 +198,6 @@ namespace DecisionSupport
             //
             this.workerLabel.Text = "MANPOWER";
             this.workerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            //this.workerLabel.Location = new System.Drawing.Point(0, 3);
             this.workerLabel.Size = new System.Drawing.Size(100, 20);
             this.workerLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.workerLabel.Location = new System.Drawing.Point(this.splitter2.Location.X + this.splitter2.Width, 3);
@@ -220,8 +211,6 @@ namespace DecisionSupport
             this.manPowerLabelContainer.Location = new System.Drawing.Point(0, 5);
             this.manPowerLabelContainer.Size = new System.Drawing.Size(280, 20);
             manPowerLabelContainer.Dock = DockStyle.Top;
-            //this.manPowerLabelContainer.AutoSize = true;
-            //this.manPowerLabelContainer.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             //
             // productCountLabel
             //
@@ -277,49 +266,36 @@ namespace DecisionSupport
             //
             // robotLabelsplitter
             // 
-            //    this.robotLabelsplitter.Location = new System.Drawing.Point(0, 1);
             this.robotLabelsplitter.Size = new System.Drawing.Size(0, 0); // (width, height)
-       
             this.robotLabelsplitter.TabStop = false;
-            //this.robotLabelsplitter.BackColor = Color.Red;
             // 
             // 
             // robotLabel
             // 
-            float currentsize;
             this.robotLabel.AutoSize = false;
             this.robotLabel.Name = "robotLabel";
             this.robotLabel.Size = new System.Drawing.Size(16, 86);         
             this.robotLabel.Text = "ROBOT"; 
             robotLabel.TextAlign = ContentAlignment.TopCenter;
-            //StringFormat stringf = new StringFormat();
-            //stringf.FormatFlags = StringFormatFlags.DirectionVertical;
-        //    this.robotLabel.Paint += rotateLabel_Paint;
-            // 
             // 
             // robotLabelLayout
             // 
-      //      this.robotLabelContainer.Controls.Add(this.robotLabelsplitter);
             this.robotLabelContainer.Controls.Add(this.robotLabel);
             this.robotLabelContainer.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.robotLabelContainer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.robotLabelContainer.Location = new System.Drawing.Point(0, 30);
             this.robotLabelContainer.Size = new System.Drawing.Size(23, 140); // (WIDTH, HEIGHT) height to change!
             robotLabelContainer.MinimumSize = new Size(23, 90);
-       //     robotLabelContainer.BorderStyle = BorderStyle.FixedSingle;
             robotLabelContainer.Dock = DockStyle.Right;
             // 
             // workerCost label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-         //   this.label4.Location = new System.Drawing.Point(3, 3);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(100, 22);
-      
+            this.label4.Size = new System.Drawing.Size(100, 22);      
             this.label4.Text = "Cost of one worker";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-
             // 
             // robotCost label5
             // 
@@ -328,7 +304,6 @@ namespace DecisionSupport
             this.label5.Location = new System.Drawing.Point(3, 3);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(138, 22);
-
             this.label5.Text = "Cost of one robot";
             this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             //
@@ -343,35 +318,29 @@ namespace DecisionSupport
             // 
             // CostWorker
             // 
-         //   this.CostWorker.Location = new System.Drawing.Point(145, 0);
             this.CostWorker.Name = "CostWorker";
             this.CostWorker.Size = new System.Drawing.Size(110, 22);
-
             this.CostWorker.Text = "0";
             // 
             // CostRobot
             // 
             this.CostRobot.Location = new System.Drawing.Point(145, 0);
             this.CostRobot.Name = "CostRobot";
-            this.CostRobot.Size = new System.Drawing.Size(110, 22);
-     
+            this.CostRobot.Size = new System.Drawing.Size(110, 22);     
             this.CostRobot.Text = "0";
             //
             // productValue textBox
             //
             this.productValue.Location = new System.Drawing.Point(145, 0);
-            this.productValue.Size = new System.Drawing.Size(110, 22);
-    
+            this.productValue.Size = new System.Drawing.Size(110, 22);    
             this.productValue.Text = "0";
-            //
             // 
             // deleteButton
             // 
             this.deleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.deleteButton.Location = new System.Drawing.Point(3, 90);
             this.deleteButton.Name = "deleteButton";
-            this.deleteButton.Size = new System.Drawing.Size(75, 30);
-       
+            this.deleteButton.Size = new System.Drawing.Size(75, 30);       
             this.deleteButton.Text = "Delete";
             this.deleteButton.UseVisualStyleBackColor = true;
             this.deleteButton.Click += new System.EventHandler(this.deleteTable);
@@ -383,30 +352,22 @@ namespace DecisionSupport
             //
             this.robotTableLabelLayout.AutoSize = true;
             this.robotTableLabelLayout.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
-            //this.robotTableLabelLayout.Controls.Add(this.manPowerLabelContainer);
             this.robotTableLabelLayout.Controls.Add(this.robotLabelContainer);
-            //this.robotTableLabelLayout.Controls.Add(this.robotLabel);
             this.robotTableLabelLayout.Controls.Add(this.product01);
             this.robotTableLabelLayout.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
             this.robotTableLabelLayout.Location = new System.Drawing.Point(3, 25);
             //
             // productLabelLayout - flowLayoutPanel1 + label of product
             //
-            //this.productLabel.Controls.Add(flowLayoutPanel1)
             this.productLabelLayout.AutoSize = true;
             this.productLabelLayout.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
-            //this.productLabelLayout.Controls.Add(this.productCountLabel);
             this.productLabelLayout.Controls.Add(this.manPowerLabelContainer);
-            //this.Controls.Add(this.workerLabel);
             this.productLabelLayout.Controls.Add(this.robotTableLabelLayout);
             this.productLabelLayout.Controls.Add(this.buttomLayoutPanel);
             this.productLabelLayout.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            //this.Location = new System.Drawing.Point(28, 150);
             this.productLabelLayout.Name = "flowLayoutPanel1";
             this.productLabelLayout.Size = new System.Drawing.Size(300, 230);
-            //this.BackColor = Color.AntiqueWhite;
             this.productLabelLayout.BackColor = Color.White;
-
             //
             // flowLayoutPanel1 - minden tába + sorok
             // 
@@ -415,30 +376,20 @@ namespace DecisionSupport
             this.Controls.Add(this.productCountLabel);
             this.Controls.Add(this.productLabelLayout);
            this.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            //this.Location = new System.Drawing.Point(28, 150);
             this.Name = "flowLayoutPanel1";
             this.Size = new System.Drawing.Size(300, 230);
-            //this.BackColor = Color.AntiqueWhite;
             this.BackColor = Color.Transparent;
-            //this.Anchor = AnchorStyles.Top;
-            //this.Anchor = AnchorStyles.Bottom;
-            //this.Anchor = AnchorStyles.Right;
-            //this.Anchor = AnchorStyles.Left;
-      //      this.BackColor = Color.SeaShell;
             this.BorderStyle = BorderStyle.Fixed3D;
             //
             // bottomPanel
             //
-            //bottomPanel.Controls.Add(bottomContainer);
             bottomPanel.Dock = DockStyle.Left;
             this.bottomPanel.Size = new System.Drawing.Size(40, 155);
             bottomPanel.Width = 30;
-       //     this.bottomPanel.Location = new System.Drawing.Point(3, 72);
             bottomPanel.BackColor = Color.Red;
             bottomPanel.Anchor = AnchorStyles.Top;
             bottomPanel.Anchor = AnchorStyles.Left;
             bottomPanel.AutoSize = true;
-            //bottomPanel.BackColor = Color.Red;
             this.bottomPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             //
             // bottomSplitter
@@ -446,7 +397,6 @@ namespace DecisionSupport
             this.bottomSplitter.Location = new System.Drawing.Point(3, 72);
             this.bottomSplitter.Size = new System.Drawing.Size(10, 30);
             this.bottomSplitter.TabStop = false;
-            //
             // 
             // bottomContainer - két sor + gomb
             // 
@@ -458,16 +408,11 @@ namespace DecisionSupport
             this.bottomContainer.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.bottomContainer.Location = new System.Drawing.Point(3, 72);
             this.bottomContainer.Name = "flowLayoutPanel2";
-            this.bottomContainer.Size = new System.Drawing.Size(270, 155);
-            //this.bottomContainer.BackColor = Color.Transparent;
-   
+            this.bottomContainer.Size = new System.Drawing.Size(270, 155);  
             bottomContainer.Dock = DockStyle.Right;
             bottomContainer.Anchor = AnchorStyles.Top;
-            //bottomContainer.Anchor = AnchorStyles.Right;
-            //bottomContainer.Anchor = AnchorStyles.Bottom;
             bottomContainer.Anchor = AnchorStyles.Left;
             bottomContainer.AutoSize = false;
-
             //
             //buttomLayoutPanel
             //
@@ -477,22 +422,15 @@ namespace DecisionSupport
             this.buttomLayoutPanel.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
             this.buttomLayoutPanel.Location = new System.Drawing.Point(3, 72);
             this.buttomLayoutPanel.Size = new System.Drawing.Size(330, 155);
-         //   bottomContainer.Dock = DockStyle.Right;
             buttomLayoutPanel.Anchor = AnchorStyles.Top;
-            //buttomLayoutPanel.Anchor = AnchorStyles.Right;
-            //buttomLayoutPanel.Anchor = AnchorStyles.Bottom;
             buttomLayoutPanel.Anchor = AnchorStyles.Left;
             buttomLayoutPanel.AutoSize = true;
             //
             // workerSplitter
             // 
-            //      this.robotSplitter.Location = new System.Drawing.Point(138, 3);
-            this.workerSplitter.Size = new System.Drawing.Size(2, 24);
-         
+            this.workerSplitter.Size = new System.Drawing.Size(2, 24);         
             this.workerSplitter.TabStop = false;
             this.workerSplitter.BackColor = Color.White;
-            // 
-            //// 
             // 
             // costWorkerContainer - munkás bér
             // 
@@ -500,16 +438,8 @@ namespace DecisionSupport
             this.costWorkerContainer.Controls.Add(this.workerSplitter);
             this.costWorkerContainer.Controls.Add(this.CostWorker);
             this.costWorkerContainer.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-         //   this.costWorkerContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            //this.costWorkerContainer.Location = new System.Drawing.Point(3, 3);
             this.costWorkerContainer.Name = "flowLayoutPanel3";
             this.costWorkerContainer.Size = new System.Drawing.Size(266, 31); // (width, height)
-           
-     //       costWorkerContainer.Dock = DockStyle.Bottom;
-            Console.WriteLine("label w: " + label4.Width + ", " + label4.Height); // 138
-            Console.WriteLine("workerSplitter w: " + workerSplitter.Width + ", " + workerSplitter.Height); //4, 24
-            Console.WriteLine("CostWorker w: " + CostWorker.Width + ", " + CostWorker.Height); // 110
-
             // 
             // costRobotContainer - robot ár
             // 
@@ -517,23 +447,18 @@ namespace DecisionSupport
             this.costRobotContainer.Controls.Add(this.robotSplitter);
             this.costRobotContainer.Controls.Add(this.CostRobot);
             this.costRobotContainer.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-            //this.costRobotContainer.Location = new System.Drawing.Point(3, 40);
             this.costRobotContainer.Name = "flowLayoutPanel4";
-            this.costRobotContainer.Size = new System.Drawing.Size(266, 31);
-       
+            this.costRobotContainer.Size = new System.Drawing.Size(266, 31);       
             //
             // productValueContainer  - termék ára
             //
             this.productValueContainer.Controls.Add(this.productValueLabel);
             this.productValueContainer.Controls.Add(this.productValue);
             this.productValueContainer.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
-            //this.costRobotContainer.Location = new System.Drawing.Point(3, 75);
-            this.productValueContainer.Size = new System.Drawing.Size(266, 31);
-  
+            this.productValueContainer.Size = new System.Drawing.Size(266, 31);  
             // 
             // robotSplitter
             // 
-            //this.robotSplitter.Location = new System.Drawing.Point(141, 3);
             this.robotSplitter.Name = "robotSplitter";
             this.robotSplitter.Size = new System.Drawing.Size(13, 24);
             this.robotSplitter.TabStop = false;
@@ -542,54 +467,25 @@ namespace DecisionSupport
             //// 
             this.AutoScroll = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            //this.BackColor = System.Drawing.SystemColors.HighlightText;
-            //this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            //this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-
-
-
-            //manPowerLabelContainer.BackColor = Color.FromArgb(120, Color.White);
-            //robotLabelContainer.BackColor = Color.FromArgb(120, Color.White);
-            //bottomContainer.BackColor = Color.FromArgb(120, Color.White);
-            //costWorkerContainer.BackColor = Color.FromArgb(120, Color.White);
-            //costRobotContainer.BackColor = Color.FromArgb(120, Color.White);
-            //productValueContainer.BackColor = Color.FromArgb(120, Color.White);
-            //robotTableLabelLayout.BackColor = Color.FromArgb(120, Color.White);
-            //productLabelLayout.BackColor = Color.FromArgb(120, Color.White);
-            //buttomLayoutPanel.BackColor = Color.FromArgb(120, Color.White);
-            //bottomPanel.BackColor = Color.FromArgb(120, Color.White);           
-
             this.ClientSize = new System.Drawing.Size(SystemInformation.WorkingArea.Width, SystemInformation.WorkingArea.Height);
-            //this.Size = Screen.PrimaryScreen.WorkingArea.Size;
-            ////Console.WriteLine("Screen: " + SystemInformation.WorkingArea);
-
-            //this.Controls.Add(this.label6);
-            //this.Controls.Add(this.menuStrip1);
-            //this.Controls.Add(this.flowLayoutPanel1);
             this.DoubleBuffered = true;
             //this.MainMenuStrip = this.menuStrip1;
             //this.Name = "Form1";
             //this.Text = "Decision helper";
             this.product01.ResumeLayout(false);
             this.product01.PerformLayout();
-            //this.flowLayoutPanel1.ResumeLayout(false);
-            //this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
-            
+            this.PerformLayout();            
             this.bottomContainer.ResumeLayout(false);
             this.bottomContainer.PerformLayout();
-
             buttomLayoutPanel.ResumeLayout(false);
             buttomLayoutPanel.PerformLayout();
-
             this.costWorkerContainer.ResumeLayout(false);
             this.costWorkerContainer.PerformLayout();
             this.costRobotContainer.ResumeLayout(false);
             this.costRobotContainer.PerformLayout();
             //this.menuStrip1.ResumeLayout(false);
             //this.menuStrip1.PerformLayout();
-
             //this.product01.SuspendLayout();
             //this.SuspendLayout();
             //this.bottomContainer.SuspendLayout();
@@ -598,14 +494,14 @@ namespace DecisionSupport
 
             addMan.Width = 50;
             addRobot.Width = 50;
-            System.Drawing.Point loc = this.Location;
+            //System.Drawing.Point loc = this.Location;
 
-            loc.X = x;
-            if (y != 0)
-            {
-                loc.Y = y;
-            }
-            this.Location = loc;
+            //loc.X = x;
+            //if (y != 0)
+            //{
+            //    loc.Y = y;
+            //}
+            //this.Location = loc;
 
             this.CostRobot.KeyPress += Cost_KeyPress;
             this.CostWorker.KeyPress += Cost_KeyPress;
@@ -661,7 +557,6 @@ namespace DecisionSupport
             numRobot.Dock = DockStyle.Fill;
            
             numMen02.Dock = DockStyle.Fill;
-          //  numMen02.Margin = new Padding(0, 3, 0, 0);
             numMen02.Width = 50;
             numRobot.Width = 50;
             numMen02.Maximum = 10000;
@@ -690,10 +585,8 @@ namespace DecisionSupport
                 {
                     Console.WriteLine("here");
                     int width = bottomSplitter.Width + 30;
-                 //   this.bottomPanel.Size = new System.Drawing.Size(width, 155);
                     this.bottomSplitter.Size = new System.Drawing.Size(width, 30);
-                }
-                
+                }                
             }
             else
             {
@@ -726,13 +619,11 @@ namespace DecisionSupport
 
                 if (isColumn)
                 {
-                    //Console.Write("csicska\n");
                     product01.Controls.Add(Man02, product01.ColumnCount - 2, i);
                     product01.GetControlFromPosition(product01.ColumnCount - 2, i).Width = 50;
                 }
                 else
                 {
-                    //Console.Write("icska\n");
                     product01.Controls.Add(Man02, i, product01.RowCount - 2);
                 }
             }
@@ -752,7 +643,7 @@ namespace DecisionSupport
             if (product01.Height >= 120)
             {
                 this.robotLabelsplitter.Size = new System.Drawing.Size(16, 27); // (width, height)
-                                                                                //   this.robotLabelContainer.Controls.Add(this.robotLabelsplitter);
+                //   this.robotLabelContainer.Controls.Add(this.robotLabelsplitter);
             }
             if(Form1.getDocOpenings() > 0)
             {
@@ -778,7 +669,7 @@ namespace DecisionSupport
 
             Form1.clearCache();
             Form1.setSaving(0);
-            Form1.adjustPositions(this.FindForm());
+       //     Form1.adjustPositions(this.FindForm());
             arrangeTabOrder();
         }
         private void arrangeTabOrder()
@@ -813,7 +704,6 @@ namespace DecisionSupport
         {
             int isDeleted = 0;
             int idx = list.IndexOf(num);
-            //Console.WriteLine("idx: " + idx);
             try
             {
                 if (list.Count == 1)
@@ -822,13 +712,12 @@ namespace DecisionSupport
                 }
                 else
                 {
-                    //Console.WriteLine(" list[idx-1] " + list[idx - 1].Value);
                     num.Value = list[idx - 1].Value + 1;
                 }
             }
             catch(Exception e)
             {
-                //Console.WriteLine("{0} exception caught.", e);
+                Console.WriteLine("exception caught: ", e.Message);
                 isDeleted = deleteFromTable(num, listID);
                 list.Remove(num);
             }
@@ -839,7 +728,6 @@ namespace DecisionSupport
         public int deleteFromTable(MyNumericUpDown num, int listID)
         {
             product01.Controls.Remove(num);
-            //Console.WriteLine("table row " + product01.RowCount + ", table columnCount: " + product01.ColumnCount);
             if (listID == 1)
             {
                 this.product01.ColumnCount = this.product01.ColumnCount - 1;
@@ -848,9 +736,7 @@ namespace DecisionSupport
             {
                 this.product01.RowCount = this.product01.RowCount - 1;
             }
-            //Console.WriteLine("table row " + product01.RowCount + ", table columnCount: " + product01.ColumnCount);
-            //Console.WriteLine("list count (robots): " + numRobots.Count + ", list (numMens): " + numMens.Count);
-            Form1.adjustPositions(this.FindForm());
+         //   Form1.adjustPositions(this.FindForm());
             Form1.setSaving(0);
             Form1.clearCache();
             return 1; // to avoid continuing in handleClick function (that would add more numericUpDowns to table which must not happen)
@@ -884,7 +770,6 @@ namespace DecisionSupport
             if ((e.KeyChar == '.' || e.KeyChar == ',') && (t.Text.IndexOf('.') > -1 || t.Text.IndexOf(',') > -1))
             {
                 e.Handled = true;
-                //Console.WriteLine("handledtrue");
             }
 
             int a = t.SelectionStart;
@@ -900,7 +785,6 @@ namespace DecisionSupport
 
         private void addWorkerNum_ValueChanged(object sender, EventArgs e)
         {
-            //Console.WriteLine("\nkezdeees################");
             MyNumericUpDown t = sender as MyNumericUpDown;
             if(t.Value > t.Maximum)
             {
@@ -909,12 +793,9 @@ namespace DecisionSupport
             }
             int idx = numMens.IndexOf(t);
             int count = 1;
-            //Console.WriteLine("darabszam össz : " + numMens.Count);
-            //Console.WriteLine("index  " + idx + " value: " + numMens[idx].Value);
             if(numMens[idx].Value == t.Maximum && idx != numMens.Count-1)
             {
                 numMens[idx].Value = numMens[idx].Value - (numMens.Count-1) - idx;
-                //Console.WriteLine("jelenlegi modosított: " + numMens[idx].Value);
             }
             if (idx != 0)
             {
@@ -927,7 +808,6 @@ namespace DecisionSupport
                 }
                 if (prevVal >= numMens[idx].Value)
                 {
-                    //Console.WriteLine("Yes");
                     numMens[idx].Value = prevVal + 1;
                 }
             }
@@ -937,7 +817,6 @@ namespace DecisionSupport
                 if (numMens[idx].Value >= numMens[i].Value)
                 {
                     numMens[i].Value = numMens[idx].Value + count;
-                    //Console.WriteLine("utána a " + i + ".-ik: " + numMens[i].Value);
                     count++;
                 }
             }
@@ -984,11 +863,9 @@ namespace DecisionSupport
             MyNumericUpDown t = sender as MyNumericUpDown;
             int idx = numRobots.IndexOf(t);
             int count = 1;
-            //Console.WriteLine("index  " + idx + " value: " + numRobots[idx].Value);
             if (numRobots[idx].Value == t.Maximum && idx != numRobots.Count - 1)
             {
                 numRobots[idx].Value = numRobots[idx].Value - (numRobots.Count - 1) - idx;
-                Console.WriteLine("jelenlegi modosított: " + numRobots[idx].Value);
             }
             if (idx != 0)
             {
@@ -999,7 +876,6 @@ namespace DecisionSupport
                 }
                 if (prevVal >= numRobots[idx].Value)
                 {
-                    //Console.WriteLine("Yes");
                     numRobots[idx].Value = prevVal + 1;
                 }
             }
@@ -1052,58 +928,19 @@ namespace DecisionSupport
             return Double.Parse(productValue.Text);
         }
 
-        //public TableData getTableData()
-        //{
-        //    //int i, j;
-        //    //int numOfRobot, numOfWorker;
-        //    //int value;
-        //    //double robotCost = 0, workerCost = 0, productVal = 0;
-
-        //    //robotCost = Double.Parse(CostRobot.Text);
-        //    //workerCost = Double.Parse(CostWorker.Text);
-        //    //productVal = Double.Parse(productValue.Text);
-
-        //    //TableData result = new TableData(robotCost, workerCost, productVal);
-
-        //    //for (i = 1; i < product01.RowCount - 1; ++i)
-        //    //{
-        //    //    for (j = 1; j < product01.ColumnCount - 1; ++j)
-        //    //    {
-        //    //        Control robot = product01.GetControlFromPosition(0, i);
-        //    //        Control worker = product01.GetControlFromPosition(j, 0);
-        //    //        Control val = product01.GetControlFromPosition(j, i);
-
-        //    //        numOfRobot = Int32.Parse(robot.Text);
-        //    //        numOfWorker = Int32.Parse(worker.Text);
-        //    //        value = Int32.Parse(val.Text);
-
-        //    //        result.addToRow(i - 1, numOfRobot, numOfWorker, value);
-        //    //    }
-        //    //}
-
-        //    //return result;
-        //}
-
         public void deleteTable(object sender, EventArgs e)
         {
-            Form1.deleteTable(this.FindForm(), this.idx);
+            form1.deleteTable(this.FindForm(), this.idx);
         }
-        //public void submitButtonFun(object sender, EventArgs e)
-        //{
-        //    Button t = sender as Button;
-        //    Form1.submitButton_Click(t);
-        //}
 
         public void addCell(int row, int col, int val)
         {
-            //Console.WriteLine("row: " + row + ", col: " + col + "\n");
             if (col > product01.ColumnCount-1)
             {
                 product01.ColumnCount = product01.ColumnCount + 1;
             }
             else if (row > product01.RowCount-1)
             {
-                //Console.WriteLine("rowban\n");
                 product01.RowCount = product01.RowCount + 1;
             }
 

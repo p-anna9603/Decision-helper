@@ -24,61 +24,65 @@ namespace DecisionSupport
 {
     public partial class Form1 : Form
     {
+        /* Arrays */
         private static List<Table> tables = new List<Table>(); // contains all the Table type (with all controls)
+
+        /* cache = map to store and reuse the calculated values:
+         * key: string - searched M_p,l,k
+         * value: another map
+         *      -> key: List<Index> - stores the given M_p,l,k what allocations were created: product - robot number - operator number
+         *      -> value: the double optimum itself (one number)         * 
+         * */
+        static Dictionary<string, Dictionary<List<Index>, double>> cache = new Dictionary<string, Dictionary<List<Index>, double>>();
+        Dictionary<int, Index> optProducts = new Dictionary<int, Index>();
+
+        /* Needed counters */
         static int counter = 0;
         int totalCount = 0;
-        static System.Windows.Forms.Button submitButton;
-        static int docOpenings = 0;
-
-        static Dictionary<string, Dictionary<List<Index>, double>> cache = new Dictionary<string, Dictionary<List<Index>, double>>();
-
-        Dictionary<int, Index> optProducts = new Dictionary<int, Index>();
-        List<Index> optProdIdx = new List<Index>();
-        // product,robot,worker index,  indexlista optimumra   érték(optimum)
-
-        private static int saving = 0; // 0 - need to be saved, 1 - already saved
+        private static int saving = 0;      // 0 - need to be saved, 1 - already saved
         public static int modification = 0; // 1 - no change, 0 - any change happened
         public static MenuStrip menu;
-        static int saveRes = 0; // 0 - save was not successful, 1 - save was succesful
-        static int newWork = 1; // 1 - if its a new work from blank sheet, 0 - file was opened 
+        static int saveRes = 0;             // 0 - save was not successful, 1 - save was succesful
+        static int newWork = 1;             // 1 - if its a new work from blank sheet, 0 - file was opened 
+        static int docOpenings = 0;
         static string openedFileName = "";
-        static int saveAs = 0; // 1 - if Save As option was selected
-        static int savedAs = 0; // 1 - if Save As option was selected and saved
-        static string secondFileName = ""; // saving after the save as 
+        static int saveAs = 0;              // 1 - if Save As option was selected
+        static int savedAs = 0;             // 1 - if Save As option was selected and saved
+        static string secondFileName = "";  // saving after the save as 
         static string formTitle = "";
-        static Form1 form1;     
+        static Form1 form1;                 // used in Table class - deleteTable function
 
-        // Fields
-        private IconButton currentBtn;
-        private Panel leftBorderBtn;
-        private Form currentChildForm;
         public Form1()
         {
             InitializeComponent();
-        //    FormHelper.SetSizeToScreen(this.FindForm());
+             //    FormHelper.SetSizeToScreen(this.FindForm());
             this.MinimumSize = new System.Drawing.Size(600, 600);
             this.StartPosition = FormStartPosition.Manual;
-            // To reduce flickering: 
+
+            /* To reduce flickering: */
             this.DoubleBuffered = true;
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            typeof(FlowLayoutPanel).InvokeMember("DoubleBuffered",
+                  BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
+                 null, panelContainer, new object[] { true });
+
+            panelContainer.VerticalScroll.Enabled = false;
             this.HorizontalScroll.Enabled = true;
             this.VerticalScroll.Enabled = true;
             this.AutoScroll = true;
-            menu = this.menuStrip1;
+
+            /*Original Form1 menustrip: */
+             /* menu = this.menuStrip1;
+                menu.BackColor = System.Drawing.Color.FromArgb(120, System.Drawing.Color.White);
+                formTitle = this.Text;
+             */
+
             this.FormClosing += new FormClosingEventHandler(savingData);
             initialize();
-            formTitle = this.Text;
             form1 = this;
-            menu.BackColor = System.Drawing.Color.FromArgb(120, System.Drawing.Color.White);
-
-            //this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            //this.WindowState = FormWindowState.Maximized;
-            //this.ControlBox = true;
-            //this.TopMost = true;
-            //this.Bounds = Screen.PrimaryScreen.Bounds; 
         }
 
-
+        /* To reduce flickering: */
         Bitmap Background, BackgroundTemp;
         private void initialize()
         {
@@ -88,6 +92,7 @@ namespace DecisionSupport
             BackgroundTemp = new Bitmap(Properties.Resources.bckg11);
             Background = new Bitmap(BackgroundTemp, BackgroundTemp.Width, BackgroundTemp.Height);
         }
+
         //Up,up,vp
         public double getU(int p, int up, int vp) {
             if (p  < 0 || p  > tables.Count) {
@@ -123,6 +128,7 @@ namespace DecisionSupport
             return result; 
         }
 
+        /* Counters for debug and evaluation purposes */
         private int countNotFromCache = 0;
         int readCache = 0;
         public double getPrevOptVal(int product, int robotLimit, int workerLimit, ref List<Index> indexes)
@@ -137,16 +143,17 @@ namespace DecisionSupport
             string[] keys = new string[3] { product.ToString(), robotLimit.ToString(), workerLimit.ToString() };
             string k = product.ToString() + "," +  robotLimit.ToString() + "," + workerLimit.ToString() + ",";
 
-            //Console.WriteLine("kombinációk: " + keys[0] + " " + keys[1] + " " + keys[2]);
+        //    Console.WriteLine("Called M_p,l,k: " + k);
 
             if (product < 0)
             {
                 return 0;
             }
-            //Console.WriteLine("\tújra: " + k);
+
             if (cache.Keys.Contains(k))
             {
                 this.readCache++;
+              //  Console.WriteLine("már volt: " + k);
                 indexes = cache[k].First().Key;
                 return cache[k].First().Value;
             }
@@ -157,16 +164,15 @@ namespace DecisionSupport
 
             Table table = tables[product];
             List<Index> maxIndexes = new List<Index>();
-            string maxindexes = "";
 
             int row = 0;
             int col;
             double max = -1;
 
-            //Console.WriteLine(product + ". tábla");
+            //Console.WriteLine(product + ". table");
             while (row < table.Product01.RowCount - 1)
             {
-                int u = row == 0 ? 0 : Int32.Parse(table.Product01.GetControlFromPosition(0, row).Text); // sorfő érték (robot)
+                int u = row == 0 ? 0 : Int32.Parse(table.Product01.GetControlFromPosition(0, row).Text); // rowHeader value (number of robot)
                 //Console.WriteLine("\t\tu: " + u);
                 if (u > robotLimit)
                 {
@@ -175,7 +181,7 @@ namespace DecisionSupport
                 col = 0;
                 while (col < table.Product01.ColumnCount - 1) 
                 {
-                    int v = col == 0 ? 0 : Int32.Parse(table.Product01.GetControlFromPosition(col, 0).Text); // oszlopfő érték (munkás)
+                    int v = col == 0 ? 0 : Int32.Parse(table.Product01.GetControlFromPosition(col, 0).Text); // columnHeader value (number of operator)
                     //Console.WriteLine("\tv: " + v);
                     if (v > workerLimit)
                     {
@@ -190,16 +196,14 @@ namespace DecisionSupport
                     {
                         prevVal = getPrevOptVal(product - 1, robotLimit - u, workerLimit - v, ref prevIndexes);
                         curr += prevVal;
-                        //opt.Value += prevVal;
                     }
                     if (max < curr)
                     {
                         Index id = new Index(product, u ,v);
-                        //       maxIndexes = prevIndexes;
+                        // maxIndexes = prevIndexes;
                         maxIndexes.Clear();
                         foreach (Index i in prevIndexes)
                         {
-                            //Console.WriteLine("prod: " + i.Product + ", robot: " + i.Robot + ", operator: " + i.Worker);
                             maxIndexes.Add(i);
                         }
                         maxIndexes.Add(id);                       
@@ -210,19 +214,19 @@ namespace DecisionSupport
                 }
                 ++row;
             }
-
-            //Console.WriteLine("\topt: " + max);
+            //Console.WriteLine("\t opt: " + max);
+            
             List<Index> idx = new List<Index>();
             foreach (Index i in maxIndexes)
             {
                 idx.Add(i);
-                //Console.WriteLine("prod: " + i.Product + ", robot: " + i.Robot + ", operator: " + i.Worker);
             }
             Dictionary<List<Index>, double> optimum = new Dictionary<List<Index>, double>();
             optimum.Add(idx, max);
             Cache.Add(k, optimum);
 
             indexes = maxIndexes;
+            
             return max;
         }
         
@@ -230,15 +234,14 @@ namespace DecisionSupport
         {
             if(tables.Count == 0)
             {
-                MessageBox.Show("There is nothing to evaluate.\nPlease add a new product.", "No data");
+                MessageBox.Show("There is nothing to evaluate.\nPlease add a new product.", "No data", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return 0;
             }
             else
             {
                 return 1;
             }
-            Console.WriteLine(" getOptimumban");
-
+            /* Originally solution showing class was called here: */
             //ShowSolution showSol = new ShowSolution(ref tables, this);
             //showSol.ShowDialog();
 
@@ -247,6 +250,7 @@ namespace DecisionSupport
             //showOpt.ShowDialog();
         }
 
+        /* A solution to reduce flickering */
         protected override CreateParams CreateParams
         {
             get
@@ -256,32 +260,36 @@ namespace DecisionSupport
                 return cp;
             }
         }
-
+        /* Attempt to stop flickering */
+        private void panelContainer_Scroll(object sender, ScrollEventArgs e)
+        {
+            panelContainer.Invalidate();
+            base.OnScroll(e);
+        }
+        /* Getters, setters: */
         public int ReadCache { get => readCache; set => readCache = value; }
         public Dictionary<string, Dictionary<List<Index>, double>> Cache { get => cache; set => cache = value; }
-     //   public int Count { get => count; set => count = value; }
         public int TotalCount { get => totalCount; set => totalCount = value; }
         public  List<Table> Tables { get => tables; set => tables = value; }
         public int CanCloseParent { get => canCloseParent; set => canCloseParent = value; }
         public int CountNotFromCache { get => countNotFromCache; set => countNotFromCache = value; }
         public int Saving { get => saving; set => saving = value; }
 
+
         private int canCloseParent = 0; // 0 - do not, 1 - can close parent window (firstForm)
         private void savingData(Object sender, FormClosingEventArgs e)
         {
-            Console.WriteLine("exit saved: " + getSaving());
-            if (tables.Count != 0 && getSaving() == 0 ||
-                tables.Count == 0 && wasTableDeleted == 1)
+            if (tables.Count != 0 && getSaving() == 0 ||    // there are tables and datas were modified
+                tables.Count == 0 && wasTableDeleted == 1)  // there is no table now - but there were - and were deleted
             {
-                Console.WriteLine("kérdés form1 savingData");
                 const string message = "Do you want to save the data before exit?";
                 const string caption = "Exit application";
                 var result = MessageBox.Show(message, caption,
-                                            MessageBoxButtons.YesNoCancel);
+                                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
                     Console.WriteLine("yes");
-                    savingMenuItemClicked(sender, e);
+                    savingMenuItemClicked(sender, e); // sets saveRes that is further checked
                 }
                 else if (result == DialogResult.No)
                 {
@@ -295,25 +303,25 @@ namespace DecisionSupport
                     canCloseParent = 0;
                     e.Cancel = true;
                 }
+
                 if (saveRes == 0 && result == DialogResult.Yes)
                 {
-                    MessageBox.Show("Saving failed", "Please try again!");
+                    MessageBox.Show("Saving failed", "Please try again!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     canCloseParent = 0;
                     e.Cancel = true;
                 }
                 else if (saveRes == 1 && result == DialogResult.Yes)
                 {
-                    MessageBox.Show("Success", "Saving was successful!");
+                    MessageBox.Show("Success", "Saving was successful!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     canCloseParent = 1;
                 }
             }
-            else if(tables.Count != 0 && getSaving() == 1)
+            else if(tables.Count != 0 && getSaving() == 1) // there is table - no need to save because there were no modifications
             {
-                Console.WriteLine("van tábla nem kell menteni");
                 canCloseParent = 1;
                 e.Cancel = false;
             }
-            else if(tables.Count == 0 && wasTableDeleted != 1)
+            else if(tables.Count == 0 && wasTableDeleted != 1) // no table now and non was deleted either
             {
                 Console.WriteLine("nincs tábla de nem is volt törölve");
                 canCloseParent = 1;
@@ -326,39 +334,48 @@ namespace DecisionSupport
         }
         private void newProductMenu_Click(object sender, EventArgs e)
         {
+            panelContainer.SuspendLayout();
             firstForm.DisableButton();
             firstForm.IconBtn.IconChar = IconChar.Tasks;
             firstForm.Title.Text = "Project";
             if (tables.Count != 0)
             {
-                //System.Drawing.Point prevPos = this.FindForm().PointToClient(
-                //tables[tables.Count - 1].Parent.PointToScreen(tables[tables.Count - 1].Location));
-
                 System.Drawing.Point prevPos = tables[tables.Count - 1].Location;
-                Table table = new Table(counter++, prevPos.X + tables[tables.Count - 1].Width + 20, prevPos.Y);
-                Controls.Add(table);
-
-                tables.Add(table);
+                Table table = new Table(counter++, this);
+                //     Controls.Add(table); // originally tables were added to the form itself
+                table.Margin = new Padding(20, 10, 0, 3);
+                tables.Add(table);          
+                table.WrapContents = false;
+                table.AutoScroll = false;
                 typeof(Table).InvokeMember("DoubleBuffered",
-                  BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
-                 null, table, new object[] { true });
+                      BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
+                      null, table, new object[] { true });
+                panelContainer.Controls.Add(table); // now tables are added to a flowlayoutpanel
             }
             else
             {
-                Table table = new Table(counter++, 20, 80);
-                Controls.Add(table);
-
+                Table table = new Table(counter++, this);
+                //     Controls.Add(table);
+                table.Margin = new Padding(20, 10, 0, 3);
+                table.WrapContents = false;
+                table.AutoScroll = false;
                 tables.Add(table);
+                panelContainer.Controls.Add(table);
             }
             tables[tables.Count - 1].addPlus(false,false);
 
-            adjustPositions(this.FindForm());
+            // adjustPositions(this.FindForm());
             setSaving(0);
             clearCache();
+            panelContainer.ResumeLayout();
         }
+        static int adj = 0;
 
+        /* Before I was aware of FlowLayoutPanel built in wrapping function I manually created the wrap: */        
         public static void adjustPositions(Form form)
         {
+            adj++;
+            Console.WriteLine("adjust: " + adj);
             form.HorizontalScroll.Enabled = false;
             if (tables.Count == 0)
             {
@@ -374,46 +391,30 @@ namespace DecisionSupport
             form.VerticalScroll.Visible = false;
 
             tables[0].Location = new System.Drawing.Point(20,
-                                                form.AutoScrollPosition.Y + 80); // első tábla törlése esetén 
-
-    //        Console.WriteLine("0. tábla helye" + tables[0].Location);
-     //       Console.WriteLine("autoscroll: " + form.AutoScrollPosition);
-            //int maximumRowHeight = 50 + tables[0].Height;
+                                                form.AutoScrollPosition.Y + 80); // If the first product is deleted
             int maximumRowHeight = 0;
 
             for (int i = 1; i < tables.Count; ++i)
             {
                 System.Drawing.Point prevPos = tables[i - 1].Location;
-                ////// Console.WriteLine(i - 1 + ". tábla helye " + prevPos);
 
-                /* oszlop hozzáadásnál */
+                /* adding a column */
                 tables[i].Location = new System.Drawing.Point(prevPos.X + tables[i - 1].Width + 20, prevPos.Y);
 
-                /* sor magasság növelés*/
+                /* row height increase */
                 if ((prevPos.Y + tables[i - 1].Height > tables[maximumRowHeight].Location.Y + tables[maximumRowHeight].Height))
                 {
                     maximumRowHeight = i - 1;
                 }
 
-                /* ha kilógna a képből új sorban jelenjen meg */
+                /* if it is over the window -> put it in new line */
                 if ((tables[i].Location.X + tables[i].Width >= form.Width - 70))
                 {
                     tables[i].Location = new System.Drawing.Point(20, tables[maximumRowHeight].Location.Y + tables[maximumRowHeight].Height + 20);
-                    ////// Console.WriteLine("maxrowheight: " + maximumRowHeight);
                     maximumRowHeight = i;
                 }
-            //     Console.WriteLine(i + ". tábla új helye " + tables[i].Location);
             }
-
-            /* ha a submit gombot eléri a tábla csúsztassuk lejjebb */
-            //if ((tables[tables.Count - 1].Location.Y + tables[tables.Count - 1].Height) >= submitButton.Location.Y - 20)
-            //{
-            //}
-
-                //submitButton.Location = new System.Drawing.Point(SystemInformation.WorkingArea.Width - 150, SystemInformation.WorkingArea.Height - 100);
-            ////// Console.WriteLine("\nWorking area width " + SystemInformation.WorkingArea.Width);
-            ////// Console.WriteLine("Working area height " + SystemInformation.WorkingArea.Height + "\n");
-            
+ 
             for (int i = 0; i < tables.Count; ++i)
             {
                 tables[i].ResumeLayout(false);
@@ -421,35 +422,19 @@ namespace DecisionSupport
                 tables[i].Show();
                 if(i == tables.Count-1)
                 {
-                    //tables[i].Anchor = AnchorStyles.Bottom;
-                    //tables[i].Anchor = AnchorStyles.Left;
-                    //tables[i].Anchor = AnchorStyles.Right;
                     tables[i].Anchor = AnchorStyles.Top;
                 }
-                //foreach(Control c in tables[i].Controls)
-                //{
-                //    c.PerformLayout();
-                //    c.ResumeLayout(false);
-                //}
             }
             
             form.ResumeLayout(false);
             form.PerformLayout();
             form.VerticalScroll.Visible = true;
-            ////// Console.WriteLine("\nAutoscroll offset: " + form.AutoScrollOffset);
-            ////// Console.WriteLine("\nAutoscroll poz offset: " + form.AutoScrollPosition);
-            ////// Console.WriteLine("\nform.VerticalScroll.Value : " + form.VerticalScroll.Value);
-            //foreach (Control i in form.Controls)
-            //{
-            //    //i.Anchor = AnchorStyles.Bottom;
-            //    i.Anchor = AnchorStyles.Left;
-            //    //i.Anchor = AnchorStyles.Right;
-            //    i.Anchor = AnchorStyles.Top;
-            //}
         }
-        public static int wasTableDeleted = 0;
-        public static void deleteTable(Form form, int idx)
-        {
+        
+        public static int wasTableDeleted = 0; // to know if a table was deleted
+
+        public void deleteTable(Form form, int idx)
+        {        
             int toDelete = 0;
             int toDeleteIdx = 0;
             for (int i = 0; i < tables.Count; ++i)
@@ -459,9 +444,8 @@ namespace DecisionSupport
                     toDelete = i;
                     toDeleteIdx = idx;
                     form.Controls.Remove(tables[i]);
+                    panelContainer.Controls.Remove(tables[i]);
                     tables.RemoveAt(i);
-                    //// Console.WriteLine("todelte: " + toDelete);
-                    //// Console.WriteLine("toDeleteIdx: " + toDeleteIdx);
                 }
             }
             for(int j = toDelete; j < tables.Count; j++)
@@ -476,11 +460,10 @@ namespace DecisionSupport
                 }
                 int uj = (tables[j].idx) + 1;
                 tables[j].ProductCountLabel.Text = uj + ". product";
-                //// Console.WriteLine(j + ". tábla, új felirat " + tables[j].ProductCountLabel.Text);
             }
             counter--;
             wasTableDeleted = 1;
-            adjustPositions(form);
+         //   adjustPositions(form);
             clearCache();
             setSaving(0);            
         }
@@ -494,6 +477,8 @@ namespace DecisionSupport
         {           
             saving = s;
             modification = s;
+
+            /* When one save icon and save as icon are also shown - in Form1 original menustrip*/
             /*
             if(saving == 0 && savingCount == 0)
             {
@@ -575,10 +560,10 @@ namespace DecisionSupport
         {
             if (tables.Count == 0)
             {
-                MessageBox.Show("There is nothing to save.\nStart you work now!", "Saving?");
+                MessageBox.Show("There is nothing to save.\nStart you work now!", "Saving?", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-            //getOptimum();
+
             string filename = "";
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Csv files|*.csv";
@@ -586,7 +571,9 @@ namespace DecisionSupport
             {
                 DialogResult res = sfd.ShowDialog();
                 filename = sfd.FileName;
-                var regExp = @"^(?:[\w]\:|\\)(\\[a-zA-Z_\-\s0-9]+)+\.(csv)$";
+                //var regExp = @"^(?:[\w]\:|\\)(\\[A-zÁ-ú_\-\s0-9]+)+\.(csv)$";
+
+                var regExp = @"^(?:[\w]\:|\\)(\\[\p{L}_\-\s0-9]+)+\.(csv)$";
                 Regex regex = new Regex(regExp);
                 if (res == DialogResult.OK && filename.EndsWith(".csv") && regex.IsMatch(filename))
                 {
@@ -603,7 +590,7 @@ namespace DecisionSupport
                     Console.WriteLine("rossz név");
                     const string message = "The given name is incorrect.\n Please give a correct name!";
                     const string caption = "Saving failed";
-                    MessageBox.Show(message, caption);
+                    MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     saveRes = 0;
                     return;
                 }
@@ -616,7 +603,6 @@ namespace DecisionSupport
             }
             else if(savedAs == 1) // save a new project that has been already saved (do not ask)
             {
-                // DO nothing
                 filename = secondFileName;
             }
             else // save loaded file (do not ask)
@@ -626,15 +612,12 @@ namespace DecisionSupport
 
             savedFileName = Path.GetFileName(filename);
 
-            //form1.Text = "Decision Support - " + savedFileName;
             try
             { 
             using (StreamWriter writeText = new StreamWriter(filename))
             {
                 for (int i = 0; i < tables.Count; ++i)
                 {
-                    //writeText.WriteLine("product " + i.ToString());
-
                     TableLayoutPanel table = tables[i].getTable();
 
                     for (int row = 0; row < table.RowCount - 1; ++row)
@@ -669,7 +652,7 @@ namespace DecisionSupport
                         Console.WriteLine("mentésben " + entry.Key[0] + entry.Key[1] + entry.Key[2] + entry.Key[3] + entry.Key[4] + entry.Key[5] + entry.Key[6]);
                         Console.WriteLine("mentés méret:  " + entry.Key.Length);
                     }
-                    foreach (char i in entry.Key) // 0,20,10
+                    foreach (char i in entry.Key) 
                     {
 
                         if (i == ',')
@@ -700,46 +683,50 @@ namespace DecisionSupport
         {
             const string message = "The file is propably open.\n Please close the file first!";
             const string caption = "Saving failed";
-            MessageBox.Show(message, caption);
+            MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
             Console.WriteLine("Openening failed: " + ex.Message);
             saveRes = 0;
             return;
         }
-         setSaving(1);
-         Console.WriteLine("saved: " + getSaving());
+         setSaving(1); // save was successful
         }
-        private void evaluateToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            getOptimum();
-        }
+        /* Form1 original menustrip: */
+        /*
+            private void evaluateToolStripMenuItem_Click(object sender, EventArgs e)
+            {
+                getOptimum();
+            }
 
-        private void saveToolStripMenuItem_MouseHover(object sender, EventArgs e)
-        {
-            toolTip1.SetToolTip(menuStrip1,"Save");
-        }
+            private void saveToolStripMenuItem_MouseHover(object sender, EventArgs e)
+            {
+                toolTip1.SetToolTip(menuStrip1,"Save");
+            }
 
-        private void SaveAsStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            saveAs = 1;
-            saveMenuClicked();
-        }
+            private void SaveAsStripMenuItem1_Click(object sender, EventArgs e)
+            {
+                saveAs = 1;
+                saveMenuClicked();
+            }
 
+            private void menuStrip1_MouseDoubleClick(object sender, MouseEventArgs e)
+            {
+                this.WindowState = FormWindowState.Maximized;
+                Console.WriteLine("double cliiiick");
+            }
+
+            private void openToolStripMenuItem_Click(object sender, EventArgs e)
+            {
+                openFile();
+            }
+        */
+        int formres = 0; // Local variable for debug purposes
         private void Form1_Resize(object sender, EventArgs e)
         {
-            adjustPositions(this.FindForm());
+            formres++;
+           //   adjustPositions(this.FindForm());
         }
 
-        private void menuStrip1_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            this.WindowState = FormWindowState.Maximized;
-            Console.WriteLine("double cliiiick");
-        }
-
-        private void openToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            openFile();
-        }
-        string onlyFileName = "";
+        string onlyFileName = ""; // file name without the path (.extension included)
         public string getOpenedFileName()
         {
             return onlyFileName;
@@ -760,7 +747,6 @@ namespace DecisionSupport
                     Console.WriteLine("fájl név: " + openedFileName);
 
                     onlyFileName = Path.GetFileName(openedFileName);
-                    //form1.Text = "Decision Support - " + onlyFileName;
                 }
                 else if (res == DialogResult.Cancel || res == DialogResult.Abort)
                 {
@@ -770,14 +756,14 @@ namespace DecisionSupport
                 {
                     const string message = "The file can not be opened.\n Please try again!";
                     const string caption = "Opening failed";
-                    MessageBox.Show(message, caption);
+                    MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return 0;
                 }              
                 else
                 {
                     const string message = "The file can not be opened.\n Please try again!";
                     const string caption = "Opening failed";
-                    MessageBox.Show(message, caption);
+                    MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return 0;
                 }
             }
@@ -786,7 +772,7 @@ namespace DecisionSupport
                 const string message = "The file is propably open.\n Please close the file first!";
                 const string caption = "Opening failed";
                 MessageBox.Show(message, caption);
-                Console.WriteLine("Openening failed: " + ex.Message);
+                Console.WriteLine("Openening failed: " + ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return 0;
             }
 
@@ -795,7 +781,6 @@ namespace DecisionSupport
             TableData tableData = new TableData();
             while (!reader.EndOfStream)
             {
-                //Console.WriteLine("not end");
                 String strLine = reader.ReadLine();
                 if (strLine == "")
                 {
@@ -805,7 +790,6 @@ namespace DecisionSupport
                 if (strLine == "*")
                 {
                     strArray = reader.ReadLine().Split(';');
-                    //ables[i].getCostWorkerValue() + ";" + tables[i].getCostRobotValue() + ";" + tables[i].getCostProductValue())
                     Double costWorker, costRobot, costProductValue;
                     costWorker = Double.Parse(strArray[0]);
                     costRobot = Double.Parse(strArray[1]);
@@ -815,8 +799,15 @@ namespace DecisionSupport
                     tableData.RobotCost = costRobot;
                     tableData.ProductValue = costProductValue;
 
-                    Table table = Table.createFromTableData(tableData, counter++, 0, 0);
-                    Controls.Add(table);
+                    Table table = Table.createFromTableData(tableData, counter++, this);
+                    //   Controls.Add(table);
+                    typeof(Table).InvokeMember("DoubleBuffered",
+                        BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
+                        null, table, new object[] { true });
+                    table.Margin = new Padding(20, 10, 0, 3);
+                    table.WrapContents = false;
+                    table.AutoScroll = false;
+                    panelContainer.Controls.Add(table);
                     tables.Add(table);
                     rowCount = 0;
                     tableData = new TableData();
@@ -837,7 +828,7 @@ namespace DecisionSupport
                         strArray = reader.ReadLine().Split(';');
                         //List<int> idlist = new List<int>();
                         string k = "";
-                        List<Index> indexlist = new List<Index>(); // optimumhoz robot és worker szám productonként
+                        List<Index> indexlist = new List<Index>(); // for the optimum - robot and worker number by product
                         foreach (string str in strArray[0].Split(','))
                         {
                             if (str.Length == 0)
@@ -855,42 +846,27 @@ namespace DecisionSupport
                         }
                         Dictionary<List<Index>, double> optimum = new Dictionary<List<Index>, double>();
                         optimum.Add(indexlist, Double.Parse(strArray[2]));
-                        //Console.WriteLine("kulcs: " + k);
                         Cache.Add(k, optimum);
                     }
                 }
-                //Console.WriteLine("###############beolvasva: ");
-                //foreach (var i in cache.Keys)
-                //{
-                //    for (int j = 0; j < i.Length; ++j)
-                //    {
-                //        Console.Write(i[j]);
-                //    }
-                //    Console.Write("\n");
-                //}
             }
             docOpenings++;
             Console.WriteLine("open");
-            adjustPositions(this.FindForm());
+        //    adjustPositions(this.FindForm());
             reader.Close();
-            //Console.WriteLine("reader close utan");
-            if (docOpenings > 1)
+            if (docOpenings > 1) // not the first document opening
             {
                 cache.Clear();
                 setSaving(0);
-                Console.WriteLine("nem az elso doksi nyitás");
             }
-            if (docOpenings == 1)
+            if (docOpenings == 1) // first document opening
             {
-                //setSaving(1);
-                setSaving(1);
-                
-                Console.WriteLine("elso doksi nyitás");
+                setSaving(1);                
             }
             return 1;
         }
 
-        public void clearEverything()
+        public void clearEverything() // upon creating a new project or loading an existing one this need to be called to initialize certain variables / arrays
         {
             Tables.Clear();
             tables.Clear();

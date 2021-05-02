@@ -48,4 +48,7 @@ C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\options2.baml
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.g.resources
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.firstForm.resources
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.ShowOpts.resources
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.tableExample.resources
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\DecisionSupport.exe.manifest
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\DecisionSupport.application
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.exe.manifest
+C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.application
