@@ -363,7 +363,6 @@ namespace DecisionSupport
 
                         if (combinationMap.Keys.Contains(k))
                         {
-                            Console.WriteLine("ujra használ");
                             continue;
                         }
                         //Plus
@@ -452,11 +451,11 @@ namespace DecisionSupport
                         optionsTable.Rows[prevSelectedRow].Cells[i].Style.BackColor = white;
                     }
                 }
-                if(optionsTable.Rows[prevSelectedRow].HeaderCell.Style.BackColor != System.Drawing.ColorTranslator.FromHtml("#ffffcc"))
+                if(optionsTable.Rows[prevSelectedRow].HeaderCell.Style.BackColor != yellow)
                 {
                     optionsTable.Rows[prevSelectedRow].HeaderCell.Style.BackColor = control;
                 }
-                if (optionsTable.Columns[prevSelectedCol].HeaderCell.Style.BackColor != System.Drawing.ColorTranslator.FromHtml("#ffffcc"))
+                if (optionsTable.Columns[prevSelectedCol].HeaderCell.Style.BackColor != yellow)
                 {
                     optionsTable.Columns[prevSelectedCol].HeaderCell.Style.BackColor = control;
                 }

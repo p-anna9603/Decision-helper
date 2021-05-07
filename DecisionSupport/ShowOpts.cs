@@ -12,7 +12,7 @@ using System.Windows.Forms;
 
 namespace DecisionSupport
 {
-    /* The original Windows Forms form of the evaluation (currently: options2 class) */
+    /* The original Windows Forms form of the evaluation (currently: options2 class is used instead of this) */
     public partial class ShowOpts : Form
     {
         List<Index> idxs = new List<Index>();

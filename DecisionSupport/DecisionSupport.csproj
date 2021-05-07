@@ -141,7 +141,6 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormHelper.cs" />
     <Compile Include="Index.cs" />
     <Compile Include="MyNumericUpDown.cs">
       <SubType>Component</SubType>

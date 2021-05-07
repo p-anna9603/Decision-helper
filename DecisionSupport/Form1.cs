@@ -134,7 +134,7 @@ namespace DecisionSupport
         public double getPrevOptVal(int product, int robotLimit, int workerLimit, ref List<Index> indexes)
         {
             totalCount++;
-            //Console.WriteLine(totalCount + ". fv hívás");
+            // Console.WriteLine(totalCount + ". fn call");
             indexes = new List<Index>();
             List<int> idList = new List<int>();
             idList.Add(product);
@@ -143,7 +143,7 @@ namespace DecisionSupport
             string[] keys = new string[3] { product.ToString(), robotLimit.ToString(), workerLimit.ToString() };
             string k = product.ToString() + "," +  robotLimit.ToString() + "," + workerLimit.ToString() + ",";
 
-        //    Console.WriteLine("Called M_p,l,k: " + k);
+            // Console.WriteLine("Called M_p,l,k: " + k);
 
             if (product < 0)
             {
@@ -153,7 +153,7 @@ namespace DecisionSupport
             if (cache.Keys.Contains(k))
             {
                 this.readCache++;
-              //  Console.WriteLine("már volt: " + k);
+              //  Console.WriteLine("reused: " + k);
                 indexes = cache[k].First().Key;
                 return cache[k].First().Value;
             }
@@ -200,7 +200,7 @@ namespace DecisionSupport
                     if (max < curr)
                     {
                         Index id = new Index(product, u ,v);
-                        // maxIndexes = prevIndexes;
+                        // maxIndexes = prevIndexes; // not working very well (because of references) --> needed to copy the data (foreach loop)
                         maxIndexes.Clear();
                         foreach (Index i in prevIndexes)
                         {
@@ -323,7 +323,6 @@ namespace DecisionSupport
             }
             else if(tables.Count == 0 && wasTableDeleted != 1) // no table now and non was deleted either
             {
-                Console.WriteLine("nincs tábla de nem is volt törölve");
                 canCloseParent = 1;
                 e.Cancel = false;
             }
@@ -371,7 +370,7 @@ namespace DecisionSupport
         }
         static int adj = 0;
 
-        /* Before I was aware of FlowLayoutPanel built in wrapping function I manually created the wrap: */        
+        /* Before I was aware of FlowLayoutPanel built in wrapping function I manually created the wrap (not in use anymore): */        
         public static void adjustPositions(Form form)
         {
             adj++;
@@ -478,7 +477,7 @@ namespace DecisionSupport
             saving = s;
             modification = s;
 
-            /* When one save icon and save as icon are also shown - in Form1 original menustrip*/
+            /* When one save icon and save as icon are also shown - in Form1 original menustrip */
             /*
             if(saving == 0 && savingCount == 0)
             {
@@ -571,8 +570,8 @@ namespace DecisionSupport
             {
                 DialogResult res = sfd.ShowDialog();
                 filename = sfd.FileName;
-                //var regExp = @"^(?:[\w]\:|\\)(\\[A-zÁ-ú_\-\s0-9]+)+\.(csv)$";
 
+                //var regExp = @"^(?:[\w]\:|\\)(\\[A-zÁ-ú_\-\s0-9]+)+\.(csv)$"; // this does not works
                 var regExp = @"^(?:[\w]\:|\\)(\\[\p{L}_\-\s0-9]+)+\.(csv)$";
                 Regex regex = new Regex(regExp);
                 if (res == DialogResult.OK && filename.EndsWith(".csv") && regex.IsMatch(filename))
@@ -586,8 +585,7 @@ namespace DecisionSupport
                     return;
                 }
                 else
-                {
-                    Console.WriteLine("rossz név");
+                {     
                     const string message = "The given name is incorrect.\n Please give a correct name!";
                     const string caption = "Saving failed";
                     MessageBox.Show(message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -643,18 +641,12 @@ namespace DecisionSupport
                     writeText.WriteLine();
                 }
                 writeText.WriteLine("***");
-                Console.WriteLine("save cahce előtt " + getCacheCount());
+
                 foreach (KeyValuePair<string, Dictionary<List<Index>, double>> entry in cache)
                 {
                     string idx = "";
-                    if (entry.Key.Equals("0,20,10"))
-                    {
-                        Console.WriteLine("mentésben " + entry.Key[0] + entry.Key[1] + entry.Key[2] + entry.Key[3] + entry.Key[4] + entry.Key[5] + entry.Key[6]);
-                        Console.WriteLine("mentés méret:  " + entry.Key.Length);
-                    }
                     foreach (char i in entry.Key) 
                     {
-
                         if (i == ',')
                         {
                             writeText.Write(idx + ",");
@@ -868,12 +860,12 @@ namespace DecisionSupport
 
         public void clearEverything() // upon creating a new project or loading an existing one this need to be called to initialize certain variables / arrays
         {
+            Console.WriteLine("clear");
             Tables.Clear();
             tables.Clear();
             cache.Clear();
             counter = 0;
             docOpenings = 0;
-            Console.WriteLine("clear");
             saving = 0; // 0 - need to be saved, 1 - already saved
             saveRes = 0; // 0 - save was not successful, 1 - save was succesful
             newWork = 1; // 1 - if its a new work from blank sheet, 0 - file was opened 
@@ -881,6 +873,6 @@ namespace DecisionSupport
             saveAs = 0; // 1 - if Save As option was selected
             savedAs = 0; // 1 - if Save As option was selected and saved
             secondFileName = ""; // saving after the save as 
-    }
+        }
     }
 }

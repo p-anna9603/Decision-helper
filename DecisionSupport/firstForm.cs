@@ -30,7 +30,7 @@ namespace DecisionSupport
         // ShowOpts showOpts;
         int resize = 0;
         static string prevActive = "";
-        Dictionary<IconButton, Project> projects = new Dictionary<IconButton, Project>();
+        Dictionary<IconButton, Project> projects = new Dictionary<IconButton, Project>(); // currently: only holds 1 project at a time
         int buttons = 0;
         IconButton iconButton1;
         IconButton xiconButton;
@@ -822,7 +822,7 @@ namespace DecisionSupport
                 Application.Exit();
             }
         }
-
+        /* To reduce flickering */
         protected override CreateParams CreateParams
         {
             get
