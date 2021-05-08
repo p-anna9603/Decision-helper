@@ -22,15 +22,8 @@ C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\DecisionSuppo
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\EPPlus.dll
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\GemBox.Spreadsheet.dll
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\System.ComponentModel.Annotations.dll
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\Xamarin.Forms.Core.dll
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\Xamarin.Forms.Platform.dll
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\Xamarin.Forms.Xaml.dll
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\EPPlus.xml
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\GemBox.Spreadsheet.xml
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\Xamarin.Forms.Core.pdb
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\Xamarin.Forms.Core.xml
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\Xamarin.Forms.Xaml.pdb
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Release\Xamarin.Forms.Xaml.xml
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.csprojAssemblyReference.cache
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.Form1.resources
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Release\DecisionSupport.Properties.Resources.resources

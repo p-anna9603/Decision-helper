@@ -19,13 +19,6 @@ C:\Anna\Szakdoga\DecisionSupport\DecisionSupport\obj\Debug\DecisionSupport.cspro
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\DecisionSupport.exe.config
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\DecisionSupport.exe
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\DecisionSupport.pdb
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\Xamarin.Forms.Core.dll
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\Xamarin.Forms.Platform.dll
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\Xamarin.Forms.Xaml.dll
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\Xamarin.Forms.Core.pdb
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\Xamarin.Forms.Core.xml
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\Xamarin.Forms.Xaml.pdb
-C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\bin\Debug\Xamarin.Forms.Xaml.xml
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.csprojAssemblyReference.cache
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.Properties.Resources.resources
 C:\Anna\Szakdoga\Giten\Decision-helper\DecisionSupport\obj\Debug\DecisionSupport.csproj.GenerateResource.cache

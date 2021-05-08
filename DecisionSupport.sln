@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DecisionSupport", "DecisionSupport\DecisionSupport.csproj", "{0B2DE625-2F25-4C38-A615-BFC31353AB3D}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Resource_Planning setup", "..\..\..\Szakdoga executable\Resource_Planning setup\Resource_Planning setup.vdproj", "{8133B664-B04C-4BCC-80FE-34181FFCE070}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,8 +15,6 @@ Global
 		{0B2DE625-2F25-4C38-A615-BFC31353AB3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B2DE625-2F25-4C38-A615-BFC31353AB3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B2DE625-2F25-4C38-A615-BFC31353AB3D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8133B664-B04C-4BCC-80FE-34181FFCE070}.Debug|Any CPU.ActiveCfg = Debug
-		{8133B664-B04C-4BCC-80FE-34181FFCE070}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
