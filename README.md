@@ -1,4 +1,4 @@
-# Resource Planning
+# Decision-helper
 
 ## Szerző
 	Pauló Anna
@@ -14,10 +14,10 @@ A program alkalmas több termék megléte mellett kiválasztani az optimális er
  * Létező projekt betöltése: Load Project
 Adott projektnél megadhatjuk a termékeket, a termékekhez robot-operátor párosokat, az általuk termelt mennyiséget, költségeket, termék árát.
  * Kiértékelés: Evaluation
- * Adott otpimum megtekintése: duplán kattintva a cellán.
+ * Adott otpimum megtekintése: duplán kattintva a cellán
 
 ## Program telepítése:
-..\2021_2_PaulóAnna_QLPQTC_Szakdolgozat_VP\Resource_Planning setup\Release\setup.exe futtatásával
+..\2021_2_PaulóAnna_QLPQTC_Szakdolgozat_VP\Resource_Planning_setup\Release\setup.exe futtatásával
 
 ## Program - forrás fájlok megtekintése:
 ..\2021_2_PaulóAnna_QLPQTC_Szakdolgozat_VP\Decision-helper\DecisionSupport mappában
@@ -25,4 +25,8 @@ Adott projektnél megadhatjuk a termékeket, a termékekhez robot-operátor pár
 ## Esettanulmányok, egyéb feladatok (.csv) és megoldások (.xlsx) fájljai:
 ..\2021_2_PaulóAnna_QLPQTC_Szakdolgozat_VP\tests
 
-A tests mappában található .csv fájlok használhatók a program tesztelésénél.
+A tests mappában található .csv fájlok használhatóak a program tesztelésénél.
+Nagyobb feladatok betöltésénél lehet számítani pár másodperc betöltési idővel.
+
+## Programhoz tartozó github repository
+https://github.com/p-anna9603/Decision-helper
