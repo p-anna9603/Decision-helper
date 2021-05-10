@@ -21,7 +21,7 @@ namespace DecisionSupport
         options2 showOpt2;
         private static IconButton CurrentBtn;
         private static Panel leftBorderBtn;
-        private Form currentChildForm;
+        private Form currentChildForm; // holds only the Form1 type
         string hiddenChild = "";
         int newProject = 0;
         private Panel firstPanel;
@@ -119,7 +119,6 @@ namespace DecisionSupport
             //    form1 = childForm;
             //}
             currentChildForm = childForm;
-            //Console.WriteLine("name:" + currentChildForm.Name);
             childForm.TopLevel = false;
             childForm.FormBorderStyle = FormBorderStyle.None;
             childForm.Dock = DockStyle.Fill;
@@ -169,7 +168,6 @@ namespace DecisionSupport
                 CurrentBtn.ImageAlign = ContentAlignment.MiddleRight;
                 //Left border button
                 leftBorderBtn.BackColor = color;
-                //Console.WriteLine("button y: " + currentBtn.Location.Y);
                 if (CurrentBtn.Name.Equals(projectButton.Name))
                 {
                     if (projectSubMenu.Visible)
@@ -251,7 +249,6 @@ namespace DecisionSupport
                         setIconTitle();
                         evaluated = 0;
                         form1.setNewWork(1);
-                        Console.WriteLine("1");
                         shownWindow = 0;
                     }
                 }
@@ -270,16 +267,14 @@ namespace DecisionSupport
                     setIconTitle();
                     evaluated = 0;
                     form1.setNewWork(1);
-                    Console.WriteLine("2");
                     shownWindow = 0;
                 }
                 else if (result == DialogResult.Cancel)
                 {
                     Console.WriteLine("do nothiiing");
                 }
-
             }
-            else
+            else // if there was no loaded project
             {
                 ActivateButton(sender, RGBColors.color4);
                 if (currentChildForm != null && form1 != null)
@@ -295,6 +290,7 @@ namespace DecisionSupport
                 setIconTitle();
                 justLoaded = 0;
                 form1.setNewWork(1);
+                shownWindow = 0;
             }
         }
 
@@ -309,7 +305,6 @@ namespace DecisionSupport
                                             MessageBoxButtons.YesNo);
                 if (result == DialogResult.Yes)
                 {
-                    Console.WriteLine("yes sdf");
                     form1.saveMenuClicked();
                     if (form1.getSaveRes() == 1)
                     {
@@ -318,7 +313,7 @@ namespace DecisionSupport
                         removeIconTitle();
                         form1 = new Form1();
                         Reset();
-                        if (currentChildForm != null) // if a project has been already evaluated before
+                        if (currentChildForm != null)
                         {
                             currentChildForm.Close();
                         }
@@ -336,6 +331,7 @@ namespace DecisionSupport
                             justLoaded = 1;
                             setIconTitle();
                             evaluated = 0;
+                            shownWindow = 0;
                         }
                         else
                         {
@@ -346,7 +342,7 @@ namespace DecisionSupport
                 else if (result == DialogResult.No)
                 {
                     form1.Saving = 1;
-                    Console.WriteLine("sav: " + form1.getSaving());
+                    Console.WriteLine("save: " + form1.getSaving());
                     form1.Close();
                     form1.clearEverything();
                     removeIconTitle();
@@ -370,6 +366,7 @@ namespace DecisionSupport
                         justLoaded = 1;
                         setIconTitle();
                         evaluated = 0;
+                        shownWindow = 0;
                     }
                     else
                     {
@@ -380,15 +377,20 @@ namespace DecisionSupport
             }
             else
             {
+                Form1 formBackup = null;
+                if (form1 != null && form1.getTablesCount() > 0 && form1.getModification() == 1)
+                {
+                    formBackup = form1;
+                }
+
                 if (form1 != null)
                 {
                     form1.Close();
                     form1.clearEverything();
                 }
-                removeIconTitle();
-                Form1 formBackup = form1;
                 form1 = new Form1();
-                Reset();
+                removeIconTitle();
+
                 if (currentChildForm != null)
                 {
                     currentChildForm.Close();
@@ -407,13 +409,23 @@ namespace DecisionSupport
                     justLoaded = 1;
                     setIconTitle();
                     evaluated = 0;
+                    shownWindow = 0;
                 }
-                else
+                else // if load project action was aborted or canceled
                 {
+                    //if (formBackup != null) // it is a very big error
+                    //{
+                    //    form1 = formBackup;
+                    //    OpenChildForm(form1);
+                    //    formBackup = null;
+                    //}
+                    //else
+                    //{
                     form1 = null;
+                    justLoaded = 0;
+                    //}
                 }
             }
-
             //}
             //else if (newProject == 1) // if upon loading project we merge it into the existing one
             //{
@@ -428,7 +440,6 @@ namespace DecisionSupport
         }
         public void removeIconTitle()
         {
-            Console.WriteLine("remove icon title");
             if (panelTitleBar.Controls.Contains(iconButton1) && panelTitleBar.Controls.Contains(xiconButton))
             {
                 panelTitleBar.Controls.Remove(iconButton1);
@@ -437,7 +448,6 @@ namespace DecisionSupport
         }
         private void setIconTitle()
         {
-            Console.WriteLine("seticon title");
             Project p = new Project(currentChildForm);
             projects.Clear();
             iconButton1 = new FontAwesome.Sharp.IconButton();
@@ -514,7 +524,10 @@ namespace DecisionSupport
                 DisableButton();
                 leftBorderBtn.Visible = false;
                 iconCurrentChildForm.IconColor = Color.MediumPurple;
-                resizeChildForm();
+                if (currentChildForm != null)
+                {
+                    resizeChildForm();
+                }
             }
         }
 
@@ -553,6 +566,7 @@ namespace DecisionSupport
                     justLoaded = 0;
                     panelTitleBar.Controls.Remove(iconButton1);
                     panelTitleBar.Controls.Remove(xiconButton);
+                    shownWindow = -1;
 
                     /* Show Successful save for a couple of secs */
                     save.Visible = true;
@@ -569,7 +583,7 @@ namespace DecisionSupport
             else if (result == DialogResult.No)
             {
                 form1.Saving = 1;
-                Console.WriteLine("sav 2: " + form1.getSaving());
+                Console.WriteLine("save 2: " + form1.getSaving());
                 closeProject();
             }
             else if (result == DialogResult.Cancel)
@@ -610,6 +624,7 @@ namespace DecisionSupport
             if (currentChildForm != null)
             {
                 currentChildForm.Close();
+                shownWindow = -1;
             }
             form1.Close();
             form1.clearEverything();
@@ -633,7 +648,7 @@ namespace DecisionSupport
         private void evaluateButton_Click(object sender, EventArgs e)
         {
             ActivateButton(sender, RGBColors.color4);
-            if (hiddenChild.Equals("ShowOpts"))
+            if (hiddenChild.Equals("ShowOpts")) // TODO Delete this hiddenChild is just for Form1 type
             {
                 panelDesktop.Show();
                 elementHost1.Show();
@@ -773,10 +788,15 @@ namespace DecisionSupport
                 iconButton5.Visible = true;
             }
 
-            if (currentChildForm != null && hiddenChild == "" && shownWindow == 0)
+            if (currentChildForm != null && shownWindow == 0)
             {
                 resizeChildForm();
             }
+            //if (currentChildForm != null && hiddenChild == "" && shownWindow == 0)
+            //{
+            //    resizeChildForm();
+            //}
+
             //if(elementHost1 != null)
             //{
             //    options2 ch = (options2)elementHost1.Child;
@@ -798,9 +818,9 @@ namespace DecisionSupport
             panelDesktop2.Controls.Add(currentChildForm);
             currentChildForm.BringToFront();
             currentChildForm.FormBorderStyle = FormBorderStyle.None;
-
             currentChildForm.Show();
             panelDesktop.ResumeLayout(false);
+
             panelDesktop.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
